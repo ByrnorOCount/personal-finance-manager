@@ -3,14 +3,14 @@
     <item android:id="@android:id/background">
         <shape>
             <corners android:radius="6dp" />
-            <solid android:color="@color/border_subtle" />
+            <solid android:color="@color/expense_red_bg" />
         </shape>
     </item>
     <item android:id="@android:id/progress">
         <scale android:scaleWidth="100%">
             <shape>
                 <corners android:radius="6dp" />
-                <solid android:color="@color/income_green" />
+                <solid android:color="@color/expense_red" />
             </shape>
         </scale>
     </item>

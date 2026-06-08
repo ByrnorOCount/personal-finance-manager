@@ -2,43 +2,45 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F4F6F8">
+    android:background="?android:attr/colorBackground"
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- HERO - type toggle + amount input -->
+        <!-- ── HERO HEADER ─────────────────────────────────────────────── -->
         <LinearLayout
-            android:id="@+id/heroHeader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#6C63FF"
+            android:background="@drawable/bg_header_gradient"
             android:gravity="center_horizontal"
             android:orientation="vertical"
-            android:paddingHorizontal="20dp"
-            android:paddingTop="48dp"
-            android:paddingBottom="36dp">
+            android:paddingStart="24dp"
+            android:paddingTop="52dp"
+            android:paddingEnd="24dp"
+            android:paddingBottom="44dp">
 
-            <!-- Back button -->
+            <!-- Toolbar row -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
-                <ImageButton
+                <TextView
                     android:id="@+id/backButton"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:background="@drawable/circle_white_bg"
-                    android:padding="6dp"
-                    android:scaleType="centerInside"
-                    android:src="@android:drawable/ic_menu_revert" />
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/bg_icon_circle_white"
+                    android:contentDescription="@string/content_desc_back"
+                    android:gravity="center"
+                    android:text="←"
+                    android:textColor="#FFFFFF"
+                    android:textSize="20sp" />
 
                 <TextView
-                    android:id="@+id/screenTitle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -48,38 +50,42 @@
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
+                <!-- Spacer to balance back button -->
                 <View
-                    android:layout_width="36dp"
-                    android:layout_height="36dp" />
+                    android:layout_width="40dp"
+                    android:layout_height="40dp" />
 
             </LinearLayout>
 
-            <!-- Income / Expense toggle -->
+            <!-- Type toggle pill -->
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:layout_marginTop="20dp"
-                android:background="@drawable/toggle_bg"
-                android:orientation="horizontal">
+                android:layout_width="220dp"
+                android:layout_height="44dp"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/bg_toggle_pill"
+                android:orientation="horizontal"
+                android:padding="4dp">
 
                 <TextView
                     android:id="@+id/toggleExpense"
-                    android:layout_width="100dp"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:background="@drawable/toggle_selected_bg"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_toggle_selected"
                     android:gravity="center"
                     android:text="Chi tiêu"
-                    android:textColor="#FFFFFF"
+                    android:textColor="@color/brand_primary"
                     android:textSize="14sp"
                     android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/toggleIncome"
-                    android:layout_width="100dp"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_weight="1"
                     android:gravity="center"
                     android:text="Thu nhập"
-                    android:textColor="#CCFFFFFF"
+                    android:textColor="#AAFFFFFF"
                     android:textSize="14sp" />
 
             </LinearLayout>
@@ -92,104 +98,140 @@
                 android:layout_marginTop="20dp"
                 android:background="@null"
                 android:gravity="center"
-                android:hint="0"
+                android:hint="@string/amount_hint"
                 android:inputType="numberDecimal"
                 android:textColor="#FFFFFF"
-                android:textColorHint="#80FFFFFF"
-                android:textSize="36sp"
+                android:textColorHint="#55FFFFFF"
+                android:textSize="44sp"
                 android:textStyle="bold" />
 
             <View
-                android:layout_width="120dp"
+                android:layout_width="100dp"
                 android:layout_height="2dp"
-                android:layout_marginTop="8dp"
-                android:background="#80FFFFFF" />
+                android:layout_marginTop="6dp"
+                android:background="#44FFFFFF" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:letterSpacing="0.1"
+                android:text="VND"
+                android:textColor="#66FFFFFF"
+                android:textSize="12sp" />
 
         </LinearLayout>
 
-        <!-- FORM CARD -->
+        <!-- ── FORM CARD ────────────────────────────────────────────────── -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="-20dp"
-            android:background="@drawable/card_top_rounded"
+            android:layout_marginTop="-24dp"
+            android:background="@drawable/bg_sheet_top_rounded"
             android:orientation="vertical"
-            android:paddingHorizontal="20dp"
-            android:paddingTop="28dp"
-            android:paddingBottom="40dp">
+            android:paddingStart="24dp"
+            android:paddingTop="32dp"
+            android:paddingEnd="24dp"
+            android:paddingBottom="48dp">
 
-            <!-- Category selector -->
+            <!-- Category -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
+                android:letterSpacing="0.05"
                 android:text="Danh mục"
-                android:textColor="#888888"
-                android:textSize="13sp" />
+                android:textAllCaps="true"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp" />
 
             <Spinner
                 android:id="@+id/categorySpinner"
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
-                android:background="@drawable/field_bg_light"
-                android:paddingHorizontal="14dp" />
+                android:background="@drawable/bg_input_field"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp" />
 
-            <!-- Date picker -->
+            <!-- Date -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginBottom="8dp"
+                android:letterSpacing="0.05"
                 android:text="Ngày"
-                android:textColor="#888888"
-                android:textSize="13sp" />
+                android:textAllCaps="true"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp" />
 
-            <TextView
-                android:id="@+id/dateText"
+            <LinearLayout
+                android:id="@+id/datePickerRow"
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
-                android:background="@drawable/field_bg_light"
+                android:background="@drawable/bg_input_field"
                 android:gravity="center_vertical"
-                android:paddingHorizontal="14dp"
-                android:textColor="#1A1A1A"
-                android:textSize="15sp" />
+                android:orientation="horizontal"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp">
+
+                <TextView
+                    android:id="@+id/dateText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="📅"
+                    android:textSize="18sp" />
+
+            </LinearLayout>
 
             <!-- Note -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginBottom="8dp"
-                android:text="Ghi chú (tuỳ chọn)"
-                android:textColor="#888888"
-                android:textSize="13sp" />
+                android:letterSpacing="0.05"
+                android:text="Ghi chú"
+                android:textAllCaps="true"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp" />
 
             <EditText
                 android:id="@+id/noteInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/field_bg_light"
+                android:background="@drawable/bg_input_field"
                 android:gravity="top"
-                android:hint="Nhập ghi chú..."
+                android:hint="@string/note_hint"
                 android:inputType="textMultiLine"
                 android:lines="2"
-                android:minHeight="52dp"
-                android:paddingHorizontal="14dp"
-                android:paddingVertical="14dp"
-                android:textColor="#1A1A1A"
-                android:textColorHint="#AAAAAA"
+                android:minHeight="72dp"
+                android:paddingStart="16dp"
+                android:paddingTop="14dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="14dp"
+                android:textColor="?attr/colorOnSurface"
+                android:textColorHint="@color/text_tertiary"
                 android:textSize="15sp" />
 
             <!-- Save button -->
             <Button
                 android:id="@+id/saveButton"
+                style="@style/Widget.Material3.Button"
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
-                android:layout_marginTop="28dp"
-                android:backgroundTint="#6C63FF"
-                android:text="Lưu giao dịch"
+                android:layout_height="56dp"
+                android:layout_marginTop="32dp"
+                android:backgroundTint="@color/brand_primary"
+                android:text="@string/save"
                 android:textColor="#FFFFFF"
-                android:textSize="15sp"
+                android:textSize="16sp"
                 android:textStyle="bold" />
 
         </LinearLayout>

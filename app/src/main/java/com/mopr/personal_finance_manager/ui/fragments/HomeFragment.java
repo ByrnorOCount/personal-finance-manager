@@ -9,8 +9,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.mopr.personal_finance_manager.R;
 import com.mopr.personal_finance_manager.databinding.FragmentHomeBinding;
 import com.mopr.personal_finance_manager.ui.adapter.TransactionAdapter;
 import com.mopr.personal_finance_manager.ui.viewmodel.FinanceViewModel;
@@ -27,7 +29,8 @@ public class HomeFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
@@ -41,6 +44,9 @@ public class HomeFragment extends Fragment {
         observeData();
 
         binding.currentMonth.setText(DateUtils.formatMonthYear(System.currentTimeMillis()));
+
+        binding.btnViewAll.setOnClickListener(v ->
+            Navigation.findNavController(v).navigate(R.id.navigation_transactions));
     }
 
     private void setupRecyclerView() {
@@ -52,20 +58,28 @@ public class HomeFragment extends Fragment {
 
     private void observeData() {
         viewModel.getTotalBalance().observe(getViewLifecycleOwner(), balance ->
-            binding.totalBalance.setText(CurrencyFormatter.formatVND(balance != null ? balance : 0.0)));
+            binding.totalBalance.setText(
+                CurrencyFormatter.formatVND(balance != null ? balance : 0.0)));
 
         Calendar cal = Calendar.getInstance();
         long start = DateUtils.getStartOfMonth(cal);
         long end = DateUtils.getEndOfMonth(cal);
 
         viewModel.getTotalIncome(start, end).observe(getViewLifecycleOwner(), income ->
-            binding.totalIncome.setText(CurrencyFormatter.formatVND(income != null ? income : 0.0)));
+            binding.totalIncome.setText(
+                CurrencyFormatter.formatVND(income != null ? income : 0.0)));
 
         viewModel.getTotalExpense(start, end).observe(getViewLifecycleOwner(), expense ->
-            binding.totalExpense.setText(CurrencyFormatter.formatVND(expense != null ? expense : 0.0)));
+            binding.totalExpense.setText(
+                CurrencyFormatter.formatVND(expense != null ? expense : 0.0)));
 
         viewModel.getRecentTransactions().observe(getViewLifecycleOwner(), transactions -> {
-            if (transactions != null) {
+            if (transactions == null || transactions.isEmpty()) {
+                binding.rvRecentTransactions.setVisibility(View.GONE);
+                binding.emptyState.setVisibility(View.VISIBLE);
+            } else {
+                binding.rvRecentTransactions.setVisibility(View.VISIBLE);
+                binding.emptyState.setVisibility(View.GONE);
                 adapter.setTransactions(transactions);
             }
         });

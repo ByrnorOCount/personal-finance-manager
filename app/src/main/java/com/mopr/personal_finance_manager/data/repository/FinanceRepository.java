@@ -3,7 +3,6 @@ package com.mopr.personal_finance_manager.data.repository;
 import android.app.Application;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 
 import com.mopr.personal_finance_manager.data.local.AppDatabase;
 import com.mopr.personal_finance_manager.data.local.dao.BudgetDao;
@@ -19,19 +18,18 @@ import java.util.concurrent.Executors;
 
 public class FinanceRepository {
 
+    private static volatile FinanceRepository instance;
     private final TransactionDao transactionDao;
     private final BudgetDao budgetDao;
     private final SavingsGoalDao savingsGoalDao;
-    private final ExecutorService executorService;
-
-    private static FinanceRepository instance;
+    private final ExecutorService executor;
 
     private FinanceRepository(Application application) {
         AppDatabase db = AppDatabase.getInstance(application);
         transactionDao = db.transactionDao();
         budgetDao = db.budgetDao();
         savingsGoalDao = db.savingsGoalDao();
-        executorService = Executors.newFixedThreadPool(4);
+        executor = Executors.newFixedThreadPool(4);
     }
 
     public static FinanceRepository getInstance(Application application) {
@@ -45,40 +43,26 @@ public class FinanceRepository {
         return instance;
     }
 
-    // Transactions
-    public void insertTransaction(Transaction transaction) {
-        executorService.execute(() -> transactionDao.insert(transaction));
+    // ── Transactions ──────────────────────────────────────────────────────
+
+    public void insertTransaction(Transaction t) {
+        executor.execute(() -> transactionDao.insert(t));
     }
 
-    public void updateTransaction(Transaction transaction) {
-        executorService.execute(() -> transactionDao.update(transaction));
+    public void updateTransaction(Transaction t) {
+        executor.execute(() -> transactionDao.update(t));
     }
 
-    public void deleteTransaction(Transaction transaction) {
-        executorService.execute(() -> transactionDao.delete(transaction));
+    public void deleteTransaction(Transaction t) {
+        executor.execute(() -> transactionDao.delete(t));
     }
 
-    // Budgets
-    public void insertBudget(Budget budget) {
-        executorService.execute(() -> budgetDao.insert(budget));
-    }
-
-    public void updateBudget(Budget budget) {
-        executorService.execute(() -> budgetDao.update(budget));
-    }
-
-    // Savings Goals
-    public void insertSavingsGoal(SavingsGoal goal) {
-        executorService.execute(() -> savingsGoalDao.insert(goal));
-    }
-
-    public void updateSavingsGoal(SavingsGoal goal) {
-        executorService.execute(() -> savingsGoalDao.update(goal));
-    }
-
-    // LiveData Getters
     public LiveData<List<Transaction>> getRecentTransactions() {
         return transactionDao.getRecent5();
+    }
+
+    public LiveData<List<Transaction>> getAllTransactions() {
+        return transactionDao.getAll();
     }
 
     public LiveData<Double> getTotalBalance() {
@@ -93,12 +77,28 @@ public class FinanceRepository {
         return transactionDao.getTotalExpenseInRange(start, end);
     }
 
-    public LiveData<List<Transaction>> getAllTransactions() {
-        return transactionDao.getAll();
+    // ── Budgets ───────────────────────────────────────────────────────────
+
+    public void insertBudget(Budget budget) {
+        executor.execute(() -> budgetDao.insert(budget));
+    }
+
+    public void updateBudget(Budget budget) {
+        executor.execute(() -> budgetDao.update(budget));
     }
 
     public LiveData<List<Budget>> getBudgetsForMonth(String month) {
         return budgetDao.getBudgetsForMonth(month);
+    }
+
+    // ── Savings Goals ─────────────────────────────────────────────────────
+
+    public void insertSavingsGoal(SavingsGoal goal) {
+        executor.execute(() -> savingsGoalDao.insert(goal));
+    }
+
+    public void updateSavingsGoal(SavingsGoal goal) {
+        executor.execute(() -> savingsGoalDao.update(goal));
     }
 
     public LiveData<List<SavingsGoal>> getActiveSavingsGoals() {

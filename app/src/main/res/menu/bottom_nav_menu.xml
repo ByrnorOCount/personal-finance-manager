@@ -3,11 +3,11 @@
     <item
         android:id="@+id/navigation_home"
         android:icon="@android:drawable/ic_menu_today"
-        android:title="Home" />
+        android:title="Trang chủ" />
     <item
         android:id="@+id/navigation_transactions"
         android:icon="@android:drawable/ic_menu_recent_history"
-        android:title="History" />
+        android:title="Lịch sử" />
     <item
         android:id="@+id/navigation_placeholder"
         android:title=""
@@ -15,9 +15,9 @@
     <item
         android:id="@+id/navigation_budget"
         android:icon="@android:drawable/ic_menu_manage"
-        android:title="Budget" />
+        android:title="Ngân sách" />
     <item
         android:id="@+id/navigation_settings"
         android:icon="@android:drawable/ic_menu_preferences"
-        android:title="Settings" />
+        android:title="Cài đặt" />
 </menu>

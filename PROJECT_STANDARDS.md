@@ -30,21 +30,22 @@ and UI within their assigned features.
 
 ### Shared Infrastructure (Do Together First)
 
-- [ ] Initialize Git & `.gitignore`.
+- [X] Initialize Git & `.gitignore`.
 - [ ] Define the `Transaction` entity and Database schema.
 - [ ] Set up the basic Material 3 Theme and Main Navigation Graph.
 
-### Person A: Transaction Management
+### Person A: Core Operations & Flow
 
-- [ ] **Transaction List:** RecyclerView to show history with search/filter.
-- [ ] **Entry System:** "Add Transaction" screen with category selection and date picker.
-- [ ] **Data Logic:** CRUD operations in DAO/Repository for transactions.
+- [ ] **Transactions (Add/History):** RecyclerView, search/filter, and the entry system.
+- [ ] **Home Screen:** Summary cards and the "5 most recent" preview.
+- [ ] **App Infrastructure:** Splash screen animation and Settings (Currency, PIN lock).
 
-### Person B: Dashboard & Analytics
+### Person B: Analysis & Planning
 
-- [ ] **Visual Analytics:** Implement MPAndroidChart for spending by category.
-- [ ] **Summary Cards:** Total balance, monthly income vs. expense overview.
-- [ ] **Mock Data Generator:** System to generate 30+ transactions for chart testing.
+- [ ] **Statistics:** Pie/Bar charts for spending and monthly comparisons.
+- [ ] **Budget Planner:** Limit setting, progress bars, and over-budget alerts.
+- [ ] **Savings Goals:** Goal creation, deadline tracking, and progress visualization.
+- [ ] **Data Tools:** Mock data generator for testing charts and budgets.
 
 ---
 
@@ -61,9 +62,13 @@ com.mopr.personal_finance_manager/
 │   ├── repository/      # Repository implementation
 │   └── model/           # POJOs and Enum types
 ├── ui/
-│   ├── dashboard/       # Dashboard Fragment & ViewModel
-│   ├── transactions/    # List and Entry Fragments & ViewModels
-│   └── common/          # Reusable UI components (Adapters, custom views)
+│   ├── home/            # Summary cards, Recent 5 preview
+│   ├── transactions/    # List (History) and Entry (Add/Edit)
+│   ├── statistics/      # Charts and Comparison views
+│   ├── budget/          # Progress bars and limits
+│   ├── savings/         # Goals tracking
+│   ├── settings/        # Currency toggle, PIN, Export/Import
+│   └── common/          # Reusable UI components (Adapters, custom views, splash)
 ├── util/                # CurrencyFormatter, DateUtils, Constants
 └── MainActivity.java    # Single activity container
 ```

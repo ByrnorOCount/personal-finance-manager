@@ -1,5 +1,6 @@
 package com.mopr.personal_finance_manager.data.local.dao;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
@@ -24,11 +25,11 @@ public interface BudgetDao {
 
     // All budgets for a given month (e.g. "2025-06")
     @Query("SELECT * FROM budgets WHERE month = :month")
-    List<Budget> getBudgetsForMonth(String month);
+    LiveData<List<Budget>> getBudgetsForMonth(String month);
 
     // Specific category + month — for checking if one already exists
     @Query("SELECT * FROM budgets WHERE category = :category AND month = :month LIMIT 1")
-    Budget getBudgetForCategoryAndMonth(String category, String month);
+    LiveData<Budget> getBudgetForCategoryAndMonth(String category, String month);
 
     // Copy budgets to next month — called from BudgetPlannerActivity
     // Returns all budgets from source month so we can re-insert with new month

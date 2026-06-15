@@ -1,5 +1,6 @@
 package com.mopr.personal_finance_manager.data.local.dao;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -28,23 +29,23 @@ public interface TransactionDao {
 
     // ── Home screen: 5 most recent ───────────────────────────────────────────
     @Query("SELECT * FROM transactions ORDER BY date DESC LIMIT 5")
-    List<Transaction> getRecent5();
+    LiveData<List<Transaction>> getRecent5();
 
     // ── Home screen: total balance (income - expense) ────────────────────────
     @Query("SELECT COALESCE(SUM(CASE WHEN type='INCOME' THEN amount ELSE -amount END), 0) FROM transactions")
-    double getTotalBalance();
+    LiveData<Double> getTotalBalance();
 
     // ── Home screen: total income this month ─────────────────────────────────
     @Query("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type='INCOME' AND date >= :startMs AND date <= :endMs")
-    double getTotalIncomeInRange(long startMs, long endMs);
+    LiveData<Double> getTotalIncomeInRange(long startMs, long endMs);
 
     // ── Home screen: total expense this month ────────────────────────────────
     @Query("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type='EXPENSE' AND date >= :startMs AND date <= :endMs")
-    double getTotalExpenseInRange(long startMs, long endMs);
+    LiveData<Double> getTotalExpenseInRange(long startMs, long endMs);
 
     // ── Transaction History: all, newest first ───────────────────────────────
     @Query("SELECT * FROM transactions ORDER BY date DESC")
-    List<Transaction> getAll();
+    LiveData<List<Transaction>> getAll();
 
     // ── Transaction History: filter by type ─────────────────────────────────
     @Query("SELECT * FROM transactions WHERE type = :type ORDER BY date DESC")

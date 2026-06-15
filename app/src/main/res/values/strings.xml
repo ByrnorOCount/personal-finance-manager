@@ -1,3 +1,26 @@
 <resources>
-    <string name="app_name">Personal Finance Manager</string>
+    <string name="app_name">Finance Manager</string>
+    <string name="nav_home">Trang chủ</string>
+    <string name="nav_history">Lịch sử</string>
+    <string name="nav_budget">Ngân sách</string>
+    <string name="nav_settings">Cài đặt</string>
+    <string name="add_transaction">Thêm giao dịch</string>
+    <string name="total_balance">Số dư</string>
+    <string name="income">Thu nhập</string>
+    <string name="expense">Chi tiêu</string>
+    <string name="recent_transactions">Gần đây</string>
+    <string name="view_all">Xem tất cả</string>
+    <string name="search_hint">Tìm kiếm giao dịch…</string>
+    <string name="filter_all">Tất cả</string>
+    <string name="filter_income">Thu nhập</string>
+    <string name="filter_expense">Chi tiêu</string>
+    <string name="no_transactions">Chưa có giao dịch nào</string>
+    <string name="delete_confirm">Xoá giao dịch này?</string>
+    <string name="delete">Xoá</string>
+    <string name="cancel">Huỷ</string>
+    <string name="save">Lưu giao dịch</string>
+    <string name="note_hint">Ghi chú (tuỳ chọn)…</string>
+    <string name="amount_hint">0</string>
+    <string name="content_desc_add">Thêm giao dịch</string>
+    <string name="content_desc_back">Quay lại</string>
 </resources>

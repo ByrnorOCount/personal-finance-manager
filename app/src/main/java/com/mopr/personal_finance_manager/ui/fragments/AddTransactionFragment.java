@@ -1,25 +1,162 @@
 package com.mopr.personal_finance_manager.ui.fragments;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 
+import com.mopr.personal_finance_manager.R;
+import com.mopr.personal_finance_manager.data.local.entity.Category;
+import com.mopr.personal_finance_manager.data.local.entity.Transaction;
 import com.mopr.personal_finance_manager.databinding.FragmentAddTransactionBinding;
+import com.mopr.personal_finance_manager.ui.viewmodel.FinanceViewModel;
+import com.mopr.personal_finance_manager.util.DateUtils;
+
+import java.util.Calendar;
 
 public class AddTransactionFragment extends Fragment {
 
+    private final Calendar selectedDate = Calendar.getInstance();
     private FragmentAddTransactionBinding binding;
+    private FinanceViewModel viewModel;
+    private boolean isExpense = true;
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         binding = FragmentAddTransactionBinding.inflate(inflater, container, false);
         return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        viewModel = new ViewModelProvider(requireActivity()).get(FinanceViewModel.class);
+
+        setupUI();
+        setupListeners();
+    }
+
+    private void setupUI() {
+        updateTypeToggleUI();
+        updateDateDisplay();
+        refreshCategorySpinner();
+    }
+
+    private void setupListeners() {
+        binding.backButton.setOnClickListener(v ->
+            Navigation.findNavController(v).navigateUp());
+
+        binding.toggleExpense.setOnClickListener(v -> {
+            if (!isExpense) {
+                isExpense = true;
+                updateTypeToggleUI();
+                refreshCategorySpinner();
+            }
+        });
+
+        binding.toggleIncome.setOnClickListener(v -> {
+            if (isExpense) {
+                isExpense = false;
+                updateTypeToggleUI();
+                refreshCategorySpinner();
+            }
+        });
+
+        binding.datePickerRow.setOnClickListener(v -> showDatePicker());
+
+        binding.saveButton.setOnClickListener(v -> saveTransaction());
+    }
+
+    private void updateTypeToggleUI() {
+        if (isExpense) {
+            binding.toggleExpense.setBackgroundResource(R.drawable.bg_toggle_selected);
+            binding.toggleExpense.setTextColor(requireContext().getColor(R.color.brand_primary));
+            binding.toggleIncome.setBackground(null);
+            binding.toggleIncome.setTextColor(0xAAFFFFFF);
+        } else {
+            binding.toggleIncome.setBackgroundResource(R.drawable.bg_toggle_selected);
+            binding.toggleIncome.setTextColor(requireContext().getColor(R.color.brand_primary));
+            binding.toggleExpense.setBackground(null);
+            binding.toggleExpense.setTextColor(0xAAFFFFFF);
+        }
+    }
+
+    private void refreshCategorySpinner() {
+        String[] keys = isExpense ? Category.expenseCategories() : Category.incomeCategories();
+        String[] displayNames = new String[keys.length];
+        for (int i = 0; i < keys.length; i++) {
+            displayNames[i] = Category.getIcon(keys[i]) + "  " + Category.getDisplayName(keys[i]);
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+            requireContext(), R.layout.spinner_item, displayNames);
+        adapter.setDropDownViewResource(R.layout.spinner_item);
+        binding.categorySpinner.setAdapter(adapter);
+    }
+
+    private void showDatePicker() {
+        new DatePickerDialog(requireContext(), (v, year, month, day) -> {
+            selectedDate.set(Calendar.YEAR, year);
+            selectedDate.set(Calendar.MONTH, month);
+            selectedDate.set(Calendar.DAY_OF_MONTH, day);
+            updateDateDisplay();
+        },
+            selectedDate.get(Calendar.YEAR),
+            selectedDate.get(Calendar.MONTH),
+            selectedDate.get(Calendar.DAY_OF_MONTH)).show();
+    }
+
+    private void updateDateDisplay() {
+        binding.dateText.setText(DateUtils.formatDate(selectedDate.getTimeInMillis()));
+    }
+
+    private void saveTransaction() {
+        String amountStr = binding.amountInput.getText().toString().trim();
+        if (amountStr.isEmpty()) {
+            binding.amountInput.setError("Nhập số tiền");
+            Toast.makeText(requireContext(), "Vui lòng nhập số tiền", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        double amount;
+        try {
+            amount = Double.parseDouble(amountStr);
+        } catch (NumberFormatException e) {
+            Toast.makeText(requireContext(), "Số tiền không hợp lệ", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (amount <= 0) {
+            Toast.makeText(requireContext(), "Số tiền phải lớn hơn 0", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String[] keys = isExpense ? Category.expenseCategories() : Category.incomeCategories();
+        String category = keys[binding.categorySpinner.getSelectedItemPosition()];
+        String note = binding.noteInput.getText().toString().trim();
+
+        Transaction transaction = new Transaction(
+            isExpense ? "EXPENSE" : "INCOME",
+            amount,
+            category,
+            selectedDate.getTimeInMillis(),
+            note,
+            "VND"
+        );
+
+        viewModel.insertTransaction(transaction);
+        Toast.makeText(requireContext(), "✓ Đã lưu giao dịch", Toast.LENGTH_SHORT).show();
+        Navigation.findNavController(requireView()).navigateUp();
     }
 
     @Override

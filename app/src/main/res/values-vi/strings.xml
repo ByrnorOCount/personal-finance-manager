@@ -4,6 +4,7 @@
     <string name="nav_history">Lịch sử</string>
     <string name="nav_budget">Ngân sách</string>
     <string name="nav_settings">Cài đặt</string>
+    <string name="nav_add">Thêm</string>
     <string name="add_transaction">Thêm giao dịch</string>
     <string name="total_balance">Số dư</string>
     <string name="income">Thu nhập</string>

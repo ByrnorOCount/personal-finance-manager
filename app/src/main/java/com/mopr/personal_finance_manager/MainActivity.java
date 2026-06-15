@@ -36,17 +36,12 @@ public class MainActivity extends AppCompatActivity {
             NavController navController = navHostFragment.getNavController();
             NavigationUI.setupWithNavController(binding.bottomNavigation, navController);
 
-            // FAB Click -> Add Transaction
-            binding.fabAdd.setOnClickListener(v -> navController.navigate(R.id.navigation_add_transaction));
-
-            // Control visibility of Bottom Navigation and FAB
+            // Control visibility of Bottom Navigation
             navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
                 if (destination.getId() == R.id.navigation_add_transaction) {
                     binding.bottomNavigation.setVisibility(View.GONE);
-                    binding.fabAdd.setVisibility(View.GONE);
                 } else {
                     binding.bottomNavigation.setVisibility(View.VISIBLE);
-                    binding.fabAdd.setVisibility(View.VISIBLE);
                 }
             });
         }

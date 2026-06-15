@@ -1,5 +1,6 @@
 package com.mopr.personal_finance_manager.data.local.dao;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
@@ -23,13 +24,13 @@ public interface SavingsGoalDao {
     void deleteById(int id);
 
     @Query("SELECT * FROM savings_goals ORDER BY deadline ASC")
-    List<SavingsGoal> getAll();
+    LiveData<List<SavingsGoal>> getAll();
 
     @Query("SELECT * FROM savings_goals WHERE isCompleted = 0 ORDER BY deadline ASC")
-    List<SavingsGoal> getActive();
+    LiveData<List<SavingsGoal>> getActive();
 
     @Query("SELECT * FROM savings_goals WHERE isCompleted = 1 ORDER BY deadline DESC")
-    List<SavingsGoal> getCompleted();
+    LiveData<List<SavingsGoal>> getCompleted();
 
     @Query("DELETE FROM savings_goals")
     void deleteAll();

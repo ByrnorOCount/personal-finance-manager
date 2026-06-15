@@ -14,7 +14,7 @@
         android:enabled="false" />
     <item
         android:id="@+id/navigation_budget"
-        android:icon="@android:drawable/ic_menu_manage"
+        android:icon="@drawable/ic_bank"
         android:title="@string/nav_budget" />
     <item
         android:id="@+id/navigation_settings"

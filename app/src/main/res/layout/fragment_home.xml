@@ -14,7 +14,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- ── HEADER GRADIENT ─────────────────────────────────────── -->
+            <!-- HEADER GRADIENT -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -50,7 +50,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
-                            android:text="Số dư hiện tại"
+                            android:text="@string/current_balance"
                             android:textColor="#BBFFFFFF"
                             android:textSize="12sp" />
 
@@ -116,7 +116,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="8dp"
-                                android:text="Thu nhập"
+                                android:text="@string/income"
                                 android:textColor="#CCFFFFFF"
                                 android:textSize="12sp" />
 
@@ -163,7 +163,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="8dp"
-                                android:text="Chi tiêu"
+                                android:text="@string/expense"
                                 android:textColor="#CCFFFFFF"
                                 android:textSize="12sp" />
 
@@ -209,7 +209,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Giao dịch gần đây"
+                        android:text="@string/recent_transactions"
                         android:textColor="?attr/colorOnSurface"
                         android:textSize="17sp"
                         android:textStyle="bold" />
@@ -219,7 +219,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingVertical="6dp"
-                        android:text="Xem tất cả →"
+                        android:text="@string/view_all_arrow"
                         android:textColor="@color/brand_primary"
                         android:textSize="13sp"
                         android:textStyle="bold" />
@@ -253,7 +253,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
-                        android:text="Chưa có giao dịch nào"
+                        android:text="@string/no_transactions"
                         android:textColor="@color/text_secondary"
                         android:textSize="15sp" />
 
@@ -261,7 +261,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="Nhấn + để thêm giao dịch đầu tiên"
+                        android:text="@string/add_first_transaction"
                         android:textColor="@color/text_tertiary"
                         android:textSize="13sp" />
 

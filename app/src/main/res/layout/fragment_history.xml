@@ -19,7 +19,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Lịch sử"
+            android:text="@string/nav_history"
             android:textColor="#FFFFFF"
             android:textSize="26sp"
             android:textStyle="bold" />
@@ -116,7 +116,7 @@
                     android:gravity="center"
                     android:paddingStart="14dp"
                     android:paddingEnd="14dp"
-                    android:text="Tất cả"
+                    android:text="@string/filter_all"
                     android:textColor="#FFFFFF"
                     android:textSize="13sp"
                     android:textStyle="bold" />
@@ -130,7 +130,7 @@
                     android:gravity="center"
                     android:paddingStart="14dp"
                     android:paddingEnd="14dp"
-                    android:text="↑ Thu nhập"
+                    android:text="@string/chip_income"
                     android:textColor="@color/text_secondary"
                     android:textSize="13sp" />
 
@@ -143,7 +143,7 @@
                     android:gravity="center"
                     android:paddingStart="14dp"
                     android:paddingEnd="14dp"
-                    android:text="↓ Chi tiêu"
+                    android:text="@string/chip_expense"
                     android:textColor="@color/text_secondary"
                     android:textSize="13sp" />
 
@@ -164,7 +164,7 @@
                     android:gravity="center"
                     android:paddingStart="14dp"
                     android:paddingEnd="14dp"
-                    android:text="🍔 Ăn uống"
+                    android:text="@string/chip_food"
                     android:textColor="@color/text_secondary"
                     android:textSize="13sp" />
 
@@ -177,7 +177,7 @@
                     android:gravity="center"
                     android:paddingStart="14dp"
                     android:paddingEnd="14dp"
-                    android:text="🚗 Di chuyển"
+                    android:text="@string/chip_transport"
                     android:textColor="@color/text_secondary"
                     android:textSize="13sp" />
 
@@ -190,7 +190,7 @@
                     android:gravity="center"
                     android:paddingStart="14dp"
                     android:paddingEnd="14dp"
-                    android:text="🛍️ Mua sắm"
+                    android:text="@string/chip_shopping"
                     android:textColor="@color/text_secondary"
                     android:textSize="13sp" />
 
@@ -203,7 +203,7 @@
                     android:gravity="center"
                     android:paddingStart="14dp"
                     android:paddingEnd="14dp"
-                    android:text="💡 Hóa đơn"
+                    android:text="@string/chip_bills"
                     android:textColor="@color/text_secondary"
                     android:textSize="13sp" />
 
@@ -216,7 +216,7 @@
                     android:gravity="center"
                     android:paddingStart="14dp"
                     android:paddingEnd="14dp"
-                    android:text="💊 Sức khỏe"
+                    android:text="@string/chip_health"
                     android:textColor="@color/text_secondary"
                     android:textSize="13sp" />
 
@@ -259,7 +259,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Không tìm thấy giao dịch"
+            android:text="@string/no_results"
             android:textColor="@color/text_secondary"
             android:textSize="16sp"
             android:textStyle="bold" />
@@ -268,7 +268,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:text="Thử thay đổi bộ lọc"
+            android:text="@string/try_changing_filters"
             android:textColor="@color/text_tertiary"
             android:textSize="13sp" />
 

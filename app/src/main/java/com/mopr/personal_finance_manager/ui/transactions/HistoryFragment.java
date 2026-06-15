@@ -78,7 +78,7 @@ public class HistoryFragment extends Fragment {
             public void onTransactionClick(Transaction transaction, int position) {
                 // TODO: navigate to edit screen when implemented
                 Toast.makeText(requireContext(),
-                    Category.getDisplayName(transaction.category), Toast.LENGTH_SHORT).show();
+                    Category.getDisplayName(requireContext(), transaction.category), Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -214,7 +214,7 @@ public class HistoryFragment extends Fragment {
             boolean passesSearch = true;
             if (!searchQuery.isEmpty()) {
                 String note = t.note != null ? t.note.toLowerCase() : "";
-                String category = Category.getDisplayName(t.category).toLowerCase();
+                String category = Category.getDisplayName(requireContext(), t.category).toLowerCase();
                 passesSearch = note.contains(searchQuery) || category.contains(searchQuery);
             }
 
@@ -234,9 +234,9 @@ public class HistoryFragment extends Fragment {
     private void updateTransactionCount(int filtered) {
         int total = allTransactions.size();
         if (filtered == total) {
-            binding.tvTransactionCount.setText(total + " giao dịch");
+            binding.tvTransactionCount.setText(getString(R.string.transactions_count, total));
         } else {
-            binding.tvTransactionCount.setText(filtered + " / " + total + " giao dịch");
+            binding.tvTransactionCount.setText(getString(R.string.transactions_filtered_count, filtered, total));
         }
     }
 
@@ -244,13 +244,13 @@ public class HistoryFragment extends Fragment {
 
     private void showDeleteDialog(Transaction transaction) {
         new AlertDialog.Builder(requireContext())
-            .setTitle("Xoá giao dịch")
-            .setMessage("Bạn có chắc muốn xoá giao dịch này không?")
-            .setPositiveButton("Xoá", (dialog, which) -> {
+            .setTitle(R.string.delete_transaction)
+            .setMessage(R.string.delete_confirm_msg)
+            .setPositiveButton(R.string.delete, (dialog, which) -> {
                 viewModel.deleteTransaction(transaction);
-                Toast.makeText(requireContext(), "Đã xoá", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), R.string.deleted, Toast.LENGTH_SHORT).show();
             })
-            .setNegativeButton("Huỷ", null)
+            .setNegativeButton(R.string.cancel, null)
             .show();
     }
 

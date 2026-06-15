@@ -39,6 +39,7 @@
                     android:text="←"
                     android:textColor="#FFFFFF"
                     android:textSize="20sp" />
+                <!-- TODO: Back arrow too small -->
 
                 <TextView
                     android:layout_width="0dp"

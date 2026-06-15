@@ -7,24 +7,37 @@ import java.util.Locale;
 
 public class DateUtils {
 
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-    private static final SimpleDateFormat monthYearFormat = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
-    private static final SimpleDateFormat budgetMonthFormat = new SimpleDateFormat("yyyy-MM", Locale.getDefault());
+    private static SimpleDateFormat getDateFormat() {
+        return new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+    }
+
+    private static SimpleDateFormat getMonthYearFormat() {
+        return new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
+    }
+
+    private static SimpleDateFormat getBudgetMonthFormat() {
+        return new SimpleDateFormat("yyyy-MM", Locale.getDefault());
+    }
 
     public static String formatDate(long timestamp) {
-        return dateFormat.format(new Date(timestamp));
+        return getDateFormat().format(new Date(timestamp));
     }
 
     public static String formatMonthYear(long timestamp) {
-        return monthYearFormat.format(new Date(timestamp));
+        String result = getMonthYearFormat().format(new Date(timestamp));
+        // Capitalize first letter (useful for some locales)
+        if (!result.isEmpty()) {
+            return result.substring(0, 1).toUpperCase() + result.substring(1);
+        }
+        return result;
     }
 
     public static String getBudgetMonth(long timestamp) {
-        return budgetMonthFormat.format(new Date(timestamp));
+        return getBudgetMonthFormat().format(new Date(timestamp));
     }
 
     public static String getCurrentBudgetMonth() {
-        return budgetMonthFormat.format(new Date());
+        return getBudgetMonthFormat().format(new Date());
     }
 
     public static long getStartOfMonth(Calendar calendar) {

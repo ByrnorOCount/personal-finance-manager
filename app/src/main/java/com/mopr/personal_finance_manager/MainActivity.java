@@ -1,5 +1,6 @@
 package com.mopr.personal_finance_manager;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 
@@ -9,11 +10,17 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
 import com.mopr.personal_finance_manager.databinding.ActivityMainBinding;
+import com.mopr.personal_finance_manager.util.LanguageManager;
 import com.mopr.personal_finance_manager.util.ThemeManager;
 
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(LanguageManager.setLocale(newBase));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

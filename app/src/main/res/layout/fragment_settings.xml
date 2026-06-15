@@ -19,7 +19,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Cài đặt"
+            android:text="@string/nav_settings"
             android:textColor="#FFFFFF"
             android:textSize="26sp"
             android:textStyle="bold" />
@@ -48,11 +48,12 @@
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="8dp"
                 android:letterSpacing="0.08"
-                android:text="Giao diện"
+                android:text="@string/settings_interface"
                 android:textAllCaps="true"
                 android:textColor="@color/text_tertiary"
                 android:textSize="12sp" />
 
+            <!-- Dark Mode -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
@@ -74,7 +75,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="14dp"
                     android:layout_weight="1"
-                    android:text="Chế độ tối"
+                    android:text="@string/settings_dark_mode"
                     android:textColor="?attr/colorOnSurface"
                     android:textSize="15sp" />
 
@@ -91,6 +92,50 @@
                 android:layout_marginStart="70dp"
                 android:background="@color/border_subtle" />
 
+            <!-- Language -->
+            <LinearLayout
+                android:id="@+id/btnLanguage"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="?attr/selectableItemBackground"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="24dp"
+                android:paddingEnd="24dp">
+
+                <TextView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:background="@drawable/bg_icon_circle"
+                    android:gravity="center"
+                    android:text="🌐"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="14dp"
+                    android:layout_weight="1"
+                    android:text="@string/settings_language"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/tvCurrentLanguage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tiếng Việt"
+                    android:textColor="@color/text_tertiary"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginStart="70dp"
+                android:background="@color/border_subtle" />
+
             <!-- Section: Data -->
             <TextView
                 android:layout_width="wrap_content"
@@ -98,7 +143,7 @@
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="24dp"
                 android:letterSpacing="0.08"
-                android:text="Dữ liệu"
+                android:text="@string/settings_data"
                 android:textAllCaps="true"
                 android:textColor="@color/text_tertiary"
                 android:textSize="12sp" />
@@ -126,7 +171,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="14dp"
                     android:layout_weight="1"
-                    android:text="Xoá tất cả dữ liệu"
+                    android:text="@string/settings_clear_data"
                     android:textColor="@color/expense_red"
                     android:textSize="15sp" />
 

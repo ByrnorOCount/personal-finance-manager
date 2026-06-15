@@ -96,7 +96,7 @@ public class AddTransactionFragment extends Fragment {
         String[] keys = isExpense ? Category.expenseCategories() : Category.incomeCategories();
         String[] displayNames = new String[keys.length];
         for (int i = 0; i < keys.length; i++) {
-            displayNames[i] = Category.getIcon(keys[i]) + "  " + Category.getDisplayName(keys[i]);
+            displayNames[i] = Category.getIcon(keys[i]) + "  " + Category.getDisplayName(requireContext(), keys[i]);
         }
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
             requireContext(), R.layout.spinner_item, displayNames);
@@ -123,8 +123,8 @@ public class AddTransactionFragment extends Fragment {
     private void saveTransaction() {
         String amountStr = binding.amountInput.getText().toString().trim();
         if (amountStr.isEmpty()) {
-            binding.amountInput.setError("Nhập số tiền");
-            Toast.makeText(requireContext(), "Vui lòng nhập số tiền", Toast.LENGTH_SHORT).show();
+            binding.amountInput.setError(getString(R.string.amount_required));
+            Toast.makeText(requireContext(), R.string.amount_required, Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -132,12 +132,12 @@ public class AddTransactionFragment extends Fragment {
         try {
             amount = Double.parseDouble(amountStr);
         } catch (NumberFormatException e) {
-            Toast.makeText(requireContext(), "Số tiền không hợp lệ", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), R.string.invalid_amount, Toast.LENGTH_SHORT).show();
             return;
         }
 
         if (amount <= 0) {
-            Toast.makeText(requireContext(), "Số tiền phải lớn hơn 0", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), R.string.amount_positive, Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -155,7 +155,7 @@ public class AddTransactionFragment extends Fragment {
         );
 
         viewModel.insertTransaction(transaction);
-        Toast.makeText(requireContext(), "✓ Đã lưu giao dịch", Toast.LENGTH_SHORT).show();
+        Toast.makeText(requireContext(), R.string.transaction_saved, Toast.LENGTH_SHORT).show();
         Navigation.findNavController(requireView()).navigateUp();
     }
 

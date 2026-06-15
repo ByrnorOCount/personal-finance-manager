@@ -1,5 +1,8 @@
 package com.mopr.personal_finance_manager.data.model;
 
+import android.content.Context;
+import com.mopr.personal_finance_manager.R;
+
 // Not a Room entity
 public class Category {
 
@@ -19,23 +22,25 @@ public class Category {
     public static final String GIFT          = "GIFT";
     public static final String OTHER_INCOME  = "OTHER_INCOME";
 
-    // Vietnamese display names
-    public static String getDisplayName(String key) {
+    // Display names from resources
+    public static String getDisplayName(Context context, String key) {
+        int resId;
         switch (key) {
-            case FOOD:          return "Ăn uống";
-            case TRANSPORT:     return "Di chuyển";
-            case BILLS:         return "Hóa đơn";
-            case SHOPPING:      return "Mua sắm";
-            case HEALTH:        return "Sức khỏe";
-            case ENTERTAINMENT: return "Giải trí";
-            case OTHER:         return "Khác";
-            case SALARY:        return "Lương";
-            case FREELANCE:     return "Freelance";
-            case INVESTMENT:    return "Đầu tư";
-            case GIFT:          return "Quà tặng";
-            case OTHER_INCOME:  return "Thu nhập khác";
+            case FOOD:          resId = R.string.cat_food; break;
+            case TRANSPORT:     resId = R.string.cat_transport; break;
+            case BILLS:         resId = R.string.cat_bills; break;
+            case SHOPPING:      resId = R.string.cat_shopping; break;
+            case HEALTH:        resId = R.string.cat_health; break;
+            case ENTERTAINMENT: resId = R.string.cat_entertainment; break;
+            case OTHER:         resId = R.string.cat_other; break;
+            case SALARY:        resId = R.string.cat_salary; break;
+            case FREELANCE:     resId = R.string.cat_freelance; break;
+            case INVESTMENT:    resId = R.string.cat_investment; break;
+            case GIFT:          resId = R.string.cat_gift; break;
+            case OTHER_INCOME:  resId = R.string.cat_other_income; break;
             default:            return key;
         }
+        return context.getString(resId);
     }
 
     // Emoji icon per category for list rows

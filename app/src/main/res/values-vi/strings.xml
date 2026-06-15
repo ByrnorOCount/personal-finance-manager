@@ -1,0 +1,74 @@
+<resources>
+    <string name="app_name">Quản lý Tài chính</string>
+    <string name="nav_home">Trang chủ</string>
+    <string name="nav_history">Lịch sử</string>
+    <string name="nav_budget">Ngân sách</string>
+    <string name="nav_settings">Cài đặt</string>
+    <string name="add_transaction">Thêm giao dịch</string>
+    <string name="total_balance">Số dư</string>
+    <string name="income">Thu nhập</string>
+    <string name="expense">Chi tiêu</string>
+    <string name="recent_transactions">Gần đây</string>
+    <string name="view_all">Xem tất cả</string>
+    <string name="view_all_arrow">Xem tất cả →</string>
+    <string name="search_hint">Tìm kiếm giao dịch…</string>
+    <string name="filter_all">Tất cả</string>
+    <string name="filter_income">Thu nhập</string>
+    <string name="filter_expense">Chi tiêu</string>
+    <string name="no_transactions">Chưa có giao dịch nào</string>
+    <string name="add_first_transaction">Nhấn + để thêm giao dịch đầu tiên</string>
+    <string name="delete_confirm">Xoá giao dịch này?</string>
+    <string name="delete">Xoá</string>
+    <string name="cancel">Huỷ</string>
+    <string name="save">Lưu giao dịch</string>
+    <string name="note_hint">Ghi chú (tuỳ chọn)…</string>
+    <string name="amount_hint">0</string>
+    <string name="content_desc_add">Thêm giao dịch</string>
+    <string name="content_desc_back">Quay lại</string>
+    <string name="current_balance">Số dư hiện tại</string>
+    <string name="amount_required">Vui lòng nhập số tiền</string>
+    <string name="invalid_amount">Số tiền không hợp lệ</string>
+    <string name="amount_positive">Số tiền phải lớn hơn 0</string>
+    <string name="transaction_saved">✓ Đã lưu giao dịch</string>
+    <string name="delete_transaction">Xoá giao dịch</string>
+    <string name="delete_confirm_msg">Bạn có chắc muốn xoá giao dịch này không?</string>
+    <string name="deleted">Đã xoá</string>
+    <string name="transactions_count">%d giao dịch</string>
+    <string name="transactions_filtered_count">%d / %d giao dịch</string>
+    <string name="no_results">Không tìm thấy giao dịch</string>
+    <string name="try_changing_filters">Thử thay đổi bộ lọc</string>
+    <string name="chip_income">↑ Thu nhập</string>
+    <string name="chip_expense">↓ Chi tiêu</string>
+    <string name="chip_food">🍔 Ăn uống</string>
+    <string name="chip_transport">🚗 Di chuyển</string>
+    <string name="chip_shopping">🛍️ Mua sắm</string>
+    <string name="chip_bills">💡 Hóa đơn</string>
+    <string name="chip_health">💊 Sức khỏe</string>
+    <string name="category_label">Danh mục</string>
+    <string name="date_label">Ngày</string>
+    <string name="note_label">Ghi chú</string>
+
+    <!-- Categories -->
+    <string name="cat_food">Ăn uống</string>
+    <string name="cat_transport">Di chuyển</string>
+    <string name="cat_bills">Hóa đơn</string>
+    <string name="cat_shopping">Mua sắm</string>
+    <string name="cat_health">Sức khỏe</string>
+    <string name="cat_entertainment">Giải trí</string>
+    <string name="cat_other">Khác</string>
+    <string name="cat_salary">Lương</string>
+    <string name="cat_freelance">Freelance</string>
+    <string name="cat_investment">Đầu tư</string>
+    <string name="cat_gift">Quà tặng</string>
+    <string name="cat_other_income">Thu nhập khác</string>
+
+    <!-- Settings -->
+    <string name="settings_interface">Giao diện</string>
+    <string name="settings_dark_mode">Chế độ tối</string>
+    <string name="settings_language">Ngôn ngữ</string>
+    <string name="settings_vietnamese">Tiếng Việt</string>
+    <string name="settings_english">Tiếng Anh</string>
+    <string name="settings_select_language">Chọn ngôn ngữ</string>
+    <string name="settings_data">Dữ liệu</string>
+    <string name="settings_clear_data">Xoá tất cả dữ liệu</string>
+</resources>

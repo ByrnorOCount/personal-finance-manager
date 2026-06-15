@@ -60,22 +60,16 @@ public class Category {
         }
     }
 
-    // Color resource for each category (used in charts and badges)
-    // Returns a hex color string
-    public static String getColor(String key) {
+    // Color resource for each category
+    public static int getColorRes(String key) {
         switch (key) {
-            case FOOD:          return "#FF6B6B";
-            case TRANSPORT:     return "#4ECDC4";
-            case BILLS:         return "#FFE66D";
-            case SHOPPING:      return "#A78BFA";
-            case HEALTH:        return "#6BCB77";
-            case ENTERTAINMENT: return "#F4A261";
-            case OTHER:         return "#AAAAAA";
-            case SALARY:        return "#2D6A4F";
-            case FREELANCE:     return "#52B788";
-            case INVESTMENT:    return "#1B4332";
-            case GIFT:          return "#D4A373";
-            default:            return "#888888";
+            case FOOD:          return R.color.cat_food;
+            case TRANSPORT:     return R.color.cat_transport;
+            case BILLS:         return R.color.cat_bills;
+            case SHOPPING:      return R.color.cat_shopping;
+            case HEALTH:        return R.color.cat_health;
+            case ENTERTAINMENT: return R.color.cat_entertainment;
+            default:            return R.color.cat_other;
         }
     }
 

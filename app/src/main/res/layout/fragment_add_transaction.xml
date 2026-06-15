@@ -99,7 +99,7 @@
                 android:hint="@string/amount_hint"
                 android:inputType="numberDecimal"
                 android:textColor="#FFFFFF"
-                android:textColorHint="#55FFFFFF"
+                android:textColorHint="#CCFFFFFF"
                 android:textSize="44sp"
                 android:textStyle="bold" />
 
@@ -107,7 +107,7 @@
                 android:layout_width="100dp"
                 android:layout_height="2dp"
                 android:layout_marginTop="6dp"
-                android:background="#44FFFFFF" />
+                android:background="@color/text_on_brand_secondary" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -115,7 +115,7 @@
                 android:layout_marginTop="6dp"
                 android:letterSpacing="0.1"
                 android:text="VND"
-                android:textColor="#66FFFFFF"
+                android:textColor="@color/text_on_brand_secondary"
                 android:textSize="12sp" />
 
         </LinearLayout>

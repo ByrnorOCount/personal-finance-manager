@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Brand -->
+    <color name="brand_primary">#A59EF6</color>
+    <color name="brand_primary_dark">#7C72F0</color>
+    <color name="brand_primary_light">#C7C2FA</color>
+    <color name="brand_gradient_end">#C084FC</color>
+
+    <!-- Semantic (Dark mode adjusted for contrast) -->
+    <color name="income_green">#34D399</color>
+    <color name="income_green_bg">#064E3B</color>
+    <color name="expense_red">#F87171</color>
+    <color name="expense_red_bg">#7F1D1D</color>
+    <color name="warning_amber">#FBBF24</color>
+    <color name="warning_amber_bg">#78350F</color>
+
+    <!-- Surfaces (Dark) -->
+    <color name="background">#000000</color>
+    <color name="surface">#121212</color>
+    <color name="surface_variant">#1E1E1E</color>
+    <color name="surface_elevated">#1E1E1E</color>
+
+    <!-- Text (Dark) -->
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#E2E8F0</color>
+    <color name="text_tertiary">#CBD5E1</color>
+    <color name="text_on_brand">#FFFFFF</color>
+    <color name="text_on_brand_secondary">#FFFFFF</color>
+    <color name="on_brand_primary">#FFFFFF</color>
+
+    <!-- Borders -->
+    <color name="border_subtle">#334155</color>
+    <color name="border_default">#475569</color>
+
+    <!-- Settings icons -->
+    <color name="settings_dark_mode">#60A5FA</color>
+    <color name="settings_language">#34D399</color>
+    <color name="settings_delete">#F87171</color>
+</resources>

@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.mopr.personal_finance_manager.R;
 import com.mopr.personal_finance_manager.data.local.Transaction;
 import com.mopr.personal_finance_manager.data.model.Category;
 import com.mopr.personal_finance_manager.databinding.ItemTransactionBinding;
@@ -79,6 +80,11 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         holder.binding.tvCategory.setText(Category.getDisplayName(holder.itemView.getContext(), t.category));
         holder.binding.ivIcon.setImageResource(Category.getIconRes(t.category));
 
+        // Category icon with colored filling
+        int catColor = holder.itemView.getContext().getColor(Category.getColorRes(t.category));
+        holder.binding.ivIcon.setBackgroundTintList(android.content.res.ColorStateList.valueOf(catColor));
+        holder.binding.ivIcon.setImageTintList(android.content.res.ColorStateList.valueOf(0xFFFFFFFF));
+
         String note = (t.note != null && !t.note.isEmpty()) ? t.note : Category.getDisplayName(holder.itemView.getContext(), t.category);
         holder.binding.tvNote.setText(note);
         holder.binding.tvDate.setText(DateUtils.formatDate(t.date));
@@ -86,10 +92,10 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         // Amount with sign and colour
         if (t.isExpense()) {
             holder.binding.tvAmount.setText("- " + CurrencyFormatter.formatVND(t.amount));
-            holder.binding.tvAmount.setTextColor(0xFFEF4444);
+            holder.binding.tvAmount.setTextColor(holder.itemView.getContext().getColor(R.color.expense_red));
         } else {
             holder.binding.tvAmount.setText("+ " + CurrencyFormatter.formatVND(t.amount));
-            holder.binding.tvAmount.setTextColor(0xFF10B981);
+            holder.binding.tvAmount.setTextColor(holder.itemView.getContext().getColor(R.color.income_green));
         }
 
         // Click listeners

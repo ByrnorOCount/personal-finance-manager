@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?android:attr/colorBackground"
@@ -50,24 +51,27 @@
                 android:letterSpacing="0.08"
                 android:text="@string/settings_interface"
                 android:textAllCaps="true"
-                android:textColor="@color/text_tertiary"
-                android:textSize="12sp" />
+                android:textColor="@color/text_secondary"
+                android:textSize="14sp"
+                android:textStyle="bold" />
 
             <!-- Dark Mode -->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
+                android:layout_height="64dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:paddingStart="24dp"
                 android:paddingEnd="24dp">
 
                 <ImageView
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:background="@drawable/bg_icon_circle"
-                    android:padding="6dp"
+                    android:backgroundTint="@color/settings_dark_mode"
+                    android:padding="8dp"
                     android:src="@drawable/ic_dark_mode"
+                    app:tint="#FFFFFF"
                     android:contentDescription="@null" />
 
                 <TextView
@@ -76,8 +80,8 @@
                     android:layout_marginStart="14dp"
                     android:layout_weight="1"
                     android:text="@string/settings_dark_mode"
-                    android:textColor="?attr/colorOnSurface"
-                    android:textSize="15sp" />
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp" />
 
                 <com.google.android.material.switchmaterial.SwitchMaterial
                     android:id="@+id/darkModeSwitch"
@@ -96,7 +100,7 @@
             <LinearLayout
                 android:id="@+id/btnLanguage"
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
+                android:layout_height="64dp"
                 android:background="?attr/selectableItemBackground"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
@@ -104,11 +108,13 @@
                 android:paddingEnd="24dp">
 
                 <ImageView
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:background="@drawable/bg_icon_circle"
-                    android:padding="6dp"
+                    android:backgroundTint="@color/settings_language"
+                    android:padding="8dp"
                     android:src="@drawable/ic_language"
+                    app:tint="#FFFFFF"
                     android:contentDescription="@null" />
 
                 <TextView
@@ -117,16 +123,16 @@
                     android:layout_marginStart="14dp"
                     android:layout_weight="1"
                     android:text="@string/settings_language"
-                    android:textColor="?attr/colorOnSurface"
-                    android:textSize="15sp" />
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/tvCurrentLanguage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/settings_vietnamese"
-                    android:textColor="@color/text_tertiary"
-                    android:textSize="14sp" />
+                    android:textColor="@color/text_secondary"
+                    android:textSize="15sp" />
 
             </LinearLayout>
 
@@ -145,13 +151,14 @@
                 android:letterSpacing="0.08"
                 android:text="@string/settings_data"
                 android:textAllCaps="true"
-                android:textColor="@color/text_tertiary"
-                android:textSize="12sp" />
+                android:textColor="@color/text_secondary"
+                android:textSize="14sp"
+                android:textStyle="bold" />
 
             <LinearLayout
                 android:id="@+id/btnDeleteAll"
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
+                android:layout_height="64dp"
                 android:background="?attr/selectableItemBackground"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
@@ -159,11 +166,13 @@
                 android:paddingEnd="24dp">
 
                 <ImageView
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:background="@drawable/bg_icon_circle"
-                    android:padding="6dp"
+                    android:backgroundTint="@color/settings_delete"
+                    android:padding="8dp"
                     android:src="@drawable/ic_delete"
+                    app:tint="#FFFFFF"
                     android:contentDescription="@null" />
 
                 <TextView
@@ -173,7 +182,7 @@
                     android:layout_weight="1"
                     android:text="@string/settings_clear_data"
                     android:textColor="@color/expense_red"
-                    android:textSize="15sp" />
+                    android:textSize="16sp" />
 
                 <ImageView
                     android:layout_width="20dp"
@@ -196,8 +205,8 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="40dp"
                 android:text="@string/app_version_label"
-                android:textColor="@color/text_tertiary"
-                android:textSize="12sp" />
+                android:textColor="@color/text_secondary"
+                android:textSize="14sp" />
 
         </LinearLayout>
 

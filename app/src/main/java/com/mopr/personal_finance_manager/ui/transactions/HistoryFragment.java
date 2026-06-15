@@ -180,7 +180,7 @@ public class HistoryFragment extends Fragment {
     private void setChipSelected(TextView chip, boolean selected) {
         if (selected) {
             chip.setBackgroundResource(R.drawable.bg_chip_selected);
-            chip.setTextColor(0xFFFFFFFF);
+            chip.setTextColor(requireContext().getColor(R.color.on_brand_primary));
         } else {
             chip.setBackgroundResource(R.drawable.bg_chip_unselected);
             chip.setTextColor(requireContext().getColor(R.color.text_secondary));

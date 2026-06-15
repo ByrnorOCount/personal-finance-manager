@@ -83,12 +83,12 @@ public class AddTransactionFragment extends Fragment {
             binding.toggleExpense.setBackgroundResource(R.drawable.bg_toggle_selected);
             binding.toggleExpense.setTextColor(requireContext().getColor(R.color.brand_primary));
             binding.toggleIncome.setBackground(null);
-            binding.toggleIncome.setTextColor(0xAAFFFFFF);
+            binding.toggleIncome.setTextColor(requireContext().getColor(R.color.text_on_brand_secondary));
         } else {
             binding.toggleIncome.setBackgroundResource(R.drawable.bg_toggle_selected);
             binding.toggleIncome.setTextColor(requireContext().getColor(R.color.brand_primary));
             binding.toggleExpense.setBackground(null);
-            binding.toggleExpense.setTextColor(0xAAFFFFFF);
+            binding.toggleExpense.setTextColor(requireContext().getColor(R.color.text_on_brand_secondary));
         }
     }
 

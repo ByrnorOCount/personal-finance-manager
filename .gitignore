@@ -1,26 +1,42 @@
-# Gradle files
+# Gradle
 .gradle/
 build/
+app/build/
+*.main.kts
 
-# IntelliJ IDEA files
+# IntelliJ / Android Studio
 .idea/
 *.iml
 *.iws
 *.ipr
 out/
+# Exclude specific sensitive/local IDEA files even if .idea is kept
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/navEditor.xml
+.idea/assetWizardSettings.xml
+.idea/modules.xml
+.idea/caches/
 
-# Android Studio files
+# Device/Build outputs
 captures/
 .externalNativeBuild/
 .cxx/
 local.properties
+*.apk
+*.ap_
+*.aab
 
-# Log files
+# Keystores (CRITICAL: Never leak your signing keys)
+*.jks
+*.keystore
+*.p12
+
+# Logs & OS
 *.log
-
-# Mac and OS files
 .DS_Store
+Thumbs.db
 
-# Secrets
+# Secrets & Config
 secrets.properties
 google-services.json

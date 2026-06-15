@@ -13,9 +13,9 @@
         android:background="@drawable/bg_header_gradient"
         android:orientation="vertical"
         android:paddingStart="24dp"
-        android:paddingTop="52dp"
+        android:paddingTop="30dp"
         android:paddingEnd="24dp"
-        android:paddingBottom="24dp">
+        android:paddingBottom="50dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/bg_sheet_top_rounded"
             android:orientation="vertical"
-            android:paddingTop="32dp"
+            android:paddingTop="16dp"
             android:paddingBottom="48dp">
 
             <!-- Section: Interface -->
@@ -46,7 +46,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="12dp"
                 android:layout_marginBottom="8dp"
                 android:letterSpacing="0.08"
                 android:text="@string/settings_interface"

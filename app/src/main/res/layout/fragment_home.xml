@@ -22,11 +22,11 @@
                 android:background="@drawable/bg_header_gradient"
                 android:orientation="vertical"
                 android:paddingStart="24dp"
-                android:paddingTop="52dp"
+                android:paddingTop="10dp"
                 android:paddingEnd="24dp"
-                android:paddingBottom="48dp">
+                android:paddingBottom="40dp">
 
-                <!-- Top row: greeting + avatar placeholder -->
+                <!-- Top row: greeting + balance + icon -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -55,6 +55,17 @@
                             android:textColor="#FFFFFF"
                             android:textSize="15sp" />
 
+                        <TextView
+                            android:id="@+id/totalBalance"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:letterSpacing="-0.02"
+                            android:text="0 ₫"
+                            android:textColor="#FFFFFF"
+                            android:textSize="42sp"
+                            android:textStyle="bold" />
+
                     </LinearLayout>
 
                     <!-- Notification / settings shortcut -->
@@ -67,18 +78,6 @@
                         android:contentDescription="@null" />
 
                 </LinearLayout>
-
-                <!-- Balance -->
-                <TextView
-                    android:id="@+id/totalBalance"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:letterSpacing="-0.02"
-                    android:text="0 ₫"
-                    android:textColor="#FFFFFF"
-                    android:textSize="42sp"
-                    android:textStyle="bold" />
 
                 <!-- Income / Expense summary row -->
                 <LinearLayout
@@ -193,7 +192,7 @@
                 android:layout_marginTop="-24dp"
                 android:background="@drawable/bg_sheet_top_rounded"
                 android:orientation="vertical"
-                android:paddingTop="32dp"
+                android:paddingTop="20dp"
                 android:paddingBottom="120dp">
 
                 <!-- Recent transactions header -->
@@ -203,7 +202,7 @@
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
                     android:paddingStart="24dp"
-                    android:paddingTop="28dp"
+                    android:paddingTop="16dp"
                     android:paddingEnd="24dp"
                     android:paddingBottom="4dp">
 

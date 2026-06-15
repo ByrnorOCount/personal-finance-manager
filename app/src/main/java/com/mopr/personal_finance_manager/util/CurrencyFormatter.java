@@ -57,6 +57,17 @@ public class CurrencyFormatter {
     }
 
     /**
+     * Formats a double value as a currency string in Vietnamese Dong (VND).
+     *
+     * @param amount The amount to format.
+     * @return A formatted VND string (e.g., "1.234.567 ₫").
+     */
+    public static String formatVND(double amount) {
+        NumberFormat format = NumberFormat.getCurrencyInstance(new java.util.Locale("vi", "VN"));
+        return format.format(amount);
+    }
+
+    /**
      * Parses a currency string into a double.
      * @param amountString The string to parse.
      * @return The parsed double value.

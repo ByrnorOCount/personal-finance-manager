@@ -1,4 +1,4 @@
-package com.mopr.personal_finance_manager.ui.adapter;
+package com.mopr.personal_finance_manager.ui.common;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -7,8 +7,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.mopr.personal_finance_manager.data.local.entity.Category;
-import com.mopr.personal_finance_manager.data.local.entity.Transaction;
+import com.mopr.personal_finance_manager.data.local.Transaction;
+import com.mopr.personal_finance_manager.data.model.Category;
 import com.mopr.personal_finance_manager.databinding.ItemTransactionBinding;
 import com.mopr.personal_finance_manager.util.CurrencyFormatter;
 import com.mopr.personal_finance_manager.util.DateUtils;

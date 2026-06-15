@@ -1,4 +1,4 @@
-package com.mopr.personal_finance_manager.ui.viewmodel;
+package com.mopr.personal_finance_manager.ui.common;
 
 import android.app.Application;
 
@@ -6,9 +6,9 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import com.mopr.personal_finance_manager.data.local.entity.Budget;
-import com.mopr.personal_finance_manager.data.local.entity.SavingsGoal;
-import com.mopr.personal_finance_manager.data.local.entity.Transaction;
+import com.mopr.personal_finance_manager.data.local.Budget;
+import com.mopr.personal_finance_manager.data.local.SavingsGoal;
+import com.mopr.personal_finance_manager.data.local.Transaction;
 import com.mopr.personal_finance_manager.data.repository.FinanceRepository;
 
 import java.util.List;

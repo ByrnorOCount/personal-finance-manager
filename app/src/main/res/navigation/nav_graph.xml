@@ -7,28 +7,28 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.mopr.personal_finance_manager.ui.fragments.HomeFragment"
+        android:name="com.mopr.personal_finance_manager.ui.home.HomeFragment"
         android:label="Home"
         tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/navigation_transactions"
-        android:name="com.mopr.personal_finance_manager.ui.fragments.HistoryFragment"
+        android:name="com.mopr.personal_finance_manager.ui.transactions.HistoryFragment"
         android:label="History" />
 
     <fragment
         android:id="@+id/navigation_budget"
-        android:name="com.mopr.personal_finance_manager.ui.fragments.BudgetFragment"
+        android:name="com.mopr.personal_finance_manager.ui.budget.BudgetFragment"
         android:label="Budget" />
 
     <fragment
         android:id="@+id/navigation_settings"
-        android:name="com.mopr.personal_finance_manager.ui.fragments.SettingsFragment"
+        android:name="com.mopr.personal_finance_manager.ui.settings.SettingsFragment"
         android:label="Settings" />
 
     <fragment
         android:id="@+id/navigation_add_transaction"
-        android:name="com.mopr.personal_finance_manager.ui.fragments.AddTransactionFragment"
+        android:name="com.mopr.personal_finance_manager.ui.transactions.AddTransactionFragment"
         android:label="Add Transaction"
         tools:layout="@layout/fragment_add_transaction" />
 </navigation>

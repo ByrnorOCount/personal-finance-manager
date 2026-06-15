@@ -1,4 +1,4 @@
-package com.mopr.personal_finance_manager.ui.fragments;
+package com.mopr.personal_finance_manager.ui.home;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,8 +14,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.mopr.personal_finance_manager.R;
 import com.mopr.personal_finance_manager.databinding.FragmentHomeBinding;
-import com.mopr.personal_finance_manager.ui.adapter.TransactionAdapter;
-import com.mopr.personal_finance_manager.ui.viewmodel.FinanceViewModel;
+import com.mopr.personal_finance_manager.ui.common.FinanceViewModel;
+import com.mopr.personal_finance_manager.ui.common.TransactionAdapter;
 import com.mopr.personal_finance_manager.util.CurrencyFormatter;
 import com.mopr.personal_finance_manager.util.DateUtils;
 

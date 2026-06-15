@@ -5,12 +5,12 @@ import android.app.Application;
 import androidx.lifecycle.LiveData;
 
 import com.mopr.personal_finance_manager.data.local.AppDatabase;
-import com.mopr.personal_finance_manager.data.local.dao.BudgetDao;
-import com.mopr.personal_finance_manager.data.local.dao.SavingsGoalDao;
-import com.mopr.personal_finance_manager.data.local.dao.TransactionDao;
-import com.mopr.personal_finance_manager.data.local.entity.Budget;
-import com.mopr.personal_finance_manager.data.local.entity.SavingsGoal;
-import com.mopr.personal_finance_manager.data.local.entity.Transaction;
+import com.mopr.personal_finance_manager.data.local.Budget;
+import com.mopr.personal_finance_manager.data.local.BudgetDao;
+import com.mopr.personal_finance_manager.data.local.SavingsGoal;
+import com.mopr.personal_finance_manager.data.local.SavingsGoalDao;
+import com.mopr.personal_finance_manager.data.local.Transaction;
+import com.mopr.personal_finance_manager.data.local.TransactionDao;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;

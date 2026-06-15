@@ -6,13 +6,6 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-import com.mopr.personal_finance_manager.data.local.dao.BudgetDao;
-import com.mopr.personal_finance_manager.data.local.dao.SavingsGoalDao;
-import com.mopr.personal_finance_manager.data.local.dao.TransactionDao;
-import com.mopr.personal_finance_manager.data.local.entity.Budget;
-import com.mopr.personal_finance_manager.data.local.entity.SavingsGoal;
-import com.mopr.personal_finance_manager.data.local.entity.Transaction;
-
 @Database(
     entities = {Transaction.class, Budget.class, SavingsGoal.class},
     version = 1,

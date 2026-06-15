@@ -1,4 +1,4 @@
-package com.mopr.personal_finance_manager.data.local.entity;
+package com.mopr.personal_finance_manager.data.local;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;

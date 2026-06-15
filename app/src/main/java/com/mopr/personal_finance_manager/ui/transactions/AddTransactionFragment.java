@@ -1,4 +1,4 @@
-package com.mopr.personal_finance_manager.ui.fragments;
+package com.mopr.personal_finance_manager.ui.transactions;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
@@ -15,10 +15,10 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
 import com.mopr.personal_finance_manager.R;
-import com.mopr.personal_finance_manager.data.local.entity.Category;
-import com.mopr.personal_finance_manager.data.local.entity.Transaction;
+import com.mopr.personal_finance_manager.data.local.Transaction;
+import com.mopr.personal_finance_manager.data.model.Category;
 import com.mopr.personal_finance_manager.databinding.FragmentAddTransactionBinding;
-import com.mopr.personal_finance_manager.ui.viewmodel.FinanceViewModel;
+import com.mopr.personal_finance_manager.ui.common.FinanceViewModel;
 import com.mopr.personal_finance_manager.util.DateUtils;
 
 import java.util.Calendar;

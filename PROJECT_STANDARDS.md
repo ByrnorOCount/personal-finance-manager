@@ -31,14 +31,14 @@ and UI within their assigned features.
 ### Shared Infrastructure (Do Together First)
 
 - [X] Initialize Git & `.gitignore`.
-- [ ] Define the `Transaction` entity and Database schema.
-- [ ] Set up the basic Material 3 Theme and Main Navigation Graph.
+- [X] Define the `Transaction` entity and Database schema.
+- [/] Set up the basic Material 3 Theme and Main Navigation Graph.
 
 ### Person A: Core Operations & Flow
 
-- [ ] **Transactions (Add/History):** RecyclerView, search/filter, and the entry system.
-- [ ] **Home Screen:** Summary cards and the "5 most recent" preview.
-- [ ] **App Infrastructure:** Splash screen animation and Settings (Currency, PIN lock).
+- [/] **Transactions (Add/History):** RecyclerView, search/filter, and the entry system.
+- [/] **Home Screen:** Summary cards and the "5 most recent" preview.
+- [/] **App Infrastructure:** Splash screen animation and Settings (Currency, PIN lock).
 
 ### Person B: Analysis & Planning
 

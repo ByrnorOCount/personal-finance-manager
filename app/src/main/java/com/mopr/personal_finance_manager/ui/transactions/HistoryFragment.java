@@ -1,4 +1,4 @@
-package com.mopr.personal_finance_manager.ui.fragments;
+package com.mopr.personal_finance_manager.ui.transactions;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
@@ -17,11 +17,11 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.mopr.personal_finance_manager.R;
-import com.mopr.personal_finance_manager.data.local.entity.Category;
-import com.mopr.personal_finance_manager.data.local.entity.Transaction;
+import com.mopr.personal_finance_manager.data.local.Transaction;
+import com.mopr.personal_finance_manager.data.model.Category;
 import com.mopr.personal_finance_manager.databinding.FragmentHistoryBinding;
-import com.mopr.personal_finance_manager.ui.adapter.TransactionAdapter;
-import com.mopr.personal_finance_manager.ui.viewmodel.FinanceViewModel;
+import com.mopr.personal_finance_manager.ui.common.FinanceViewModel;
+import com.mopr.personal_finance_manager.ui.common.TransactionAdapter;
 
 import java.util.ArrayList;
 import java.util.List;

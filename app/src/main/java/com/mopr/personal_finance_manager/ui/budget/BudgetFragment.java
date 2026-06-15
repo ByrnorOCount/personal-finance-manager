@@ -1,4 +1,4 @@
-package com.mopr.personal_finance_manager.ui.fragments;
+package com.mopr.personal_finance_manager.ui.budget;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

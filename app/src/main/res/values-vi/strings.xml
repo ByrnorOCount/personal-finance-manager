@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Quản lý Tài chính</string>
+    <string name="app_slogan">Quản lý tài chính thông minh</string>
     <string name="nav_home">Trang chủ</string>
     <string name="nav_history">Lịch sử</string>
     <string name="nav_budget">Ngân sách</string>
@@ -48,6 +49,8 @@
     <string name="category_label">Danh mục</string>
     <string name="date_label">Ngày</string>
     <string name="note_label">Ghi chú</string>
+    <string name="currency_vnd">VND</string>
+    <string name="app_version_label">Quản lý tài chính cá nhân v1.1</string>
 
     <!-- Categories -->
     <string name="cat_food">Ăn uống</string>

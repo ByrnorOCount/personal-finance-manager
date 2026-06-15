@@ -10,13 +10,13 @@
     android:paddingBottom="10dp">
 
     <!-- Category icon circle -->
-    <TextView
-        android:id="@+id/tvIcon"
+    <ImageView
+        android:id="@+id/ivIcon"
         android:layout_width="46dp"
         android:layout_height="46dp"
         android:background="@drawable/bg_icon_circle"
-        android:gravity="center"
-        android:textSize="22sp"
+        android:padding="10dp"
+        android:contentDescription="@null"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -31,7 +31,7 @@
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/amountGroup"
-        app:layout_constraintStart_toEndOf="@id/tvIcon"
+        app:layout_constraintStart_toEndOf="@id/ivIcon"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView

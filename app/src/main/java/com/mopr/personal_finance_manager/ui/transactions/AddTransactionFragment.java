@@ -96,7 +96,7 @@ public class AddTransactionFragment extends Fragment {
         String[] keys = isExpense ? Category.expenseCategories() : Category.incomeCategories();
         String[] displayNames = new String[keys.length];
         for (int i = 0; i < keys.length; i++) {
-            displayNames[i] = Category.getIcon(keys[i]) + "  " + Category.getDisplayName(requireContext(), keys[i]);
+            displayNames[i] = Category.getDisplayName(requireContext(), keys[i]);
         }
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
             requireContext(), R.layout.spinner_item, displayNames);

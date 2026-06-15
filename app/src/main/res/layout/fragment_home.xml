@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?android:attr/colorBackground">
@@ -14,7 +15,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- HEADER GRADIENT -->
+            <!-- ── HEADER GRADIENT ─────────────────────────────────────── -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -57,13 +58,13 @@
                     </LinearLayout>
 
                     <!-- Notification / settings shortcut -->
-                    <TextView
+                    <ImageView
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:background="@drawable/bg_icon_circle_white"
-                        android:gravity="center"
-                        android:text="🔔"
-                        android:textSize="18sp" />
+                        android:padding="10dp"
+                        android:src="@drawable/ic_notifications"
+                        android:contentDescription="@null" />
 
                 </LinearLayout>
 
@@ -102,15 +103,13 @@
                             android:gravity="center_vertical"
                             android:orientation="horizontal">
 
-                            <TextView
+                            <ImageView
                                 android:layout_width="28dp"
                                 android:layout_height="28dp"
                                 android:background="@drawable/bg_icon_circle_white"
-                                android:gravity="center"
-                                android:text="↑"
-                                android:textColor="#10B981"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
+                                android:padding="6dp"
+                                android:src="@drawable/ic_arrow_upward"
+                                android:contentDescription="@null" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -149,15 +148,13 @@
                             android:gravity="center_vertical"
                             android:orientation="horizontal">
 
-                            <TextView
+                            <ImageView
                                 android:layout_width="28dp"
                                 android:layout_height="28dp"
                                 android:background="@drawable/bg_icon_circle_white"
-                                android:gravity="center"
-                                android:text="↓"
-                                android:textColor="#EF4444"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
+                                android:padding="6dp"
+                                android:src="@drawable/ic_arrow_downward"
+                                android:contentDescription="@null" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -243,11 +240,13 @@
                     android:orientation="vertical"
                     android:visibility="gone">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="💸"
-                        android:textSize="48sp" />
+                    <ImageView
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:src="@drawable/ic_budget"
+                        android:alpha="0.3"
+                        app:tint="@color/text_tertiary"
+                        android:contentDescription="@null" />
 
                     <TextView
                         android:layout_width="wrap_content"

@@ -43,20 +43,20 @@ public class Category {
         return context.getString(resId);
     }
 
-    // Emoji icon per category for list rows
-    public static String getIcon(String key) {
+    // Vector icon resource ID per category
+    public static int getIconRes(String key) {
         switch (key) {
-            case FOOD:          return "🍔";
-            case TRANSPORT:     return "🚗";
-            case BILLS:         return "💡";
-            case SHOPPING:      return "🛍️";
-            case HEALTH:        return "💊";
-            case ENTERTAINMENT: return "🎬";
-            case SALARY:        return "💼";
-            case FREELANCE:     return "💻";
-            case INVESTMENT:    return "📈";
-            case GIFT:          return "🎁";
-            default:            return "💰";
+            case FOOD:          return R.drawable.ic_cat_food;
+            case TRANSPORT:     return R.drawable.ic_cat_transport;
+            case BILLS:         return R.drawable.ic_cat_bills;
+            case SHOPPING:      return R.drawable.ic_cat_shopping;
+            case HEALTH:        return R.drawable.ic_cat_health;
+            case ENTERTAINMENT: return R.drawable.ic_cat_entertainment;
+            case SALARY:        return R.drawable.ic_cat_salary;
+            case FREELANCE:     return R.drawable.ic_cat_freelance;
+            case INVESTMENT:    return R.drawable.ic_cat_investment;
+            case GIFT:          return R.drawable.ic_cat_gift;
+            default:            return R.drawable.ic_cat_other;
         }
     }
 

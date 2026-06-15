@@ -62,13 +62,13 @@
                 android:paddingStart="24dp"
                 android:paddingEnd="24dp">
 
-                <TextView
+                <ImageView
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:background="@drawable/bg_icon_circle"
-                    android:gravity="center"
-                    android:text="🌙"
-                    android:textSize="16sp" />
+                    android:padding="6dp"
+                    android:src="@drawable/ic_dark_mode"
+                    android:contentDescription="@null" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -103,13 +103,13 @@
                 android:paddingStart="24dp"
                 android:paddingEnd="24dp">
 
-                <TextView
+                <ImageView
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:background="@drawable/bg_icon_circle"
-                    android:gravity="center"
-                    android:text="🌐"
-                    android:textSize="16sp" />
+                    android:padding="6dp"
+                    android:src="@drawable/ic_language"
+                    android:contentDescription="@null" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -124,7 +124,7 @@
                     android:id="@+id/tvCurrentLanguage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Tiếng Việt"
+                    android:text="@string/settings_vietnamese"
                     android:textColor="@color/text_tertiary"
                     android:textSize="14sp" />
 
@@ -158,13 +158,13 @@
                 android:paddingStart="24dp"
                 android:paddingEnd="24dp">
 
-                <TextView
+                <ImageView
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:background="@drawable/bg_icon_circle"
-                    android:gravity="center"
-                    android:text="🗑️"
-                    android:textSize="16sp" />
+                    android:padding="6dp"
+                    android:src="@drawable/ic_delete"
+                    android:contentDescription="@null" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -175,12 +175,11 @@
                     android:textColor="@color/expense_red"
                     android:textSize="15sp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="›"
-                    android:textColor="@color/text_tertiary"
-                    android:textSize="20sp" />
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_chevron_right"
+                    android:contentDescription="@null" />
 
             </LinearLayout>
 
@@ -196,7 +195,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="40dp"
-                android:text="Finance Manager v1.0"
+                android:text="@string/app_version_label"
                 android:textColor="@color/text_tertiary"
                 android:textSize="12sp" />
 

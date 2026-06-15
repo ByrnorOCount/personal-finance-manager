@@ -77,7 +77,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Transaction t = transactions.get(position);
         holder.binding.tvCategory.setText(Category.getDisplayName(holder.itemView.getContext(), t.category));
-        holder.binding.tvIcon.setText(Category.getIcon(t.category));
+        holder.binding.ivIcon.setImageResource(Category.getIconRes(t.category));
 
         String note = (t.note != null && !t.note.isEmpty()) ? t.note : Category.getDisplayName(holder.itemView.getContext(), t.category);
         holder.binding.tvNote.setText(note);

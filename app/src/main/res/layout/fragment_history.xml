@@ -56,12 +56,11 @@
             android:paddingStart="16dp"
             android:paddingEnd="16dp">
 
-            <TextView
+            <ImageView
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:gravity="center"
-                android:text="🔍"
-                android:textSize="14sp" />
+                android:contentDescription="@null"
+                android:src="@drawable/ic_search" />
 
             <EditText
                 android:id="@+id/etSearch"
@@ -78,14 +77,12 @@
                 android:textColorHint="@color/text_tertiary"
                 android:textSize="14sp" />
 
-            <TextView
+            <ImageView
                 android:id="@+id/btnClearSearch"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:gravity="center"
-                android:text="✕"
-                android:textColor="@color/text_tertiary"
-                android:textSize="14sp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:contentDescription="@null"
+                android:src="@drawable/ic_close"
                 android:visibility="gone" />
 
         </LinearLayout>
@@ -248,11 +245,12 @@
         android:orientation="vertical"
         android:visibility="gone">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="🔍"
-            android:textSize="48sp" />
+        <ImageView
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_search"
+            android:alpha="0.3" />
 
         <TextView
             android:id="@+id/tvEmptyMessage"

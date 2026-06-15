@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Finance Manager</string>
+    <string name="app_slogan">Smart financial management</string>
     <string name="nav_home">Home</string>
     <string name="nav_history">History</string>
     <string name="nav_budget">Budget</string>
@@ -48,6 +49,8 @@
     <string name="category_label">Category</string>
     <string name="date_label">Date</string>
     <string name="note_label">Note</string>
+    <string name="currency_vnd">VND</string>
+    <string name="app_version_label">Personal Finance Manager v1.1</string>
 
     <!-- Categories -->
     <string name="cat_food">Food</string>

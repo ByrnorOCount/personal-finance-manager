@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import com.mopr.personal_finance_manager.data.local.Budget;
+import com.mopr.personal_finance_manager.data.local.CategorySum;
 import com.mopr.personal_finance_manager.data.local.SavingsGoal;
 import com.mopr.personal_finance_manager.data.local.Transaction;
 import com.mopr.personal_finance_manager.data.repository.FinanceRepository;
@@ -40,6 +41,10 @@ public class FinanceViewModel extends AndroidViewModel {
         return repository.getTotalExpense(start, end);
     }
 
+    public LiveData<List<CategorySum>> getExpensesByCategory(long start, long end) {
+        return repository.getExpensesByCategory(start, end);
+    }
+
     // ── History ───────────────────────────────────────────────────────────
 
     /**
@@ -53,6 +58,10 @@ public class FinanceViewModel extends AndroidViewModel {
 
     public LiveData<List<Budget>> getBudgetsForMonth(String month) {
         return repository.getBudgetsForMonth(month);
+    }
+
+    public LiveData<Double> getTotalBudgetedForMonth(String month) {
+        return repository.getTotalBudgetedForMonth(month);
     }
 
     // ── Savings ───────────────────────────────────────────────────────────

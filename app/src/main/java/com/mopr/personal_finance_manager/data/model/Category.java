@@ -13,6 +13,7 @@ public class Category {
     public static final String SHOPPING      = "SHOPPING";
     public static final String HEALTH        = "HEALTH";
     public static final String ENTERTAINMENT = "ENTERTAINMENT";
+    public static final String HAIRCUT       = "HAIRCUT";
     public static final String OTHER         = "OTHER";
 
     // Income categories
@@ -32,6 +33,7 @@ public class Category {
             case SHOPPING:      resId = R.string.cat_shopping; break;
             case HEALTH:        resId = R.string.cat_health; break;
             case ENTERTAINMENT: resId = R.string.cat_entertainment; break;
+            case HAIRCUT:       resId = R.string.cat_other; break; // Use other or add string
             case OTHER:         resId = R.string.cat_other; break;
             case SALARY:        resId = R.string.cat_salary; break;
             case FREELANCE:     resId = R.string.cat_freelance; break;
@@ -52,6 +54,7 @@ public class Category {
             case SHOPPING:      return R.drawable.ic_cat_shopping;
             case HEALTH:        return R.drawable.ic_cat_health;
             case ENTERTAINMENT: return R.drawable.ic_cat_entertainment;
+            case HAIRCUT:       return R.drawable.ic_cat_other;
             case SALARY:        return R.drawable.ic_cat_salary;
             case FREELANCE:     return R.drawable.ic_cat_freelance;
             case INVESTMENT:    return R.drawable.ic_cat_investment;
@@ -69,6 +72,7 @@ public class Category {
             case SHOPPING:      return R.color.cat_shopping;
             case HEALTH:        return R.color.cat_health;
             case ENTERTAINMENT: return R.color.cat_entertainment;
+            case HAIRCUT:       return R.color.cat_health; // Greenish
             default:            return R.color.cat_other;
         }
     }

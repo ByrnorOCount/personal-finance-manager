@@ -25,6 +25,9 @@ public interface BudgetDao {
     @Query("SELECT * FROM budgets WHERE month = :month")
     LiveData<List<Budget>> getBudgetsForMonth(String month);
 
+    @Query("SELECT COALESCE(SUM(limitAmount), 0) FROM budgets WHERE month = :month")
+    LiveData<Double> getTotalBudgetedForMonth(String month);
+
     // Specific category + month — for checking if one already exists
     @Query("SELECT * FROM budgets WHERE category = :category AND month = :month LIMIT 1")
     LiveData<Budget> getBudgetForCategoryAndMonth(String category, String month);

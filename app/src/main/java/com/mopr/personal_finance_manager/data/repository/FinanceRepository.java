@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData;
 import com.mopr.personal_finance_manager.data.local.AppDatabase;
 import com.mopr.personal_finance_manager.data.local.Budget;
 import com.mopr.personal_finance_manager.data.local.BudgetDao;
+import com.mopr.personal_finance_manager.data.local.CategorySum;
 import com.mopr.personal_finance_manager.data.local.SavingsGoal;
 import com.mopr.personal_finance_manager.data.local.SavingsGoalDao;
 import com.mopr.personal_finance_manager.data.local.Transaction;
@@ -77,6 +78,10 @@ public class FinanceRepository {
         return transactionDao.getTotalExpenseInRange(start, end);
     }
 
+    public LiveData<List<CategorySum>> getExpensesByCategory(long start, long end) {
+        return transactionDao.getExpensesByCategoryInRange(start, end);
+    }
+
     // ── Budgets ───────────────────────────────────────────────────────────
 
     public void insertBudget(Budget budget) {
@@ -89,6 +94,10 @@ public class FinanceRepository {
 
     public LiveData<List<Budget>> getBudgetsForMonth(String month) {
         return budgetDao.getBudgetsForMonth(month);
+    }
+
+    public LiveData<Double> getTotalBudgetedForMonth(String month) {
+        return budgetDao.getTotalBudgetedForMonth(month);
     }
 
     // ── Savings Goals ─────────────────────────────────────────────────────

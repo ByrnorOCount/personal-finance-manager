@@ -46,6 +46,7 @@ dependencies {
     implementation libs.navigation.ui
     implementation libs.lifecycle.viewmodel.ktx
     implementation libs.lifecycle.livedata.ktx
+    implementation libs.mpandroidchart
     testImplementation libs.junit
     androidTestImplementation libs.espresso.core
     androidTestImplementation libs.ext.junit

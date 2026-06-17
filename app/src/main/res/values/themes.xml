@@ -10,20 +10,35 @@
         <item name="android:colorBackground">@color/background</item>
         <item name="android:statusBarColor">@color/background</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+        <!-- Make colorOnBackground available for icon tinting -->
+        <item name="colorOnBackground">@color/text_primary</item>
     </style>
 
     <style name="Theme.PersonalFinanceManager" parent="Base.Theme.PersonalFinanceManager" />
 
+    <!-- FAB circle shape -->
     <style name="CircleShape" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
     </style>
 
-    <!-- Chip style for filter chips -->
+    <!-- ShapeAppearance overrides for ShapeableImageView -->
+    <style name="ShapeAppearance.Material3.Corner.Full" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
+    <style name="ShapeAppearance.Material3.Corner.Medium" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">12dp</item>
+    </style>
+
+    <!-- Filter chip style -->
     <style name="Widget.App.FilterChip" parent="Widget.Material3.Chip.Filter">
         <item name="chipBackgroundColor">@color/surface_variant</item>
         <item name="chipStrokeColor">@color/border_subtle</item>
         <item name="chipStrokeWidth">1dp</item>
         <item name="android:textColor">@color/text_secondary</item>
     </style>
+
 </resources>

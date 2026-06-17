@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Brand -->
+    <!-- Brand (slightly lighter for dark mode legibility) -->
     <color name="brand_primary">#A59EF6</color>
     <color name="brand_primary_dark">#7C72F0</color>
     <color name="brand_primary_light">#C7C2FA</color>
@@ -15,25 +15,47 @@
     <color name="warning_amber_bg">#78350F</color>
 
     <!-- Surfaces (Dark) -->
-    <color name="background">#000000</color>
-    <color name="surface">#121212</color>
-    <color name="surface_variant">#1E1E1E</color>
-    <color name="surface_elevated">#1E1E1E</color>
+    <color name="background">#0D0D0D</color>
+    <color name="surface">#1A1A2E</color>
+    <color name="surface_variant">#16213E</color>
+    <color name="surface_elevated">#1E1E2E</color>
 
     <!-- Text (Dark) -->
-    <color name="text_primary">#FFFFFF</color>
-    <color name="text_secondary">#E2E8F0</color>
-    <color name="text_tertiary">#CBD5E1</color>
+    <color name="text_primary">#F1F5F9</color>
+    <color name="text_secondary">#94A3B8</color>
+    <color name="text_tertiary">#64748B</color>
     <color name="text_on_brand">#FFFFFF</color>
     <color name="text_on_brand_secondary">#FFFFFF</color>
     <color name="on_brand_primary">#FFFFFF</color>
 
     <!-- Borders -->
-    <color name="border_subtle">#334155</color>
-    <color name="border_default">#475569</color>
+    <color name="border_subtle">#1E293B</color>
+    <color name="border_default">#334155</color>
+
+    <!-- ── Home Dashboard card (same in both themes — always dark) ── -->
+    <color name="dashboard_bg">#1E1E2E</color>
+    <color name="dashboard_text_primary">#FFFFFF</color>
+    <color name="dashboard_text_secondary">#BDBDBD</color>
+
+    <!-- Dashboard accent colors (same in both themes) -->
+    <color name="income_green_accent">#4CAF50</color>
+    <color name="provisional_blue">#448AFF</color>
+    <color name="budget_purple_accent">#7C4DFF</color>
+    <color name="budget_yellow_accent">#FFC107</color>
+    <color name="saving_blue_accent">#5C6BC0</color>
+    <color name="chart_gray_bg">#2C2C2C</color>
 
     <!-- Settings icons -->
     <color name="settings_dark_mode">#60A5FA</color>
     <color name="settings_language">#34D399</color>
     <color name="settings_delete">#F87171</color>
+
+    <!-- Category colors -->
+    <color name="cat_food">#FF6B6B</color>
+    <color name="cat_transport">#3B82F6</color>
+    <color name="cat_bills">#F59E0B</color>
+    <color name="cat_shopping">#A855F7</color>
+    <color name="cat_health">#10B981</color>
+    <color name="cat_entertainment">#F97316</color>
+    <color name="cat_other">#6B7280</color>
 </resources>

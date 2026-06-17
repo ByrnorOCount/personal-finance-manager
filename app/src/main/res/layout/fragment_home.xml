@@ -4,35 +4,38 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#121212">
+    android:background="?android:attr/colorBackground">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:paddingStart="16dp"
+            android:paddingTop="12dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="100dp">
 
-            <!-- ── TOP BAR ─────────────────────────────────────────────── -->
+            <!-- ── TOP BAR ─────────────────────────────────────────── -->
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                android:layout_marginTop="8dp">
+                android:layout_height="52dp"
+                android:layout_marginBottom="16dp">
 
                 <ImageView
                     android:id="@+id/btnMenu"
                     android:layout_width="28dp"
                     android:layout_height="28dp"
                     android:layout_centerVertical="true"
+                    android:contentDescription="@null"
                     android:src="@drawable/ic_home"
-                    app:tint="#FFFFFF" />
+                    app:tint="?attr/colorOnBackground" />
 
                 <LinearLayout
-                    android:id="@+id/datePickerContainer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
@@ -44,16 +47,17 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Jun 01-30, 2026"
-                        android:textColor="#FFFFFF"
+                        android:textColor="?attr/colorOnBackground"
                         android:textSize="17sp"
                         android:textStyle="bold" />
 
                     <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_marginStart="6dp"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_marginStart="4dp"
+                        android:contentDescription="@null"
                         android:src="@drawable/ic_arrow_downward"
-                        app:tint="#FFFFFF" />
+                        app:tint="?attr/colorOnBackground" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -67,37 +71,40 @@
                         android:layout_width="26dp"
                         android:layout_height="26dp"
                         android:layout_marginEnd="16dp"
+                        android:contentDescription="@null"
                         android:src="@drawable/ic_search"
-                        app:tint="#FFFFFF" />
+                        app:tint="?attr/colorOnBackground" />
 
                     <ImageView
                         android:layout_width="26dp"
                         android:layout_height="26dp"
+                        android:contentDescription="@null"
                         android:src="@drawable/ic_notifications"
-                        app:tint="#FFFFFF" />
+                        app:tint="?attr/colorOnBackground" />
                 </LinearLayout>
             </RelativeLayout>
 
-            <!-- ── DASHBOARD CARD ──────────────────────────────────────── -->
+            <!-- ── DASHBOARD CARD ────────────────────────────────────── -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardBackgroundColor="@color/dashboard_bg"
-                app:cardCornerRadius="24dp"
-                app:cardElevation="0dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="4dp"
                 app:strokeWidth="0dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="20dp">
+                    android:padding="18dp">
 
+                    <!-- Initial Balance row -->
                     <TextView
                         android:id="@+id/tvInitialBalanceLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Initial Balance:"
-                        android:textColor="#BDBDBD"
+                        android:textColor="@color/dashboard_text_secondary"
                         android:textSize="14sp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -107,23 +114,22 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:text="6.000.000 ₫"
-                        android:textColor="#FFFFFF"
-                        android:textSize="20sp"
+                        android:textColor="@color/dashboard_text_primary"
+                        android:textSize="18sp"
                         android:textStyle="bold"
-                        app:layout_constraintBottom_toBottomOf="@id/tvInitialBalanceLabel"
+                        app:layout_constraintBaseline_toBaselineOf="@id/tvInitialBalanceLabel"
                         app:layout_constraintStart_toEndOf="@id/tvInitialBalanceLabel"
-                        app:layout_constraintTop_toTopOf="@id/tvInitialBalanceLabel" />
+                        tools:text="6.000.000 ₫" />
 
-                    <!-- Income Section -->
+                    <!-- LEFT COLUMN: Income + Budget -->
                     <TextView
                         android:id="@+id/tvTotalIncomeLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="28dp"
+                        android:layout_marginTop="20dp"
                         android:text="Total Income"
-                        android:textColor="#BDBDBD"
-                        android:textSize="14sp"
+                        android:textColor="@color/dashboard_text_secondary"
+                        android:textSize="13sp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tvInitialBalanceLabel" />
 
@@ -131,67 +137,62 @@
                         android:id="@+id/tvTotalIncome"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="6.500.000 ₫"
+                        android:layout_marginTop="2dp"
                         android:textColor="@color/income_green_accent"
-                        android:textSize="20sp"
+                        android:textSize="19sp"
                         android:textStyle="bold"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/tvTotalIncomeLabel" />
+                        app:layout_constraintTop_toBottomOf="@id/tvTotalIncomeLabel"
+                        tools:text="6.500.000 ₫" />
 
+                    <!-- Income progress bar (full width of left column) -->
                     <com.google.android.material.progressindicator.LinearProgressIndicator
                         android:id="@+id/incomeProgress"
-                        android:layout_width="180dp"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginTop="8dp"
+                        android:progress="100"
                         app:indicatorColor="@color/income_green_accent"
+                        app:layout_constraintEnd_toStartOf="@id/chartIncomeSpent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tvTotalIncome"
-                        app:trackColor="#2C2C2C"
+                        app:layout_constraintWidth_percent="0.55"
+                        app:trackColor="@color/chart_gray_bg"
                         app:trackCornerRadius="4dp"
-                        app:trackThickness="10dp"
-                        android:progress="100" />
-
-                    <View
-                        android:id="@+id/incomeMarker"
-                        android:layout_width="4dp"
-                        android:layout_height="4dp"
-                        android:background="@drawable/bg_icon_circle_white"
-                        android:layout_marginStart="20dp"
-                        android:layout_marginTop="4dp"
-                        app:layout_constraintTop_toBottomOf="@id/incomeProgress"
-                        app:layout_constraintStart_toStartOf="@id/incomeProgress"/>
+                        app:trackThickness="10dp" />
 
                     <TextView
                         android:id="@+id/tvProvisionalBalanceLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="14dp"
+                        android:layout_marginTop="3dp"
                         android:text="Provisional Balance"
-                        android:textColor="#BDBDBD"
-                        android:textSize="14sp"
-                        app:layout_constraintEnd_toEndOf="@id/incomeProgress"
+                        android:textColor="@color/dashboard_text_secondary"
+                        android:textSize="12sp"
+                        app:layout_constraintStart_toStartOf="@id/incomeProgress"
                         app:layout_constraintTop_toBottomOf="@id/incomeProgress" />
 
                     <TextView
                         android:id="@+id/tvProvisionalBalance"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="874.000 ₫"
+                        android:layout_marginTop="1dp"
                         android:textColor="@color/provisional_blue"
-                        android:textSize="18sp"
+                        android:textSize="16sp"
                         android:textStyle="bold"
-                        app:layout_constraintEnd_toEndOf="@id/incomeProgress"
-                        app:layout_constraintTop_toBottomOf="@id/tvProvisionalBalanceLabel" />
+                        app:layout_constraintStart_toStartOf="@id/tvProvisionalBalanceLabel"
+                        app:layout_constraintTop_toBottomOf="@id/tvProvisionalBalanceLabel"
+                        tools:text="874.000 ₫" />
 
-                    <!-- Budgeted Section -->
+                    <!-- Total Budgeted -->
                     <TextView
                         android:id="@+id/tvTotalBudgetedLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
+                        android:layout_marginTop="16dp"
                         android:text="Total Budgeted"
-                        android:textColor="#BDBDBD"
-                        android:textSize="14sp"
+                        android:textColor="@color/dashboard_text_secondary"
+                        android:textSize="13sp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tvProvisionalBalance" />
 
@@ -199,248 +200,274 @@
                         android:id="@+id/tvTotalBudgeted"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="5.626.000 ₫"
+                        android:layout_marginTop="2dp"
                         android:textColor="@color/budget_purple_accent"
-                        android:textSize="20sp"
+                        android:textSize="19sp"
                         android:textStyle="bold"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/tvTotalBudgetedLabel" />
+                        app:layout_constraintTop_toBottomOf="@id/tvTotalBudgetedLabel"
+                        tools:text="5.626.000 ₫" />
 
+                    <!-- Budget progress bar -->
                     <com.google.android.material.progressindicator.LinearProgressIndicator
                         android:id="@+id/budgetProgress"
-                        android:layout_width="180dp"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginTop="8dp"
+                        android:progress="30"
                         app:indicatorColor="@color/budget_yellow_accent"
+                        app:layout_constraintEnd_toStartOf="@id/chartIncomeSpent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tvTotalBudgeted"
+                        app:layout_constraintWidth_percent="0.55"
                         app:trackColor="@color/budget_purple_accent"
                         app:trackCornerRadius="4dp"
-                        app:trackThickness="10dp"
-                        android:progress="30" />
-
-                    <View
-                        android:id="@+id/budgetMarker"
-                        android:layout_width="4dp"
-                        android:layout_height="4dp"
-                        android:background="@drawable/bg_icon_circle_white"
-                        android:layout_marginStart="40dp"
-                        android:layout_marginTop="4dp"
-                        app:layout_constraintTop_toBottomOf="@id/budgetProgress"
-                        app:layout_constraintStart_toStartOf="@id/budgetProgress"/>
+                        app:trackThickness="10dp" />
 
                     <TextView
                         android:id="@+id/tvRemainingLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="14dp"
+                        android:layout_marginTop="3dp"
                         android:text="Remaining to spend"
-                        android:textColor="#BDBDBD"
-                        android:textSize="14sp"
-                        app:layout_constraintEnd_toEndOf="@id/budgetProgress"
+                        android:textColor="@color/dashboard_text_secondary"
+                        android:textSize="12sp"
+                        app:layout_constraintStart_toStartOf="@id/budgetProgress"
                         app:layout_constraintTop_toBottomOf="@id/budgetProgress" />
 
                     <TextView
                         android:id="@+id/tvRemaining"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="1.423.000 ₫"
+                        android:layout_marginTop="1dp"
                         android:textColor="@color/budget_yellow_accent"
-                        android:textSize="18sp"
+                        android:textSize="16sp"
                         android:textStyle="bold"
-                        app:layout_constraintEnd_toEndOf="@id/budgetProgress"
-                        app:layout_constraintTop_toBottomOf="@id/tvRemainingLabel" />
+                        app:layout_constraintStart_toStartOf="@id/tvRemainingLabel"
+                        app:layout_constraintTop_toBottomOf="@id/tvRemainingLabel"
+                        tools:text="1.423.000 ₫" />
 
-                    <!-- Donut Chart Area -->
+                    <!-- RIGHT COLUMN: Saving label + Donut chart -->
                     <TextView
                         android:id="@+id/tvSavingLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
                         android:text="Saving"
-                        android:textColor="#BDBDBD"
+                        android:textColor="@color/dashboard_text_secondary"
                         android:textSize="13sp"
-                        app:layout_constraintBottom_toTopOf="@id/tvSaving"
-                        app:layout_constraintEnd_toEndOf="@id/chartIncomeSpent"
-                        android:layout_marginEnd="10dp" />
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/tvTotalIncomeLabel" />
 
-                     <TextView
+                    <TextView
                         android:id="@+id/tvSaving"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="2.297.000 ₫"
+                        android:layout_marginTop="2dp"
+                        android:layout_marginEnd="8dp"
                         android:textColor="@color/saving_blue_accent"
-                        android:textSize="15sp"
+                        android:textSize="13sp"
                         android:textStyle="bold"
-                        app:layout_constraintBottom_toTopOf="@id/chartIncomeSpent"
-                        app:layout_constraintEnd_toEndOf="@id/chartIncomeSpent"
-                        android:layout_marginBottom="8dp"
-                        android:layout_marginEnd="10dp" />
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tvSavingLabel"
+                        tools:text="2.297.000 ₫" />
 
+                    <!-- Main donut chart -->
                     <com.github.mikephil.charting.charts.PieChart
                         android:id="@+id/chartIncomeSpent"
-                        android:layout_width="150dp"
-                        android:layout_height="150dp"
+                        android:layout_width="140dp"
+                        android:layout_height="140dp"
+                        android:layout_marginStart="12dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/tvTotalIncomeLabel" />
+                        app:layout_constraintTop_toBottomOf="@id/tvSaving" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- ── QUICK ACTIONS ───────────────────────────────────────── -->
+            <!-- ── QUICK ACTIONS ROW ────────────────────────────────── -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="20dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginEnd="16dp"
-                    android:background="@drawable/bg_summary_card"
+                    android:id="@+id/btnActionCalendar"
+                    android:layout_width="42dp"
+                    android:layout_height="42dp"
+                    android:layout_marginEnd="12dp"
+                    android:background="@drawable/bg_action_icon"
+                    android:contentDescription="@null"
                     android:padding="10dp"
                     android:src="@drawable/ic_calendar"
-                    app:tint="#FFFFFF" />
+                    app:tint="?attr/colorOnBackground" />
 
                 <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginEnd="16dp"
-                    android:background="@drawable/bg_summary_card"
+                    android:id="@+id/btnActionFilter"
+                    android:layout_width="42dp"
+                    android:layout_height="42dp"
+                    android:layout_marginEnd="12dp"
+                    android:background="@drawable/bg_action_icon"
+                    android:contentDescription="@null"
                     android:padding="10dp"
-                    android:src="@drawable/ic_search"
-                    app:tint="#FFFFFF" />
+                    android:src="@drawable/ic_filter"
+                    app:tint="?attr/colorOnBackground" />
 
                 <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginEnd="16dp"
-                    android:background="@drawable/bg_summary_card"
+                    android:id="@+id/btnActionGrid"
+                    android:layout_width="42dp"
+                    android:layout_height="42dp"
+                    android:layout_marginEnd="12dp"
+                    android:background="@drawable/bg_action_icon"
+                    android:contentDescription="@null"
                     android:padding="10dp"
-                    android:src="@drawable/ic_history"
-                    app:tint="#FFFFFF" />
+                    android:src="@drawable/ic_grid"
+                    app:tint="?attr/colorOnBackground" />
 
                 <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:background="@drawable/bg_summary_card"
+                    android:id="@+id/btnActionSavings"
+                    android:layout_width="42dp"
+                    android:layout_height="42dp"
+                    android:background="@drawable/bg_action_icon"
+                    android:contentDescription="@null"
                     android:padding="10dp"
-                    android:src="@drawable/ic_launcher_foreground"
-                    app:tint="#FFFFFF" />
+                    android:src="@drawable/ic_savings"
+                    app:tint="?attr/colorOnBackground" />
 
                 <View
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_weight="1" />
 
+                <!-- AI Assistant button (purple gradient) -->
                 <com.google.android.material.imageview.ShapeableImageView
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
-                    android:src="@drawable/ic_language"
-                    android:padding="10dp"
+                    android:id="@+id/btnAiAssistant"
+                    android:layout_width="46dp"
+                    android:layout_height="46dp"
                     android:background="@drawable/bg_header_gradient"
+                    android:contentDescription="@null"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_ai_assistant"
                     app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Medium"
                     app:tint="#FFFFFF" />
             </LinearLayout>
 
-            <!-- ── LIST HEADER ─────────────────────────────────────────── -->
+            <!-- ── BUDGET LIST HEADER CARD ──────────────────────────── -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="16dp"
                 app:cardBackgroundColor="@color/dashboard_bg"
                 app:cardCornerRadius="16dp"
+                app:cardElevation="2dp"
                 app:strokeWidth="0dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="16dp">
+                    android:paddingStart="16dp"
+                    android:paddingTop="14dp"
+                    android:paddingEnd="16dp"
+                    android:paddingBottom="14dp">
 
+                    <!-- Expand/collapse toggle -->
                     <ImageView
-                        android:id="@+id/ivTotalArrow"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:src="@drawable/ic_arrow_upward"
+                        android:id="@+id/ivExpandToggle"
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_chevron_up"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
+                        app:tint="@color/dashboard_text_secondary" />
+
+                    <LinearLayout
+                        android:id="@+id/llTotalBudgeted"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:orientation="vertical"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:tint="#FFFFFF" />
+                        app:layout_constraintStart_toEndOf="@id/ivExpandToggle"
+                        app:layout_constraintTop_toTopOf="parent">
 
-                    <TextView
-                        android:id="@+id/tvListTotalBudgetedLabel"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:text="Total Budgeted"
-                        android:textColor="#BDBDBD"
-                        android:textSize="12sp"
-                        app:layout_constraintStart_toEndOf="@id/ivTotalArrow"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Total Budgeted"
+                            android:textColor="@color/dashboard_text_secondary"
+                            android:textSize="11sp" />
 
-                    <TextView
-                        android:id="@+id/tvListTotalBudgeted"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="5.626.000 ₫"
-                        android:textColor="#FFFFFF"
-                        android:textSize="17sp"
-                        android:textStyle="bold"
-                        app:layout_constraintStart_toStartOf="@id/tvListTotalBudgetedLabel"
-                        app:layout_constraintTop_toBottomOf="@id/tvListTotalBudgetedLabel" />
+                        <TextView
+                            android:id="@+id/tvListTotalBudgeted"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/dashboard_text_primary"
+                            android:textSize="15sp"
+                            android:textStyle="bold"
+                            tools:text="5.626.000 ₫" />
+                    </LinearLayout>
 
+                    <!-- Mini donut chart centered -->
                     <com.github.mikephil.charting.charts.PieChart
                         android:id="@+id/miniChartSpent"
-                        android:layout_width="44dp"
-                        android:layout_height="44dp"
-                        app:layout_constraintStart_toEndOf="@id/tvListTotalBudgeted"
-                        app:layout_constraintEnd_toStartOf="@id/tvListTotalSpentLabel"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent" />
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/llTotalSpent"
+                        app:layout_constraintStart_toEndOf="@id/llTotalBudgeted"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                    <TextView
-                        android:id="@+id/tvListTotalSpentLabel"
+                    <LinearLayout
+                        android:id="@+id/llTotalSpent"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="12dp"
-                        android:text="Total Spent"
-                        android:textColor="#BDBDBD"
-                        android:textSize="12sp"
+                        android:orientation="vertical"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/btnAddBudget"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent">
 
-                    <TextView
-                        android:id="@+id/tvListTotalSpent"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="4.203.000 ₫"
-                        android:textColor="#FFFFFF"
-                        android:textSize="17sp"
-                        android:textStyle="bold"
-                        app:layout_constraintStart_toStartOf="@id/tvListTotalSpentLabel"
-                        app:layout_constraintTop_toBottomOf="@id/tvListTotalSpentLabel" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Total Spent"
+                            android:textColor="@color/dashboard_text_secondary"
+                            android:textSize="11sp" />
+
+                        <TextView
+                            android:id="@+id/tvListTotalSpent"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/dashboard_text_primary"
+                            android:textSize="15sp"
+                            android:textStyle="bold"
+                            tools:text="4.203.000 ₫" />
+                    </LinearLayout>
 
                     <ImageView
                         android:id="@+id/btnAddBudget"
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:contentDescription="@null"
                         android:src="@drawable/ic_add_nav"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:tint="#FFFFFF" />
+                        app:tint="@color/dashboard_text_secondary" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- ── CATEGORY LIST ───────────────────────────────────────── -->
+            <!-- ── CATEGORY BUDGET LIST ────────────────────────────── -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvCategoryBudgets"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="8dp"
                 android:nestedScrollingEnabled="false"
                 tools:listitem="@layout/item_category_budget" />
 

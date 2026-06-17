@@ -24,8 +24,6 @@
         android:layout_height="80dp"
         android:background="?attr/colorSurface"
         android:elevation="8dp"
-        android:clipToPadding="false"
-        android:clipChildren="false"
         app:itemIconTint="@color/nav_item_color"
         app:itemTextColor="@color/nav_item_color"
         app:labelVisibilityMode="labeled"

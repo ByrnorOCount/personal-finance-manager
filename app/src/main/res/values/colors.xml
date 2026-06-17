@@ -21,9 +21,9 @@
     <color name="surface_elevated">#FFFFFF</color>
 
     <!-- Text (Light) -->
-    <color name="text_primary">#000000</color>
-    <color name="text_secondary">#1E293B</color>
-    <color name="text_tertiary">#334155</color>
+    <color name="text_primary">#0F172A</color>
+    <color name="text_secondary">#475569</color>
+    <color name="text_tertiary">#94A3B8</color>
     <color name="text_on_brand">#FFFFFF</color>
     <color name="text_on_brand_secondary">#FFFFFF</color>
     <color name="on_brand_primary">#FFFFFF</color>
@@ -32,8 +32,13 @@
     <color name="border_subtle">#E2E8F0</color>
     <color name="border_default">#CBD5E1</color>
 
-    <!-- Home Dashboard -->
-    <color name="dashboard_bg">#1E1E1E</color>
+    <!-- ── Home Dashboard (always dark card regardless of theme) ── -->
+    <color name="dashboard_bg">#1E1E2E</color>
+    <!-- Text inside the always-dark dashboard card -->
+    <color name="dashboard_text_primary">#FFFFFF</color>
+    <color name="dashboard_text_secondary">#BDBDBD</color>
+
+    <!-- Dashboard accent colors -->
     <color name="income_green_accent">#4CAF50</color>
     <color name="provisional_blue">#448AFF</color>
     <color name="budget_purple_accent">#7C4DFF</color>
@@ -45,6 +50,8 @@
     <color name="settings_dark_mode">#3B82F6</color>
     <color name="settings_language">#10B981</color>
     <color name="settings_delete">#EF4444</color>
+
+    <!-- Category colors -->
     <color name="cat_food">#FF6B6B</color>
     <color name="cat_transport">#3B82F6</color>
     <color name="cat_bills">#F59E0B</color>
@@ -53,7 +60,7 @@
     <color name="cat_entertainment">#F97316</color>
     <color name="cat_other">#6B7280</color>
 
-    <!-- Legacy aliases kept for compatibility -->
+    <!-- Legacy aliases -->
     <color name="primary_purple">#5B4FE9</color>
     <color name="white_semi">#CCFFFFFF</color>
     <color name="background_light">#F1F5F9</color>

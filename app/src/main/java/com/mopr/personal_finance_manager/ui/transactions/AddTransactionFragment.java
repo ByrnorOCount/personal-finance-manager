@@ -51,6 +51,17 @@ public class AddTransactionFragment extends Fragment {
         updateTypeToggleUI();
         updateDateDisplay();
         refreshCategorySpinner();
+
+        if (getArguments() != null && getArguments().containsKey("category")) {
+            String cat = getArguments().getString("category");
+            String[] keys = isExpense ? Category.expenseCategories() : Category.incomeCategories();
+            for (int i = 0; i < keys.length; i++) {
+                if (keys[i].equals(cat)) {
+                    binding.categorySpinner.setSelection(i);
+                    break;
+                }
+            }
+        }
     }
 
     private void setupListeners() {

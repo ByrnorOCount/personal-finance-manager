@@ -10,9 +10,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
@@ -33,14 +33,18 @@ import java.util.Map;
 
 public class HomeFragment extends Fragment {
 
+    // Chart ring colors (always dark regardless of theme — dashboard is a dark card)
+    private static final int CLR_ORANGE = Color.parseColor("#FFC107");
+    private static final int CLR_RING_BG = Color.parseColor("#2C2C2C");
+    private static final int CLR_WHITE = Color.WHITE;
+    private final double initialBalance = 6_000_000; // TODO: wire to Settings/account
     private FragmentHomeBinding binding;
     private FinanceViewModel viewModel;
     private CategoryBudgetAdapter categoryAdapter;
-
+    // ── Financial state ───────────────────────────────────────────────
     private double totalIncome = 0;
-    private double totalSpent = 0;
-    private double totalBudgeted = 0;
-    private double initialBalance = 6000000; // Mock initial balance
+    private double totalSpent = 0;   // actual expenses recorded
+    private double totalBudgeted = 0;   // sum of all budget limits this month
 
     @Nullable
     @Override
@@ -55,164 +59,239 @@ public class HomeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         viewModel = new ViewModelProvider(requireActivity()).get(FinanceViewModel.class);
-        setupRecyclerView();
+
         setupCharts();
+        setupRecyclerView();
+        setupClickListeners();
         observeData();
 
-        binding.tvDateRange.setText("Jun 01-30, 2026"); // Mock date range
+        binding.tvDateRange.setText(buildMonthLabel());
+    }
 
-        binding.btnAddBudget.setOnClickListener(v -> {
-            // Navigate to budget planner or add budget screen
-        });
+    // ── Setup ─────────────────────────────────────────────────────────
+
+    private String buildMonthLabel() {
+        Calendar cal = Calendar.getInstance();
+        return DateUtils.getPeriodDisplayLabel("MONTH", DateUtils.getCurrentMonthKey());
     }
 
     private void setupRecyclerView() {
         categoryAdapter = new CategoryBudgetAdapter();
         binding.rvCategoryBudgets.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.rvCategoryBudgets.setAdapter(categoryAdapter);
+        binding.rvCategoryBudgets.setNestedScrollingEnabled(false);
     }
 
     private void setupCharts() {
-        setupDonutChart(binding.chartIncomeSpent);
-        setupMiniChart(binding.miniChartSpent);
+        // Main donut — larger hole for the center text
+        setupDonutChart(binding.chartIncomeSpent, 72f);
+        // Mini donut in the budget header
+        setupDonutChart(binding.miniChartSpent, 68f);
     }
 
-    private void setupDonutChart(PieChart chart) {
-        chart.setUsePercentValues(true);
+    private void setupDonutChart(com.github.mikephil.charting.charts.PieChart chart, float holeRadius) {
         chart.getDescription().setEnabled(false);
-        chart.setExtraOffsets(5, 10, 5, 5);
-        chart.setDragDecelerationFrictionCoef(0.95f);
+        chart.setUsePercentValues(false);
         chart.setDrawHoleEnabled(true);
         chart.setHoleColor(Color.TRANSPARENT);
         chart.setTransparentCircleColor(Color.TRANSPARENT);
         chart.setTransparentCircleAlpha(0);
-        chart.setHoleRadius(75f);
+        chart.setHoleRadius(holeRadius);
         chart.setDrawCenterText(true);
-        chart.setRotationAngle(0);
         chart.setRotationEnabled(false);
         chart.setHighlightPerTapEnabled(false);
         chart.getLegend().setEnabled(false);
+        chart.setTouchEnabled(false);
+        chart.setExtraOffsets(0, 0, 0, 0);
     }
 
-    private void setupMiniChart(PieChart chart) {
-        chart.getDescription().setEnabled(false);
-        chart.setDrawHoleEnabled(true);
-        chart.setHoleColor(Color.TRANSPARENT);
-        chart.setHoleRadius(70f);
-        chart.getLegend().setEnabled(false);
-        chart.setDrawCenterText(true);
+    private void setupClickListeners() {
+        binding.btnAddBudget.setOnClickListener(v ->
+            Navigation.findNavController(v).navigate(R.id.navigation_budget));
     }
+
+    // ── Data observation ──────────────────────────────────────────────
 
     private void observeData() {
         Calendar cal = Calendar.getInstance();
-        // Force mock month for demonstration if needed, but here we use current
         long start = DateUtils.getStartOfMonth(cal);
         long end = DateUtils.getEndOfMonth(cal);
-        String month = DateUtils.getBudgetMonth(System.currentTimeMillis());
+        String monthKey = DateUtils.getCurrentMonthKey();
 
         viewModel.getTotalIncome(start, end).observe(getViewLifecycleOwner(), income -> {
             totalIncome = income != null ? income : 0.0;
-            updateDashboard();
+            refreshDashboard();
         });
 
         viewModel.getTotalExpense(start, end).observe(getViewLifecycleOwner(), expense -> {
             totalSpent = expense != null ? expense : 0.0;
-            updateDashboard();
+            refreshDashboard();
         });
 
-        viewModel.getTotalBudgetedForMonth(month).observe(getViewLifecycleOwner(), budgeted -> {
+        // Use legacy month query (backwards-compat) so old data still shows
+        viewModel.getTotalBudgetedForMonth(monthKey).observe(getViewLifecycleOwner(), budgeted -> {
             totalBudgeted = budgeted != null ? budgeted : 0.0;
-            updateDashboard();
+            refreshDashboard();
         });
 
-        // Observe both budgets and actual expenses to update the category list
-        viewModel.getBudgetsForMonth(month).observe(getViewLifecycleOwner(), budgets -> {
-            viewModel.getExpensesByCategory(start, end).observe(getViewLifecycleOwner(), expenses -> {
-                combineAndSetCategoryData(budgets, expenses);
-            });
-        });
+        viewModel.getBudgetsForMonth(monthKey).observe(getViewLifecycleOwner(), budgets ->
+            viewModel.getExpensesByCategory(start, end).observe(getViewLifecycleOwner(), expenses ->
+                rebuildCategoryList(budgets, expenses)));
     }
 
-    private void combineAndSetCategoryData(List<Budget> budgets, List<CategorySum> expenses) {
-        Map<String, Double> expenseMap = new HashMap<>();
-        if (expenses != null) {
-            for (CategorySum sum : expenses) {
-                expenseMap.put(sum.category, sum.totalAmount);
-            }
-        }
+    // ── Category list ─────────────────────────────────────────────────
 
-        List<CategoryBudgetUI> uiItems = new ArrayList<>();
+    private void rebuildCategoryList(List<Budget> budgets, List<CategorySum> expenses) {
+        Map<String, Double> expMap = new HashMap<>();
+        if (expenses != null) {
+            for (CategorySum cs : expenses) expMap.put(cs.category, cs.totalAmount);
+        }
+        List<CategoryBudgetUI> items = new ArrayList<>();
         if (budgets != null) {
             for (Budget b : budgets) {
-                Double spentBoxed = expenseMap.get(b.category);
-                double spent = spentBoxed != null ? spentBoxed : 0.0;
-                uiItems.add(new CategoryBudgetUI(b.category, b.limitAmount, spent));
+                Double spent = expMap.get(b.category);
+                items.add(new CategoryBudgetUI(b.category, b.limitAmount,
+                    spent != null ? spent : 0.0));
             }
         }
-        categoryAdapter.setItems(uiItems);
+        categoryAdapter.setItems(items);
     }
 
-    private void updateDashboard() {
+    // ── Dashboard refresh ─────────────────────────────────────────────
+
+    private void refreshDashboard() {
+        if (binding == null) return;
+
+        // ── Core financial figures ────────────────────────────────────
+        //
+        // totalFunds     = initialBalance + totalIncome
+        //   The total money available this month.
+        //
+        // provisionalBalance = totalFunds - totalSpent
+        //   What you'd have left if all recorded spending is deducted.
+        //   Shown in blue under the income bar.
+        //
+        // saving         = totalIncome - totalSpent   (income surplus, not budget surplus)
+        //   Top-right of the dashboard card.
+        //
+        // remaining      = totalBudgeted - totalSpent
+        //   How much budget headroom is left.  Shown in yellow under budget bar.
+
+        double totalFunds = initialBalance + totalIncome;
+        double provisionalBalance = totalFunds - totalSpent;
+        double saving = totalIncome - totalSpent;
+        double remaining = totalBudgeted - totalSpent;
+
+        // ── Text fields ───────────────────────────────────────────────
         binding.tvInitialBalance.setText(CurrencyFormatter.formatVND(initialBalance));
         binding.tvTotalIncome.setText(CurrencyFormatter.formatVND(totalIncome));
         binding.tvTotalBudgeted.setText(CurrencyFormatter.formatVND(totalBudgeted));
-
-        double provisionalBalance = initialBalance + totalIncome - totalSpent;
-        binding.tvProvisionalBalance.setText(CurrencyFormatter.formatVND(provisionalBalance));
-
-        double remaining = totalBudgeted - totalSpent;
+        binding.tvProvisionalBalance.setText(CurrencyFormatter.formatVND(Math.max(0, provisionalBalance)));
         binding.tvRemaining.setText(CurrencyFormatter.formatVND(Math.max(0, remaining)));
-
+        binding.tvSaving.setText(CurrencyFormatter.formatVND(Math.max(0, saving)));
         binding.tvListTotalBudgeted.setText(CurrencyFormatter.formatVND(totalBudgeted));
         binding.tvListTotalSpent.setText(CurrencyFormatter.formatVND(totalSpent));
 
-        double saving = totalIncome - totalSpent;
-        binding.tvSaving.setText(CurrencyFormatter.formatVND(Math.max(0, saving)));
+        // ── Income progress bar ───────────────────────────────────────
+        //
+        // The green bar represents totalFunds (full width = initialBalance + income).
+        // The FILLED portion is what has been SPENT so far.
+        //
+        // Visual: [===SPENT===|---remaining---]
+        //              ^green           ^dark track
+        //
+        // progress max = 100; progress value = spent/totalFunds * 100
+        int incomeBarPct = totalFunds <= 0 ? 0
+            : (int) Math.min(100, (totalSpent / totalFunds) * 100);
+        binding.incomeProgress.setMax(100);
+        binding.incomeProgress.setProgressCompat(incomeBarPct, true);
 
-        // Update Progress Bars
-        binding.incomeProgress.setProgress(100);
-        int budgetProgress = totalBudgeted == 0 ? 0 : (int) ((totalSpent / totalBudgeted) * 100);
-        binding.budgetProgress.setProgress(Math.min(100, budgetProgress));
+        // ── Budget progress bar ───────────────────────────────────────
+        //
+        // Yellow fill = how much of the budget limit has been spent.
+        // Purple track = the full budget limit (always visible as background).
+        //
+        // progress max = 100; progress value = spent/budgeted * 100
+        int budgetBarPct = totalBudgeted <= 0 ? 0
+            : (int) Math.min(100, (totalSpent / totalBudgeted) * 100);
+        binding.budgetProgress.setMax(100);
+        binding.budgetProgress.setProgressCompat(budgetBarPct, true);
 
-        // Dynamic positioning of markers (optional refinement)
-        // For now, they are static in XML to match the aesthetic.
+        // Over-budget: turn bar red
+        if (totalBudgeted > 0 && totalSpent > totalBudgeted) {
+            binding.budgetProgress.setIndicatorColor(
+                requireContext().getColor(R.color.expense_red));
+            binding.tvRemaining.setTextColor(
+                requireContext().getColor(R.color.expense_red));
+        } else {
+            binding.budgetProgress.setIndicatorColor(
+                requireContext().getColor(R.color.budget_yellow_accent));
+            binding.tvRemaining.setTextColor(
+                requireContext().getColor(R.color.budget_yellow_accent));
+        }
 
-        updateChartsData();
+        // ── Charts ───────────────────────────────────────────────────
+        refreshCharts();
     }
 
-    private void updateChartsData() {
-        // Main Donut Chart
+    private void refreshCharts() {
+        if (binding == null) return;
+
+        // ── Main donut: income spent % ────────────────────────────────
+        // Orange arc = totalSpent portion of totalIncome.
+        // Dark arc  = saving (unspent income).
+        float spentOfIncome = totalIncome <= 0 ? 0f
+            : (float) Math.min(1.0, totalSpent / totalIncome);
+        int spentPct = Math.round(spentOfIncome * 100);
+
+        updateDonut(binding.chartIncomeSpent,
+            spentOfIncome,
+            "Income spent\n" + spentPct + "%",
+            12f);
+
+        // ── Mini donut: budget used % ─────────────────────────────────
+        float spentOfBudget = totalBudgeted <= 0 ? 0f
+            : (float) Math.min(1.0, totalSpent / totalBudgeted);
+        int budgetPct = Math.round(spentOfBudget * 100);
+
+        updateDonut(binding.miniChartSpent,
+            spentOfBudget,
+            budgetPct + "%",
+            9f);
+    }
+
+    /**
+     * Sets up a two-slice donut chart.
+     *
+     * @param filledFraction   0.0–1.0 — the orange (filled) fraction
+     * @param centerLabel      text for the hole
+     * @param centerTextSizeSp sp size of the center text
+     */
+    private void updateDonut(com.github.mikephil.charting.charts.PieChart chart,
+                             float filledFraction, String centerLabel, float centerTextSizeSp) {
+        // Always two slices — avoids MPAndroidChart single-entry crash
+        float filled = Math.max(0.001f, Math.min(1f, filledFraction));
+        float empty = Math.max(0.001f, 1f - filled);
+
         List<PieEntry> entries = new ArrayList<>();
-        float spentPercent = totalIncome == 0 ? 0 : (float) (totalSpent / totalIncome);
-        entries.add(new PieEntry(spentPercent, ""));
-        entries.add(new PieEntry(1f - spentPercent, ""));
+        entries.add(new PieEntry(filled, ""));
+        entries.add(new PieEntry(empty, ""));
 
-        PieDataSet dataSet = new PieDataSet(entries, "");
-        dataSet.setColors(Color.parseColor("#FFC107"), Color.parseColor("#2C2C2C"));
-        dataSet.setDrawValues(false);
+        PieDataSet ds = new PieDataSet(entries, "");
+        // If essentially nothing spent, show all-gray ring
+        if (filledFraction < 0.005f) {
+            ds.setColors(CLR_RING_BG, CLR_RING_BG);
+        } else {
+            ds.setColors(CLR_ORANGE, CLR_RING_BG);
+        }
+        ds.setDrawValues(false);
+        ds.setSliceSpace(0f);
 
-        PieData data = new PieData(dataSet);
-        binding.chartIncomeSpent.setData(data);
-        binding.chartIncomeSpent.setCenterText("Income spent\n" + (int)(spentPercent * 100) + "%");
-        binding.chartIncomeSpent.setCenterTextColor(Color.WHITE);
-        binding.chartIncomeSpent.setCenterTextSize(14f);
-        binding.chartIncomeSpent.invalidate();
-
-        // Mini Chart
-        List<PieEntry> miniEntries = new ArrayList<>();
-        float budgetSpentPercent = totalBudgeted == 0 ? 0 : (float) (totalSpent / totalBudgeted);
-        miniEntries.add(new PieEntry(budgetSpentPercent, ""));
-        miniEntries.add(new PieEntry(1f - budgetSpentPercent, ""));
-
-        PieDataSet miniDataSet = new PieDataSet(miniEntries, "");
-        miniDataSet.setColors(Color.parseColor("#FFC107"), Color.parseColor("#2C2C2C"));
-        miniDataSet.setDrawValues(false);
-
-        binding.miniChartSpent.setData(new PieData(miniDataSet));
-        binding.miniChartSpent.setCenterText((int)(budgetSpentPercent * 100) + "%");
-        binding.miniChartSpent.setCenterTextColor(Color.WHITE);
-        binding.miniChartSpent.setCenterTextSize(9f);
-        binding.miniChartSpent.invalidate();
+        chart.setData(new PieData(ds));
+        chart.setCenterText(centerLabel);
+        chart.setCenterTextColor(CLR_WHITE);
+        chart.setCenterTextSize(centerTextSizeSp);
+        chart.invalidate();
     }
 
     @Override

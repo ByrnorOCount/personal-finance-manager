@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mopr.personal_finance_manager.data.model.Category;
@@ -20,17 +21,38 @@ public class CategoryBudgetAdapter extends RecyclerView.Adapter<CategoryBudgetAd
 
     private List<CategoryBudgetUI> items = new ArrayList<>();
 
-    public void setItems(List<CategoryBudgetUI> items) {
-        this.items = items;
-        notifyDataSetChanged();
+    public void setItems(List<CategoryBudgetUI> newItems) {
+        DiffUtil.DiffResult result = DiffUtil.calculateDiff(new DiffUtil.Callback() {
+            @Override
+            public int getOldListSize() {
+                return items.size();
+            }
+
+            @Override
+            public int getNewListSize() {
+                return newItems.size();
+            }
+
+            @Override
+            public boolean areItemsTheSame(int o, int n) {
+                return items.get(o).category.equals(newItems.get(n).category);
+            }
+
+            @Override
+            public boolean areContentsTheSame(int o, int n) {
+                CategoryBudgetUI oi = items.get(o), ni = newItems.get(n);
+                return oi.budgetLimit == ni.budgetLimit && oi.spentAmount == ni.spentAmount;
+            }
+        });
+        items = new ArrayList<>(newItems);
+        result.dispatchUpdatesTo(this);
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        ItemCategoryBudgetBinding binding = ItemCategoryBudgetBinding.inflate(
-                LayoutInflater.from(parent.getContext()), parent, false);
-        return new ViewHolder(binding);
+        return new ViewHolder(ItemCategoryBudgetBinding.inflate(
+            LayoutInflater.from(parent.getContext()), parent, false));
     }
 
     @Override
@@ -44,35 +66,51 @@ public class CategoryBudgetAdapter extends RecyclerView.Adapter<CategoryBudgetAd
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        private final ItemCategoryBudgetBinding binding;
+        private final ItemCategoryBudgetBinding b;
 
         ViewHolder(ItemCategoryBudgetBinding binding) {
             super(binding.getRoot());
-            this.binding = binding;
+            this.b = binding;
         }
 
         void bind(CategoryBudgetUI item) {
-            Context context = itemView.getContext();
-            binding.tvCategoryName.setText(Category.getDisplayName(context, item.category));
-            binding.ivCategoryIcon.setImageResource(Category.getIconRes(item.category));
-            binding.ivCategoryIcon.setBackgroundColor(context.getColor(Category.getColorRes(item.category)));
+            Context ctx = itemView.getContext();
 
-            binding.tvSpentAmount.setText(CurrencyFormatter.formatVND(item.spentAmount));
-            binding.tvBudgetAmount.setText(CurrencyFormatter.formatVND(item.budgetLimit));
-            binding.tvRemainingAmount.setText(CurrencyFormatter.formatVND(item.getRemaining()) + " Left");
+            b.tvCategoryName.setText(Category.getDisplayName(ctx, item.category));
+            b.ivCategoryIcon.setImageResource(Category.getIconRes(item.category));
 
-            binding.categoryProgress.setProgress(item.getProgress());
-            double percent = item.budgetLimit == 0 ? 0 : (item.spentAmount / item.budgetLimit) * 100;
-            binding.tvProgressPercent.setText(String.format(Locale.getDefault(), "%.2f%%", percent));
+            // Category color circle background
+            int catColor = ctx.getColor(Category.getColorRes(item.category));
+            b.ivCategoryIcon.setBackgroundTintList(
+                android.content.res.ColorStateList.valueOf(catColor));
 
-            if (item.spentAmount > item.budgetLimit) {
-                binding.tvRemainingAmount.setTextColor(context.getColor(android.R.color.holo_red_dark));
-                binding.categoryProgress.setIndicatorColor(context.getColor(android.R.color.holo_red_dark));
-                binding.tvRemainingAmount.setText(CurrencyFormatter.formatVND(item.spentAmount - item.budgetLimit) + " Over");
+            b.tvSpentAmount.setText(CurrencyFormatter.formatVND(item.spentAmount));
+            b.tvBudgetAmount.setText(CurrencyFormatter.formatVND(item.budgetLimit));
+
+            int pct = item.getProgress();
+            b.categoryProgress.setProgressCompat(pct, true);
+            b.tvProgressPercent.setText(String.format(Locale.getDefault(), "%.2f%%",
+                item.budgetLimit == 0 ? 0.0 : (item.spentAmount / item.budgetLimit) * 100));
+
+            boolean isOver = item.spentAmount > item.budgetLimit;
+
+            int barColor = isOver
+                ? ctx.getColor(com.mopr.personal_finance_manager.R.color.expense_red)
+                : ctx.getColor(com.mopr.personal_finance_manager.R.color.budget_yellow_accent);
+
+            b.categoryProgress.setIndicatorColor(barColor);
+
+            if (isOver) {
+                double over = item.spentAmount - item.budgetLimit;
+                b.tvRemainingAmount.setText(
+                    CurrencyFormatter.formatVND(over) + " Over");
+                b.tvRemainingAmount.setTextColor(
+                    ctx.getColor(com.mopr.personal_finance_manager.R.color.expense_red));
             } else {
-                binding.tvRemainingAmount.setTextColor(context.getColor(com.mopr.personal_finance_manager.R.color.budget_yellow_accent));
-                binding.categoryProgress.setIndicatorColor(context.getColor(com.mopr.personal_finance_manager.R.color.budget_yellow_accent));
-                binding.tvRemainingAmount.setText(CurrencyFormatter.formatVND(item.getRemaining()) + " Left");
+                b.tvRemainingAmount.setText(
+                    CurrencyFormatter.formatVND(item.getRemaining()) + " Left");
+                b.tvRemainingAmount.setTextColor(
+                    ctx.getColor(com.mopr.personal_finance_manager.R.color.budget_yellow_accent));
             }
         }
     }

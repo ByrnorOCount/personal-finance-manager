@@ -16,83 +16,104 @@ import java.util.List;
 
 public class FinanceViewModel extends AndroidViewModel {
 
-    private final FinanceRepository repository;
+    private final FinanceRepository repo;
 
     public FinanceViewModel(@NonNull Application application) {
         super(application);
-        repository = FinanceRepository.getInstance(application);
+        repo = FinanceRepository.getInstance(application);
     }
 
-    // ── Home ──────────────────────────────────────────────────────────────
+    // ── Transactions ──────────────────────────────────────────────────
 
     public LiveData<List<Transaction>> getRecentTransactions() {
-        return repository.getRecentTransactions();
+        return repo.getRecentTransactions();
+    }
+
+    public LiveData<List<Transaction>> getAllTransactions() {
+        return repo.getAllTransactions();
     }
 
     public LiveData<Double> getTotalBalance() {
-        return repository.getTotalBalance();
+        return repo.getTotalBalance();
     }
 
     public LiveData<Double> getTotalIncome(long start, long end) {
-        return repository.getTotalIncome(start, end);
+        return repo.getTotalIncome(start, end);
     }
 
     public LiveData<Double> getTotalExpense(long start, long end) {
-        return repository.getTotalExpense(start, end);
+        return repo.getTotalExpense(start, end);
     }
 
     public LiveData<List<CategorySum>> getExpensesByCategory(long start, long end) {
-        return repository.getExpensesByCategory(start, end);
+        return repo.getExpensesByCategory(start, end);
     }
 
-    // ── History ───────────────────────────────────────────────────────────
+    public void insertTransaction(Transaction t) {
+        repo.insertTransaction(t);
+    }
+
+    public void updateTransaction(Transaction t) {
+        repo.updateTransaction(t);
+    }
+
+    public void deleteTransaction(Transaction t) {
+        repo.deleteTransaction(t);
+    }
+
+    // ── Budgets ───────────────────────────────────────────────────────
 
     /**
-     * Full transaction list, newest first — used by HistoryFragment.
+     * Insert or silently update if same category+period already exists
      */
-    public LiveData<List<Transaction>> getAllTransactions() {
-        return repository.getAllTransactions();
+    public void upsertBudget(Budget b) {
+        repo.upsertBudget(b);
     }
 
-    // ── Budget ────────────────────────────────────────────────────────────
+    public void updateBudget(Budget b) {
+        repo.updateBudget(b);
+    }
 
+    public void deleteBudget(int id) {
+        repo.deleteBudget(id);
+    }
+
+    public LiveData<List<Budget>> getBudgetsForPeriod(String type, String key) {
+        return repo.getBudgetsForPeriod(type, key);
+    }
+
+    public LiveData<Double> getTotalBudgetedForPeriod(String type, String key) {
+        return repo.getTotalBudgetedForPeriod(type, key);
+    }
+
+    public void cloneBudgets(String periodType, String fromKey, String toKey) {
+        repo.cloneBudgets(periodType, fromKey, toKey);
+    }
+
+    // Legacy month helpers used by HomeFragment
     public LiveData<List<Budget>> getBudgetsForMonth(String month) {
-        return repository.getBudgetsForMonth(month);
+        return repo.getBudgetsForMonth(month);
     }
 
     public LiveData<Double> getTotalBudgetedForMonth(String month) {
-        return repository.getTotalBudgetedForMonth(month);
+        return repo.getTotalBudgetedForMonth(month);
     }
 
-    // ── Savings ───────────────────────────────────────────────────────────
+    // ── Savings ───────────────────────────────────────────────────────
+
+    public void insertSavingsGoal(SavingsGoal g) {
+        repo.insertSavingsGoal(g);
+    }
+
+    public void updateSavingsGoal(SavingsGoal g) {
+        repo.updateSavingsGoal(g);
+    }
 
     public LiveData<List<SavingsGoal>> getActiveSavingsGoals() {
-        return repository.getActiveSavingsGoals();
+        return repo.getActiveSavingsGoals();
     }
 
-    // ── Mutations ─────────────────────────────────────────────────────────
-
-    public void insertTransaction(Transaction transaction) {
-        repository.insertTransaction(transaction);
-    }
-
-    public void updateTransaction(Transaction transaction) {
-        repository.updateTransaction(transaction);
-    }
-
-    public void deleteTransaction(Transaction transaction) {
-        repository.deleteTransaction(transaction);
-    }
-
-    public void insertBudget(Budget budget) {
-        repository.insertBudget(budget);
-    }
-
-    public void insertSavingsGoal(SavingsGoal goal) {
-        repository.insertSavingsGoal(goal);
-    }
-
-    public void updateSavingsGoal(SavingsGoal goal) {
-        repository.updateSavingsGoal(goal);
+    public LiveData<List<SavingsGoal>> getAllSavingsGoals() {
+        return repo.getAllSavingsGoals();
     }
 }

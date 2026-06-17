@@ -15,9 +15,9 @@ public class MockDataGenerator {
         long now = cal.getTimeInMillis();
 
         // Budgets
-        repository.insertBudget(new Budget(Category.FOOD, 3300000, currentMonth));
-        repository.insertBudget(new Budget(Category.HAIRCUT, 140000, currentMonth));
-        repository.insertBudget(new Budget(Category.BILLS, 2186000, currentMonth));
+        repository.insertBudget(Budget.forMonth(Category.FOOD, 3300000, currentMonth));
+        repository.insertBudget(Budget.forMonth(Category.HAIRCUT, 140000, currentMonth));
+        repository.insertBudget(Budget.forMonth(Category.BILLS, 2186000, currentMonth));
 
         // Income
         repository.insertTransaction(new Transaction("INCOME", 6500000, Category.SALARY, now, "Monthly Salary", "VND"));

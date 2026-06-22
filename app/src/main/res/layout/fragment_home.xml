@@ -114,6 +114,7 @@
                         app:layout_constraintStart_toEndOf="@id/tvInitialBalanceLabel"
                         tools:text="6.000.000 ₫" />
 
+                    <!-- INCOME SECTION -->
                     <TextView
                         android:id="@+id/tvTotalIncomeLabel"
                         android:layout_width="wrap_content"
@@ -141,7 +142,7 @@
                         android:id="@+id/incomeBarContainer"
                         android:layout_width="0dp"
                         android:layout_height="18dp"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginTop="12dp"
                         android:layout_marginEnd="20dp"
                         android:orientation="horizontal"
                         app:layout_constraintEnd_toStartOf="@id/flChartContainer"
@@ -173,30 +174,32 @@
                         android:layout_marginEnd="8dp"
                         android:background="@drawable/dashed_line_v"
                         android:backgroundTint="@color/income_green_accent"
+                        android:layerType="software"
                         app:layout_constraintBottom_toTopOf="@id/incomeBarContainer"
                         app:layout_constraintEnd_toEndOf="@id/incomeBarContainer"
                         app:layout_constraintTop_toTopOf="@id/hPointerIncomeGreen" />
 
                     <View
                         android:id="@+id/hPointerIncomeGreen"
-                        android:layout_width="0dp"
+                        android:layout_width="32dp"
                         android:layout_height="2dp"
+                        android:layout_marginEnd="-1dp"
                         android:background="@drawable/dashed_line_h"
                         android:backgroundTint="@color/income_green_accent"
+                        android:layerType="software"
                         app:layout_constraintBottom_toBottomOf="@id/tvTotalIncome"
                         app:layout_constraintEnd_toStartOf="@id/vPointerIncomeGreen"
-                        app:layout_constraintStart_toEndOf="@id/pointerHeadIncomeGreen"
                         app:layout_constraintTop_toTopOf="@id/tvTotalIncome" />
 
                     <View
                         android:id="@+id/pointerHeadIncomeGreen"
                         android:layout_width="6dp"
                         android:layout_height="6dp"
-                        android:layout_marginEnd="4dp"
+                        android:layout_marginEnd="-3dp"
                         android:background="@drawable/pointer_dot"
                         android:backgroundTint="@color/income_green_accent"
                         app:layout_constraintBottom_toBottomOf="@id/hPointerIncomeGreen"
-                        app:layout_constraintEnd_toEndOf="@id/tvTotalIncome"
+                        app:layout_constraintEnd_toStartOf="@id/hPointerIncomeGreen"
                         app:layout_constraintTop_toTopOf="@id/hPointerIncomeGreen" />
 
                     <!-- Blue Pointer (Provisional Balance) -->
@@ -207,18 +210,20 @@
                         android:layout_marginStart="8dp"
                         android:background="@drawable/dashed_line_v"
                         android:backgroundTint="@color/provisional_blue"
+                        android:layerType="software"
                         app:layout_constraintBottom_toTopOf="@id/hPointerIncomeBlue"
                         app:layout_constraintStart_toStartOf="@id/incomeBarContainer"
                         app:layout_constraintTop_toBottomOf="@id/incomeBarContainer" />
 
                     <View
                         android:id="@+id/hPointerIncomeBlue"
-                        android:layout_width="0dp"
+                        android:layout_width="32dp"
                         android:layout_height="2dp"
+                        android:layout_marginStart="-1dp"
                         android:background="@drawable/dashed_line_h"
                         android:backgroundTint="@color/provisional_blue"
+                        android:layerType="software"
                         app:layout_constraintBottom_toBottomOf="@id/tvProvisionalBalance"
-                        app:layout_constraintEnd_toStartOf="@id/pointerHeadIncomeBlue"
                         app:layout_constraintStart_toEndOf="@id/vPointerIncomeBlue"
                         app:layout_constraintTop_toTopOf="@id/tvProvisionalBalance" />
 
@@ -226,18 +231,18 @@
                         android:id="@+id/pointerHeadIncomeBlue"
                         android:layout_width="6dp"
                         android:layout_height="6dp"
-                        android:layout_marginStart="4dp"
+                        android:layout_marginStart="-3dp"
                         android:background="@drawable/pointer_dot"
                         android:backgroundTint="@color/provisional_blue"
                         app:layout_constraintBottom_toBottomOf="@id/hPointerIncomeBlue"
-                        app:layout_constraintStart_toStartOf="@id/tvProvisionalBalanceLabel"
+                        app:layout_constraintStart_toEndOf="@id/hPointerIncomeBlue"
                         app:layout_constraintTop_toTopOf="@id/hPointerIncomeBlue" />
 
                     <TextView
                         android:id="@+id/tvProvisionalBalanceLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="28dp"
+                        android:layout_marginTop="12dp"
                         android:text="@string/provisional_balance_label"
                         android:textColor="?attr/colorOnSurfaceVariant"
                         android:textSize="13sp"
@@ -261,7 +266,7 @@
                         android:id="@+id/tvTotalBudgetedLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="24dp"
+                        android:layout_marginTop="20dp"
                         android:text="@string/total_budgeted_label"
                         android:textColor="?attr/colorOnSurfaceVariant"
                         android:textSize="13sp"
@@ -283,8 +288,8 @@
                     <LinearLayout
                         android:id="@+id/budgetBarContainer"
                         android:layout_width="0dp"
-                        android:layout_height="24dp"
-                        android:layout_marginTop="28dp"
+                        android:layout_height="18dp"
+                        android:layout_marginTop="12dp"
                         android:layout_marginEnd="20dp"
                         android:orientation="horizontal"
                         app:layout_constraintEnd_toStartOf="@id/flChartContainer"
@@ -316,30 +321,32 @@
                         android:layout_marginEnd="8dp"
                         android:background="@drawable/dashed_line_v"
                         android:backgroundTint="@color/budget_purple_accent"
+                        android:layerType="software"
                         app:layout_constraintBottom_toTopOf="@id/budgetBarContainer"
                         app:layout_constraintEnd_toEndOf="@id/budgetBarContainer"
                         app:layout_constraintTop_toTopOf="@id/hPointerBudgetPurple" />
 
                     <View
                         android:id="@+id/hPointerBudgetPurple"
-                        android:layout_width="0dp"
+                        android:layout_width="32dp"
                         android:layout_height="2dp"
+                        android:layout_marginEnd="-1dp"
                         android:background="@drawable/dashed_line_h"
                         android:backgroundTint="@color/budget_purple_accent"
+                        android:layerType="software"
                         app:layout_constraintBottom_toBottomOf="@id/tvTotalBudgeted"
                         app:layout_constraintEnd_toStartOf="@id/vPointerBudgetPurple"
-                        app:layout_constraintStart_toEndOf="@id/pointerHeadBudgetPurple"
                         app:layout_constraintTop_toTopOf="@id/tvTotalBudgeted" />
 
                     <View
                         android:id="@+id/pointerHeadBudgetPurple"
                         android:layout_width="6dp"
                         android:layout_height="6dp"
-                        android:layout_marginEnd="4dp"
+                        android:layout_marginEnd="-3dp"
                         android:background="@drawable/pointer_dot"
                         android:backgroundTint="@color/budget_purple_accent"
                         app:layout_constraintBottom_toBottomOf="@id/hPointerBudgetPurple"
-                        app:layout_constraintEnd_toEndOf="@id/tvTotalBudgeted"
+                        app:layout_constraintEnd_toStartOf="@id/hPointerBudgetPurple"
                         app:layout_constraintTop_toTopOf="@id/hPointerBudgetPurple" />
 
                     <!-- Yellow Pointer (Remaining) -->
@@ -350,18 +357,20 @@
                         android:layout_marginStart="8dp"
                         android:background="@drawable/dashed_line_v"
                         android:backgroundTint="@color/budget_yellow_accent"
+                        android:layerType="software"
                         app:layout_constraintBottom_toTopOf="@id/hPointerBudgetYellow"
                         app:layout_constraintStart_toStartOf="@id/budgetBarContainer"
                         app:layout_constraintTop_toBottomOf="@id/budgetBarContainer" />
 
                     <View
                         android:id="@+id/hPointerBudgetYellow"
-                        android:layout_width="0dp"
+                        android:layout_width="32dp"
                         android:layout_height="2dp"
+                        android:layout_marginStart="-1dp"
                         android:background="@drawable/dashed_line_h"
                         android:backgroundTint="@color/budget_yellow_accent"
+                        android:layerType="software"
                         app:layout_constraintBottom_toBottomOf="@id/tvRemaining"
-                        app:layout_constraintEnd_toStartOf="@id/pointerHeadBudgetYellow"
                         app:layout_constraintStart_toEndOf="@id/vPointerBudgetYellow"
                         app:layout_constraintTop_toTopOf="@id/tvRemaining" />
 
@@ -369,18 +378,18 @@
                         android:id="@+id/pointerHeadBudgetYellow"
                         android:layout_width="6dp"
                         android:layout_height="6dp"
-                        android:layout_marginStart="4dp"
+                        android:layout_marginStart="-3dp"
                         android:background="@drawable/pointer_dot"
                         android:backgroundTint="@color/budget_yellow_accent"
                         app:layout_constraintBottom_toBottomOf="@id/hPointerBudgetYellow"
-                        app:layout_constraintStart_toStartOf="@id/tvRemainingLabel"
+                        app:layout_constraintStart_toEndOf="@id/hPointerBudgetYellow"
                         app:layout_constraintTop_toTopOf="@id/hPointerBudgetYellow" />
 
                     <TextView
                         android:id="@+id/tvRemainingLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="28dp"
+                        android:layout_marginTop="12dp"
                         android:text="@string/remaining_to_spend_label"
                         android:textColor="?attr/colorOnSurfaceVariant"
                         android:textSize="13sp"

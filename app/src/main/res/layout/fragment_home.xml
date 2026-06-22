@@ -137,18 +137,18 @@
                         app:layout_constraintTop_toBottomOf="@id/tvTotalIncomeLabel"
                         tools:text="6.500.000 ₫" />
 
-                    <!-- Income progress bar (full width of left column) -->
+                    <!-- Income progress bar (takes more width now) -->
                     <com.google.android.material.progressindicator.LinearProgressIndicator
                         android:id="@+id/incomeProgress"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
+                        android:layout_marginEnd="20dp"
                         android:progress="100"
                         app:indicatorColor="@color/income_green_accent"
-                        app:layout_constraintEnd_toStartOf="@id/chartIncomeSpent"
+                        app:layout_constraintEnd_toStartOf="@id/flChartContainer"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tvTotalIncome"
-                        app:layout_constraintWidth_percent="0.55"
                         app:trackColor="@color/chart_gray_bg"
                         app:trackCornerRadius="4dp"
                         app:trackThickness="10dp" />
@@ -206,12 +206,12 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
+                        android:layout_marginEnd="20dp"
                         android:progress="30"
                         app:indicatorColor="@color/budget_yellow_accent"
-                        app:layout_constraintEnd_toStartOf="@id/chartIncomeSpent"
+                        app:layout_constraintEnd_toStartOf="@id/flChartContainer"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tvTotalBudgeted"
-                        app:layout_constraintWidth_percent="0.55"
                         app:trackColor="@color/budget_purple_accent"
                         app:trackCornerRadius="4dp"
                         app:trackThickness="10dp" />
@@ -247,8 +247,8 @@
                         android:text="@string/saving_label"
                         android:textColor="@color/dashboard_text_secondary"
                         android:textSize="13sp"
-                        app:layout_constraintEnd_toEndOf="@id/chartIncomeSpent"
-                        app:layout_constraintStart_toStartOf="@id/chartIncomeSpent"
+                        app:layout_constraintEnd_toEndOf="@id/flChartContainer"
+                        app:layout_constraintStart_toStartOf="@id/flChartContainer"
                         app:layout_constraintTop_toTopOf="@id/tvTotalIncomeLabel" />
 
                     <TextView
@@ -264,15 +264,28 @@
                         app:layout_constraintTop_toBottomOf="@id/tvSavingLabel"
                         tools:text="2.297.000 ₫" />
 
-                    <!-- Main donut chart -->
-                    <com.github.mikephil.charting.charts.PieChart
-                        android:id="@+id/chartIncomeSpent"
-                        android:layout_width="140dp"
-                        android:layout_height="140dp"
-                        android:layout_marginStart="12dp"
+                    <!-- Main donut chart (2-ring composition) -->
+                    <FrameLayout
+                        android:id="@+id/flChartContainer"
+                        android:layout_width="110dp"
+                        android:layout_height="110dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/tvSaving" />
+                        app:layout_constraintTop_toBottomOf="@id/tvSaving">
+
+                        <!-- Outer ring: Saving -->
+                        <com.github.mikephil.charting.charts.PieChart
+                            android:id="@+id/chartSaving"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
+                        <!-- Inner ring: Income Spent -->
+                        <com.github.mikephil.charting.charts.PieChart
+                            android:id="@+id/chartIncomeSpent"
+                            android:layout_width="82dp"
+                            android:layout_height="82dp"
+                            android:layout_gravity="center" />
+                    </FrameLayout>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>

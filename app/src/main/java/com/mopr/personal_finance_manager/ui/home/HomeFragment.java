@@ -83,8 +83,13 @@ public class HomeFragment extends Fragment {
     }
 
     private void setupCharts() {
-        // Main donut — larger hole for the center text
+        // Outer ring: Saving (dark gray)
+        setupDonutChart(binding.chartSaving, 88f);
+        binding.chartSaving.setDrawCenterText(false);
+
+        // Inner ring: Income Spent (orange-yellow) — larger hole for the center text
         setupDonutChart(binding.chartIncomeSpent, 72f);
+
         // Mini donut in the budget header
         setupDonutChart(binding.miniChartSpent, 68f);
     }
@@ -165,26 +170,26 @@ public class HomeFragment extends Fragment {
         // ── Core financial figures ────────────────────────────────────
         //
         // totalFunds     = initialBalance + totalIncome
-        //   The total money available this month.
+        //   The total money available this month (what user sees as Total Income).
         //
         // provisionalBalance = totalFunds - totalSpent
         //   What you'd have left if all recorded spending is deducted.
         //   Shown in blue under the income bar.
         //
-        // saving         = totalIncome - totalSpent   (income surplus, not budget surplus)
-        //   Top-right of the dashboard card.
+        // saving         = totalFunds - totalSpent
+        //   Difference between total income (incl initial) and total spent.
         //
         // remaining      = totalBudgeted - totalSpent
-        //   How much budget headroom is left.  Shown in yellow under budget bar.
+        //   How much budget headroom is left. Shown in yellow under budget bar.
 
         double totalFunds = initialBalance + totalIncome;
         double provisionalBalance = totalFunds - totalSpent;
-        double saving = totalIncome - totalSpent;
+        double saving = totalFunds - totalSpent;
         double remaining = totalBudgeted - totalSpent;
 
         // ── Text fields ───────────────────────────────────────────────
         binding.tvInitialBalance.setText(CurrencyFormatter.formatVND(initialBalance));
-        binding.tvTotalIncome.setText(CurrencyFormatter.formatVND(totalIncome));
+        binding.tvTotalIncome.setText(CurrencyFormatter.formatVND(totalFunds));
         binding.tvTotalBudgeted.setText(CurrencyFormatter.formatVND(totalBudgeted));
         binding.tvProvisionalBalance.setText(CurrencyFormatter.formatVND(Math.max(0, provisionalBalance)));
         binding.tvRemaining.setText(CurrencyFormatter.formatVND(Math.max(0, remaining)));
@@ -193,25 +198,14 @@ public class HomeFragment extends Fragment {
         binding.tvListTotalSpent.setText(CurrencyFormatter.formatVND(totalSpent));
 
         // ── Income progress bar ───────────────────────────────────────
-        //
-        // The green bar represents totalFunds (full width = initialBalance + income).
+        // The green bar represents totalFunds.
         // The FILLED portion is what has been SPENT so far.
-        //
-        // Visual: [===SPENT===|---remaining---]
-        //              ^green           ^dark track
-        //
-        // progress max = 100; progress value = spent/totalFunds * 100
         int incomeBarPct = totalFunds <= 0 ? 0
             : (int) Math.min(100, (totalSpent / totalFunds) * 100);
         binding.incomeProgress.setMax(100);
         binding.incomeProgress.setProgressCompat(incomeBarPct, true);
 
         // ── Budget progress bar ───────────────────────────────────────
-        //
-        // Yellow fill = how much of the budget limit has been spent.
-        // Purple track = the full budget limit (always visible as background).
-        //
-        // progress max = 100; progress value = spent/budgeted * 100
         int budgetBarPct = totalBudgeted <= 0 ? 0
             : (int) Math.min(100, (totalSpent / totalBudgeted) * 100);
         binding.budgetProgress.setMax(100);
@@ -237,17 +231,32 @@ public class HomeFragment extends Fragment {
     private void refreshCharts() {
         if (binding == null) return;
 
-        // ── Main donut: income spent % ────────────────────────────────
-        // Orange arc = totalSpent portion of totalIncome.
-        // Dark arc  = saving (unspent income).
-        float spentOfIncome = totalIncome <= 0 ? 0f
-            : (float) Math.min(1.0, totalSpent / totalIncome);
+        double totalFunds = initialBalance + totalIncome;
+
+        // ── Main donut composition ───────────────────────────────────
+        // Inner Ring: Income Spent (Orange-Yellow)
+        float spentOfIncome = totalFunds <= 0 ? 0f
+            : (float) Math.min(1.0, totalSpent / totalFunds);
         int spentPct = Math.round(spentOfIncome * 100);
 
         updateDonut(binding.chartIncomeSpent,
             spentOfIncome,
-            "Income spent\n" + spentPct + "%",
-            12f);
+            "Spent\n" + spentPct + "%",
+            11f,
+            CLR_ORANGE,
+            Color.TRANSPARENT);
+
+        // Outer Ring: Saving (Dark Gray)
+        // User wants saving to be the diff between total income (incl initial) and spent
+        float savingOfIncome = totalFunds <= 0 ? 0f
+            : (float) Math.max(0, (totalFunds - totalSpent) / totalFunds);
+
+        updateDonut(binding.chartSaving,
+            savingOfIncome,
+            "",
+            0f,
+            CLR_RING_BG,
+            Color.TRANSPARENT);
 
         // ── Mini donut: budget used % ─────────────────────────────────
         float spentOfBudget = totalBudgeted <= 0 ? 0f
@@ -257,18 +266,23 @@ public class HomeFragment extends Fragment {
         updateDonut(binding.miniChartSpent,
             spentOfBudget,
             budgetPct + "%",
-            9f);
+            9f,
+            CLR_ORANGE,
+            CLR_RING_BG);
     }
 
     /**
      * Sets up a two-slice donut chart.
      *
-     * @param filledFraction   0.0–1.0 — the orange (filled) fraction
+     * @param filledFraction   0.0–1.0 — the primary color (filled) fraction
      * @param centerLabel      text for the hole
      * @param centerTextSizeSp sp size of the center text
+     * @param primaryColor     the color for the filled fraction
+     * @param secondaryColor   the color for the "empty" fraction
      */
     private void updateDonut(com.github.mikephil.charting.charts.PieChart chart,
-                             float filledFraction, String centerLabel, float centerTextSizeSp) {
+                             float filledFraction, String centerLabel, float centerTextSizeSp,
+                             int primaryColor, int secondaryColor) {
         // Always two slices — avoids MPAndroidChart single-entry crash
         float filled = Math.max(0.001f, Math.min(1f, filledFraction));
         float empty = Math.max(0.001f, 1f - filled);
@@ -278,12 +292,7 @@ public class HomeFragment extends Fragment {
         entries.add(new PieEntry(empty, ""));
 
         PieDataSet ds = new PieDataSet(entries, "");
-        // If essentially nothing spent, show all-gray ring
-        if (filledFraction < 0.005f) {
-            ds.setColors(CLR_RING_BG, CLR_RING_BG);
-        } else {
-            ds.setColors(CLR_ORANGE, CLR_RING_BG);
-        }
+        ds.setColors(primaryColor, secondaryColor);
         ds.setDrawValues(false);
         ds.setSliceSpace(0f);
 

@@ -37,7 +37,7 @@ and UI within their assigned features.
 ### Person A: Core Operations & Flow
 
 - [/] **Transactions (Add/History):** RecyclerView, search/filter, and the entry system.
-- [/] **Home Screen:** Summary cards and the "5 most recent" preview.
+- [/] **Home Screen:** Summary cards.
 - [/] **App Infrastructure:** Splash screen animation and Settings (Currency, PIN lock).
 
 ### Person B: Analysis & Planning

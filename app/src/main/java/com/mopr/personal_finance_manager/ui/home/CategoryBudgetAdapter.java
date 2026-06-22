@@ -88,7 +88,11 @@ public class CategoryBudgetAdapter extends RecyclerView.Adapter<CategoryBudgetAd
             b.tvBudgetAmount.setText(CurrencyFormatter.formatVND(item.budgetLimit));
 
             int pct = item.getProgress();
-            b.categoryProgress.setProgressCompat(pct, true);
+            // Use weights for the progress bar
+            android.widget.LinearLayout.LayoutParams lp = (android.widget.LinearLayout.LayoutParams) b.categoryProgressIndicator.getLayoutParams();
+            lp.weight = (float) Math.min(100, pct);
+            b.categoryProgressIndicator.setLayoutParams(lp);
+
             b.tvProgressPercent.setText(String.format(Locale.getDefault(), "%.2f%%",
                 item.budgetLimit == 0 ? 0.0 : (item.spentAmount / item.budgetLimit) * 100));
 
@@ -98,7 +102,8 @@ public class CategoryBudgetAdapter extends RecyclerView.Adapter<CategoryBudgetAd
                 ? ctx.getColor(com.mopr.personal_finance_manager.R.color.expense_red)
                 : ctx.getColor(com.mopr.personal_finance_manager.R.color.budget_yellow_accent);
 
-            b.categoryProgress.setIndicatorColor(barColor);
+            b.categoryProgressIndicator.setBackgroundTintList(
+                android.content.res.ColorStateList.valueOf(barColor));
 
             if (isOver) {
                 double over = item.spentAmount - item.budgetLimit;

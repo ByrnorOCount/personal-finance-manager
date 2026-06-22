@@ -144,6 +144,9 @@
                         android:layout_height="18dp"
                         android:layout_marginTop="12dp"
                         android:layout_marginEnd="20dp"
+                        android:background="@drawable/bg_bar_full"
+                        android:backgroundTint="@color/chart_gray_bg"
+                        android:clipToOutline="true"
                         android:orientation="horizontal"
                         app:layout_constraintEnd_toStartOf="@id/flChartContainer"
                         app:layout_constraintStart_toStartOf="parent"
@@ -154,16 +157,14 @@
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="30"
-                            android:background="@drawable/bg_bar_left"
-                            android:backgroundTint="@color/provisional_blue" />
+                            android:background="@color/provisional_blue" />
 
                         <View
                             android:id="@+id/incomeBarSpent"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="70"
-                            android:background="@drawable/bg_bar_right"
-                            android:backgroundTint="@color/income_green_accent" />
+                            android:background="@color/income_green_accent" />
                     </LinearLayout>
 
                     <!-- Green Pointer (Income Spent -> Total Income) -->
@@ -291,6 +292,9 @@
                         android:layout_height="18dp"
                         android:layout_marginTop="12dp"
                         android:layout_marginEnd="20dp"
+                        android:background="@drawable/bg_bar_full"
+                        android:backgroundTint="@color/chart_gray_bg"
+                        android:clipToOutline="true"
                         android:orientation="horizontal"
                         app:layout_constraintEnd_toStartOf="@id/flChartContainer"
                         app:layout_constraintStart_toStartOf="parent"
@@ -301,16 +305,14 @@
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="30"
-                            android:background="@drawable/bg_bar_left"
-                            android:backgroundTint="@color/budget_yellow_accent" />
+                            android:background="@color/budget_yellow_accent" />
 
                         <View
                             android:id="@+id/budgetBarSpent"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="70"
-                            android:background="@drawable/bg_bar_right"
-                            android:backgroundTint="@color/budget_purple_accent" />
+                            android:background="@color/budget_purple_accent" />
                     </LinearLayout>
 
                     <!-- Purple Pointer (Budget Spent -> Total Budgeted) -->

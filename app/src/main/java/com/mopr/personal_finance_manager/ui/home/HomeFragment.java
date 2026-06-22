@@ -199,30 +199,28 @@ public class HomeFragment extends Fragment {
         binding.tvListTotalSpent.setText(CurrencyFormatter.formatVND(totalSpent));
 
         // ── Income progress bar ───────────────────────────────────────
-        // The green bar represents spent, the blue bar represents provisional.
-        float incomeBarPct = totalFunds <= 0 ? 0f
+        // Blue (Provisional) on left, Green (Spent) on right.
+        float spentOfFunds = totalFunds <= 0 ? 0f
             : (float) Math.min(1.0, totalSpent / totalFunds);
 
-        updateBarWeights(binding.incomeBarSpent, binding.incomeBarProvisional, incomeBarPct);
-        updatePointer(binding.vPointerIncome, incomeBarPct);
+        updateBarWeights(binding.incomeBarProvisional, binding.incomeBarSpent, 1f - spentOfFunds);
 
         // ── Budget progress bar ───────────────────────────────────────
-        // Purple = spent, Yellow = remaining.
-        float budgetBarPct = totalBudgeted <= 0 ? 0f
+        // Yellow (Remaining) on left, Purple (Spent) on right.
+        float spentOfBudget = totalBudgeted <= 0 ? 0f
             : (float) Math.min(1.0, totalSpent / totalBudgeted);
 
-        updateBarWeights(binding.budgetBarSpent, binding.budgetBarRemaining, budgetBarPct);
-        updatePointer(binding.vPointerBudget, budgetBarPct);
+        updateBarWeights(binding.budgetBarRemaining, binding.budgetBarSpent, 1f - spentOfBudget);
 
         // Over-budget: turn bar red
         if (totalBudgeted > 0 && totalSpent > totalBudgeted) {
-            binding.budgetBarRemaining.setBackgroundTintList(
+            binding.budgetBarSpent.setBackgroundTintList(
                 android.content.res.ColorStateList.valueOf(requireContext().getColor(R.color.expense_red)));
             binding.tvRemaining.setTextColor(
                 requireContext().getColor(R.color.expense_red));
         } else {
-            binding.budgetBarRemaining.setBackgroundTintList(
-                android.content.res.ColorStateList.valueOf(requireContext().getColor(R.color.budget_yellow_accent)));
+            binding.budgetBarSpent.setBackgroundTintList(
+                android.content.res.ColorStateList.valueOf(requireContext().getColor(R.color.budget_purple_accent)));
             binding.tvRemaining.setTextColor(
                 requireContext().getColor(R.color.budget_yellow_accent));
         }
@@ -231,20 +229,14 @@ public class HomeFragment extends Fragment {
         refreshCharts();
     }
 
-    private void updateBarWeights(View left, View right, float progress) {
-        float leftWeight = Math.max(0.01f, progress);
-        float rightWeight = Math.max(0.01f, 1f - progress);
+    private void updateBarWeights(View left, View right, float leftWeightFraction) {
+        float leftWeight = Math.max(0.01f, leftWeightFraction);
+        float rightWeight = Math.max(0.01f, 1f - leftWeightFraction);
 
         left.setLayoutParams(new LinearLayout.LayoutParams(0,
             ViewGroup.LayoutParams.MATCH_PARENT, leftWeight));
         right.setLayoutParams(new LinearLayout.LayoutParams(0,
             ViewGroup.LayoutParams.MATCH_PARENT, rightWeight));
-    }
-
-    private void updatePointer(View pointer, float progress) {
-        ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) pointer.getLayoutParams();
-        params.horizontalBias = Math.max(0.05f, Math.min(0.95f, progress));
-        pointer.setLayoutParams(params);
     }
 
     private void refreshCharts() {

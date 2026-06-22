@@ -114,7 +114,7 @@
                         app:layout_constraintStart_toEndOf="@id/tvInitialBalanceLabel"
                         tools:text="6.000.000 ₫" />
 
-                    <!-- LEFT COLUMN: Income + Budget -->
+                    <!-- Total Income (Top Left) -->
                     <TextView
                         android:id="@+id/tvTotalIncomeLabel"
                         android:layout_width="wrap_content"
@@ -138,12 +138,12 @@
                         app:layout_constraintTop_toBottomOf="@id/tvTotalIncomeLabel"
                         tools:text="6.500.000 ₫" />
 
-                    <!-- Custom Income Progress (meeting perfectly) -->
+                    <!-- Income Progress Bar (Blue-Green) -->
                     <LinearLayout
                         android:id="@+id/incomeBarContainer"
                         android:layout_width="0dp"
                         android:layout_height="12dp"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="20dp"
                         android:layout_marginEnd="20dp"
                         android:orientation="horizontal"
                         app:layout_constraintEnd_toStartOf="@id/flChartContainer"
@@ -151,65 +151,94 @@
                         app:layout_constraintTop_toBottomOf="@id/tvTotalIncome">
 
                         <View
-                            android:id="@+id/incomeBarSpent"
+                            android:id="@+id/incomeBarProvisional"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="30"
                             android:background="@drawable/bg_bar_left"
-                            android:backgroundTint="@color/income_green_accent" />
+                            android:backgroundTint="@color/provisional_blue" />
 
                         <View
-                            android:id="@+id/incomeBarProvisional"
+                            android:id="@+id/incomeBarSpent"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="70"
                             android:background="@drawable/bg_bar_right"
-                            android:backgroundTint="@color/provisional_blue" />
+                            android:backgroundTint="@color/income_green_accent" />
                     </LinearLayout>
 
-                    <!-- Pointer for Provisional Balance -->
+                    <!-- Green Pointer: Starts at RIGHT end, goes UP then LEFT -->
                     <View
-                        android:id="@+id/vPointerIncome"
-                        android:layout_width="1.5dp"
-                        android:layout_height="16dp"
-                        android:background="@drawable/dashed_line"
-                        android:backgroundTint="@color/provisional_blue"
-                        app:layout_constraintEnd_toEndOf="@id/incomeBarContainer"
-                        app:layout_constraintStart_toStartOf="@id/incomeBarContainer"
-                        app:layout_constraintTop_toBottomOf="@id/incomeBarContainer"
-                        app:layout_constraintHorizontal_bias="0.3" /> <!-- Bias tied to progress -->
+                        android:id="@+id/vPointerIncomeGreen"
+                        android:layout_width="2dp"
+                        android:layout_height="12dp"
+                        android:layout_marginEnd="6dp"
+                        android:background="@drawable/dashed_line_v"
+                        android:backgroundTint="@color/income_green_accent"
+                        app:layout_constraintBottom_toTopOf="@id/incomeBarContainer"
+                        app:layout_constraintEnd_toEndOf="@id/incomeBarContainer" />
 
                     <View
-                        android:id="@+id/hPointerIncome"
-                        android:layout_width="0dp"
-                        android:layout_height="1.5dp"
-                        android:background="@drawable/dashed_line"
-                        android:backgroundTint="@color/provisional_blue"
-                        app:layout_constraintEnd_toStartOf="@id/pointerHeadIncome"
-                        app:layout_constraintStart_toStartOf="@id/vPointerIncome"
-                        app:layout_constraintTop_toBottomOf="@id/vPointerIncome" />
+                        android:id="@+id/hPointerIncomeGreen"
+                        android:layout_width="30dp"
+                        android:layout_height="2dp"
+                        android:background="@drawable/dashed_line_h"
+                        android:backgroundTint="@color/income_green_accent"
+                        app:layout_constraintEnd_toStartOf="@id/vPointerIncomeGreen"
+                        app:layout_constraintTop_toTopOf="@id/vPointerIncomeGreen" />
 
                     <View
-                        android:id="@+id/pointerHeadIncome"
+                        android:id="@+id/pointerHeadIncomeGreen"
                         android:layout_width="6dp"
                         android:layout_height="6dp"
-                        android:layout_marginEnd="4dp"
+                        android:background="@drawable/pointer_dot"
+                        android:backgroundTint="@color/income_green_accent"
+                        app:layout_constraintBottom_toBottomOf="@id/hPointerIncomeGreen"
+                        app:layout_constraintEnd_toStartOf="@id/hPointerIncomeGreen"
+                        app:layout_constraintTop_toTopOf="@id/hPointerIncomeGreen" />
+
+                    <!-- Blue Pointer: Starts at LEFT end, goes DOWN then RIGHT -->
+                    <View
+                        android:id="@+id/vPointerIncomeBlue"
+                        android:layout_width="2dp"
+                        android:layout_height="12dp"
+                        android:layout_marginStart="6dp"
+                        android:background="@drawable/dashed_line_v"
+                        android:backgroundTint="@color/provisional_blue"
+                        app:layout_constraintStart_toStartOf="@id/incomeBarContainer"
+                        app:layout_constraintTop_toBottomOf="@id/incomeBarContainer" />
+
+                    <View
+                        android:id="@+id/hPointerIncomeBlue"
+                        android:layout_width="30dp"
+                        android:layout_height="2dp"
+                        android:background="@drawable/dashed_line_h"
+                        android:backgroundTint="@color/provisional_blue"
+                        app:layout_constraintStart_toEndOf="@id/vPointerIncomeBlue"
+                        app:layout_constraintTop_toBottomOf="@id/vPointerIncomeBlue"
+                        android:layout_marginTop="-2dp"/>
+
+                    <View
+                        android:id="@+id/pointerHeadIncomeBlue"
+                        android:layout_width="6dp"
+                        android:layout_height="6dp"
                         android:background="@drawable/pointer_dot"
                         android:backgroundTint="@color/provisional_blue"
-                        app:layout_constraintBottom_toBottomOf="@id/hPointerIncome"
-                        app:layout_constraintEnd_toStartOf="@id/tvProvisionalBalanceLabel"
-                        app:layout_constraintTop_toTopOf="@id/hPointerIncome" />
+                        app:layout_constraintBottom_toBottomOf="@id/hPointerIncomeBlue"
+                        app:layout_constraintStart_toEndOf="@id/hPointerIncomeBlue"
+                        app:layout_constraintTop_toTopOf="@id/hPointerIncomeBlue" />
 
+                    <!-- Provisional Balance (Bottom Right) -->
                     <TextView
                         android:id="@+id/tvProvisionalBalanceLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="-8dp"
+                        android:layout_marginTop="2dp"
                         android:text="@string/provisional_balance_label"
                         android:textColor="?attr/colorOnSurfaceVariant"
                         android:textSize="12sp"
                         app:layout_constraintEnd_toEndOf="@id/incomeBarContainer"
-                        app:layout_constraintTop_toBottomOf="@id/hPointerIncome" />
+                        app:layout_constraintTop_toBottomOf="@id/incomeBarContainer" />
 
                     <TextView
                         android:id="@+id/tvProvisionalBalance"
@@ -223,12 +252,12 @@
                         app:layout_constraintTop_toBottomOf="@id/tvProvisionalBalanceLabel"
                         tools:text="874.000 ₫" />
 
-                    <!-- Total Budgeted -->
+                    <!-- Total Budgeted (Top Left) -->
                     <TextView
                         android:id="@+id/tvTotalBudgetedLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="20dp"
                         android:text="@string/total_budgeted_label"
                         android:textColor="?attr/colorOnSurfaceVariant"
                         android:textSize="13sp"
@@ -247,12 +276,12 @@
                         app:layout_constraintTop_toBottomOf="@id/tvTotalBudgetedLabel"
                         tools:text="5.626.000 ₫" />
 
-                    <!-- Custom Budget Progress -->
+                    <!-- Budget Progress Bar (Yellow-Purple) -->
                     <LinearLayout
                         android:id="@+id/budgetBarContainer"
                         android:layout_width="0dp"
                         android:layout_height="12dp"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="20dp"
                         android:layout_marginEnd="20dp"
                         android:orientation="horizontal"
                         app:layout_constraintEnd_toStartOf="@id/flChartContainer"
@@ -260,65 +289,94 @@
                         app:layout_constraintTop_toBottomOf="@id/tvTotalBudgeted">
 
                         <View
-                            android:id="@+id/budgetBarSpent"
+                            android:id="@+id/budgetBarRemaining"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="30"
                             android:background="@drawable/bg_bar_left"
-                            android:backgroundTint="@color/budget_purple_accent" />
+                            android:backgroundTint="@color/budget_yellow_accent" />
 
                         <View
-                            android:id="@+id/budgetBarRemaining"
+                            android:id="@+id/budgetBarSpent"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="70"
                             android:background="@drawable/bg_bar_right"
-                            android:backgroundTint="@color/budget_yellow_accent" />
+                            android:backgroundTint="@color/budget_purple_accent" />
                     </LinearLayout>
 
-                    <!-- Pointer for Remaining -->
+                    <!-- Purple Pointer: Starts at RIGHT end, goes UP then LEFT -->
                     <View
-                        android:id="@+id/vPointerBudget"
-                        android:layout_width="1.5dp"
-                        android:layout_height="16dp"
-                        android:background="@drawable/dashed_line"
-                        android:backgroundTint="@color/budget_yellow_accent"
-                        app:layout_constraintEnd_toEndOf="@id/budgetBarContainer"
-                        app:layout_constraintStart_toStartOf="@id/budgetBarContainer"
-                        app:layout_constraintTop_toBottomOf="@id/budgetBarContainer"
-                        app:layout_constraintHorizontal_bias="0.3" />
+                        android:id="@+id/vPointerBudgetPurple"
+                        android:layout_width="2dp"
+                        android:layout_height="12dp"
+                        android:layout_marginEnd="6dp"
+                        android:background="@drawable/dashed_line_v"
+                        android:backgroundTint="@color/budget_purple_accent"
+                        app:layout_constraintBottom_toTopOf="@id/budgetBarContainer"
+                        app:layout_constraintEnd_toEndOf="@id/budgetBarContainer" />
 
                     <View
-                        android:id="@+id/hPointerBudget"
-                        android:layout_width="0dp"
-                        android:layout_height="1.5dp"
-                        android:background="@drawable/dashed_line"
-                        android:backgroundTint="@color/budget_yellow_accent"
-                        app:layout_constraintEnd_toStartOf="@id/pointerHeadBudget"
-                        app:layout_constraintStart_toStartOf="@id/vPointerBudget"
-                        app:layout_constraintTop_toBottomOf="@id/vPointerBudget" />
+                        android:id="@+id/hPointerBudgetPurple"
+                        android:layout_width="30dp"
+                        android:layout_height="2dp"
+                        android:background="@drawable/dashed_line_h"
+                        android:backgroundTint="@color/budget_purple_accent"
+                        app:layout_constraintEnd_toStartOf="@id/vPointerBudgetPurple"
+                        app:layout_constraintTop_toTopOf="@id/vPointerBudgetPurple" />
 
                     <View
-                        android:id="@+id/pointerHeadBudget"
+                        android:id="@+id/pointerHeadBudgetPurple"
                         android:layout_width="6dp"
                         android:layout_height="6dp"
-                        android:layout_marginEnd="4dp"
+                        android:background="@drawable/pointer_dot"
+                        android:backgroundTint="@color/budget_purple_accent"
+                        app:layout_constraintBottom_toBottomOf="@id/hPointerBudgetPurple"
+                        app:layout_constraintEnd_toStartOf="@id/hPointerBudgetPurple"
+                        app:layout_constraintTop_toTopOf="@id/hPointerBudgetPurple" />
+
+                    <!-- Yellow Pointer: Starts at LEFT end, goes DOWN then RIGHT -->
+                    <View
+                        android:id="@+id/vPointerBudgetYellow"
+                        android:layout_width="2dp"
+                        android:layout_height="12dp"
+                        android:layout_marginStart="6dp"
+                        android:background="@drawable/dashed_line_v"
+                        android:backgroundTint="@color/budget_yellow_accent"
+                        app:layout_constraintStart_toStartOf="@id/budgetBarContainer"
+                        app:layout_constraintTop_toBottomOf="@id/budgetBarContainer" />
+
+                    <View
+                        android:id="@+id/hPointerBudgetYellow"
+                        android:layout_width="30dp"
+                        android:layout_height="2dp"
+                        android:background="@drawable/dashed_line_h"
+                        android:backgroundTint="@color/budget_yellow_accent"
+                        app:layout_constraintStart_toEndOf="@id/vPointerBudgetYellow"
+                        app:layout_constraintTop_toBottomOf="@id/vPointerBudgetYellow"
+                        android:layout_marginTop="-2dp"/>
+
+                    <View
+                        android:id="@+id/pointerHeadBudgetYellow"
+                        android:layout_width="6dp"
+                        android:layout_height="6dp"
                         android:background="@drawable/pointer_dot"
                         android:backgroundTint="@color/budget_yellow_accent"
-                        app:layout_constraintBottom_toBottomOf="@id/hPointerBudget"
-                        app:layout_constraintEnd_toStartOf="@id/tvRemainingLabel"
-                        app:layout_constraintTop_toTopOf="@id/hPointerBudget" />
+                        app:layout_constraintBottom_toBottomOf="@id/hPointerBudgetYellow"
+                        app:layout_constraintStart_toEndOf="@id/hPointerBudgetYellow"
+                        app:layout_constraintTop_toTopOf="@id/hPointerBudgetYellow" />
 
+                    <!-- Remaining (Bottom Right) -->
                     <TextView
                         android:id="@+id/tvRemainingLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="-8dp"
+                        android:layout_marginTop="2dp"
                         android:text="@string/remaining_to_spend_label"
                         android:textColor="?attr/colorOnSurfaceVariant"
                         android:textSize="12sp"
                         app:layout_constraintEnd_toEndOf="@id/budgetBarContainer"
-                        app:layout_constraintTop_toBottomOf="@id/hPointerBudget" />
+                        app:layout_constraintTop_toBottomOf="@id/budgetBarContainer" />
 
                     <TextView
                         android:id="@+id/tvRemaining"

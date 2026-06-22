@@ -75,4 +75,13 @@
     <string name="settings_select_language">Chọn ngôn ngữ</string>
     <string name="settings_data">Dữ liệu</string>
     <string name="settings_clear_data">Xoá tất cả dữ liệu</string>
+
+    <string name="initial_balance_label">Số dư đầu kỳ:</string>
+    <string name="total_income_label">Tổng thu nhập</string>
+    <string name="provisional_balance_label">Số dư dự kiến</string>
+    <string name="total_budgeted_label">Tổng ngân sách</string>
+    <string name="remaining_to_spend_label">Còn lại để chi</string>
+    <string name="saving_label">Tiết kiệm</string>
+    <string name="total_spent_label">Tổng đã chi</string>
+    <string name="placeholder_date_range">01-30 thg 6, 2026</string>
 </resources>

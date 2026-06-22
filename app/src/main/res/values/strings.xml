@@ -75,4 +75,13 @@
     <string name="settings_select_language">Select Language</string>
     <string name="settings_data">Data</string>
     <string name="settings_clear_data">Clear all data</string>
+
+    <string name="initial_balance_label">Initial Balance:</string>
+    <string name="total_income_label">Total Income</string>
+    <string name="provisional_balance_label">Provisional Balance</string>
+    <string name="total_budgeted_label">Total Budgeted</string>
+    <string name="remaining_to_spend_label">Remaining to spend</string>
+    <string name="saving_label">Saving</string>
+    <string name="total_spent_label">Total Spent</string>
+    <string name="placeholder_date_range">Jun 01-30, 2026</string>
 </resources>

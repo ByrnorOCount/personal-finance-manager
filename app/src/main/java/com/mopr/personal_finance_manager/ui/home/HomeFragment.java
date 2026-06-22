@@ -5,9 +5,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
@@ -36,7 +38,6 @@ public class HomeFragment extends Fragment {
     // Chart ring colors (always dark regardless of theme — dashboard is a dark card)
     private static final int CLR_ORANGE = Color.parseColor("#FFC107");
     private static final int CLR_RING_BG = Color.parseColor("#2C2C2C");
-    private static final int CLR_WHITE = Color.WHITE;
     private final double initialBalance = 6_000_000; // TODO: wire to Settings/account
     private FragmentHomeBinding binding;
     private FinanceViewModel viewModel;
@@ -198,34 +199,52 @@ public class HomeFragment extends Fragment {
         binding.tvListTotalSpent.setText(CurrencyFormatter.formatVND(totalSpent));
 
         // ── Income progress bar ───────────────────────────────────────
-        // The green bar represents totalFunds.
-        // The FILLED portion is what has been SPENT so far.
-        int incomeBarPct = totalFunds <= 0 ? 0
-            : (int) Math.min(100, (totalSpent / totalFunds) * 100);
-        binding.incomeProgress.setMax(100);
-        binding.incomeProgress.setProgressCompat(incomeBarPct, true);
+        // The green bar represents spent, the blue bar represents provisional.
+        float incomeBarPct = totalFunds <= 0 ? 0f
+            : (float) Math.min(1.0, totalSpent / totalFunds);
+
+        updateBarWeights(binding.incomeBarSpent, binding.incomeBarProvisional, incomeBarPct);
+        updatePointer(binding.vPointerIncome, incomeBarPct);
 
         // ── Budget progress bar ───────────────────────────────────────
-        int budgetBarPct = totalBudgeted <= 0 ? 0
-            : (int) Math.min(100, (totalSpent / totalBudgeted) * 100);
-        binding.budgetProgress.setMax(100);
-        binding.budgetProgress.setProgressCompat(budgetBarPct, true);
+        // Purple = spent, Yellow = remaining.
+        float budgetBarPct = totalBudgeted <= 0 ? 0f
+            : (float) Math.min(1.0, totalSpent / totalBudgeted);
+
+        updateBarWeights(binding.budgetBarSpent, binding.budgetBarRemaining, budgetBarPct);
+        updatePointer(binding.vPointerBudget, budgetBarPct);
 
         // Over-budget: turn bar red
         if (totalBudgeted > 0 && totalSpent > totalBudgeted) {
-            binding.budgetProgress.setIndicatorColor(
-                requireContext().getColor(R.color.expense_red));
+            binding.budgetBarRemaining.setBackgroundTintList(
+                android.content.res.ColorStateList.valueOf(requireContext().getColor(R.color.expense_red)));
             binding.tvRemaining.setTextColor(
                 requireContext().getColor(R.color.expense_red));
         } else {
-            binding.budgetProgress.setIndicatorColor(
-                requireContext().getColor(R.color.budget_yellow_accent));
+            binding.budgetBarRemaining.setBackgroundTintList(
+                android.content.res.ColorStateList.valueOf(requireContext().getColor(R.color.budget_yellow_accent)));
             binding.tvRemaining.setTextColor(
                 requireContext().getColor(R.color.budget_yellow_accent));
         }
 
         // ── Charts ───────────────────────────────────────────────────
         refreshCharts();
+    }
+
+    private void updateBarWeights(View left, View right, float progress) {
+        float leftWeight = Math.max(0.01f, progress);
+        float rightWeight = Math.max(0.01f, 1f - progress);
+
+        left.setLayoutParams(new LinearLayout.LayoutParams(0,
+            ViewGroup.LayoutParams.MATCH_PARENT, leftWeight));
+        right.setLayoutParams(new LinearLayout.LayoutParams(0,
+            ViewGroup.LayoutParams.MATCH_PARENT, rightWeight));
+    }
+
+    private void updatePointer(View pointer, float progress) {
+        ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) pointer.getLayoutParams();
+        params.horizontalBias = Math.max(0.05f, Math.min(0.95f, progress));
+        pointer.setLayoutParams(params);
     }
 
     private void refreshCharts() {
@@ -298,7 +317,11 @@ public class HomeFragment extends Fragment {
 
         chart.setData(new PieData(ds));
         chart.setCenterText(centerLabel);
-        chart.setCenterTextColor(CLR_WHITE);
+
+        // Use theme-aware color for center text
+        int textColor = requireContext().getColor(R.color.text_primary);
+        chart.setCenterTextColor(textColor);
+
         chart.setCenterTextSize(centerTextSizeSp);
         chart.invalidate();
     }

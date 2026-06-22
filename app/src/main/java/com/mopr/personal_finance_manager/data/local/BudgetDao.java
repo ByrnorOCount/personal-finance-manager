@@ -21,22 +21,45 @@ public interface BudgetDao {
     @Query("DELETE FROM budgets WHERE id = :id")
     void deleteById(int id);
 
-    // All budgets for a given month (e.g. "2025-06")
-    @Query("SELECT * FROM budgets WHERE month = :month")
+    // ── Period-aware queries ──────────────────────────────────────────
+
+    /**
+     * All budgets for a given period type + key, e.g. ("MONTH", "2026-06")
+     */
+    @Query("SELECT * FROM budgets WHERE periodType = :type AND periodKey = :key ORDER BY category ASC")
+    LiveData<List<Budget>> getBudgetsForPeriod(String type, String key);
+
+    /**
+     * Sum of all budget limits for a period
+     */
+    @Query("SELECT COALESCE(SUM(limitAmount), 0) FROM budgets WHERE periodType = :type AND periodKey = :key")
+    LiveData<Double> getTotalBudgetedForPeriod(String type, String key);
+
+    /**
+     * Check if a budget already exists for this category + period
+     */
+    @Query("SELECT * FROM budgets WHERE category = :category AND periodType = :type AND periodKey = :key LIMIT 1")
+    Budget getBudgetForCategoryAndPeriodSync(String category, String type, String key);
+
+    // ── Legacy month-based queries (keep for backwards compat) ───────
+
+    @Query("SELECT * FROM budgets WHERE periodKey = :month ORDER BY category ASC")
     LiveData<List<Budget>> getBudgetsForMonth(String month);
 
-    // Specific category + month — for checking if one already exists
-    @Query("SELECT * FROM budgets WHERE category = :category AND month = :month LIMIT 1")
-    LiveData<Budget> getBudgetForCategoryAndMonth(String category, String month);
+    @Query("SELECT COALESCE(SUM(limitAmount), 0) FROM budgets WHERE periodKey = :month")
+    LiveData<Double> getTotalBudgetedForMonth(String month);
 
-    // Copy budgets to next month — called from BudgetPlannerActivity
-    // Returns all budgets from source month so we can re-insert with new month
-    @Query("SELECT * FROM budgets WHERE month = :sourceMonth")
-    List<Budget> getBudgetsToClone(String sourceMonth);
+    // ── Bulk operations ──────────────────────────────────────────────
 
-    @Query("DELETE FROM budgets")
-    void deleteAll();
+    /**
+     * Fetch budgets to clone to next period
+     */
+    @Query("SELECT * FROM budgets WHERE periodType = :type AND periodKey = :key")
+    List<Budget> getBudgetsToClone(String type, String key);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(List<Budget> budgets);
+
+    @Query("DELETE FROM budgets")
+    void deleteAll();
 }

@@ -26,3 +26,6 @@ The application aims to simplify personal financial management by providing tool
 ### 5. Data & Personalization
 - **How it works:** Includes options for currency selection, dark/light modes, and data export/import capabilities (CSV/Excel).
 - **Value:** Adapts to the user's local preferences and ensures their financial data is portable and backed up.
+
+elaborate on subcategories
+predict warnings based on previous budget results

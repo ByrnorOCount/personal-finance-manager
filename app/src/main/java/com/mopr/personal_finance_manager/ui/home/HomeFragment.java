@@ -251,7 +251,7 @@ public class HomeFragment extends Fragment {
         updateDonut(binding.chartIncomeSpent,
             spentOfIncome,
             "Income\nSpent\n" + spentPct + "%",
-            8f,
+            10f,
             CLR_ORANGE,
             requireContext().getColor(R.color.donut_hole_bg));
         binding.chartIncomeSpent.setCenterTextColor(CLR_ORANGE);

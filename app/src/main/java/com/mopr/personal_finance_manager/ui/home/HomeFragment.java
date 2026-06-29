@@ -35,9 +35,8 @@ import java.util.Map;
 
 public class HomeFragment extends Fragment {
 
-    // Chart ring colors (always dark regardless of theme — dashboard is a dark card)
+    // Chart ring colors
     private static final int CLR_ORANGE = Color.parseColor("#FFC107");
-    private static final int CLR_RING_BG = Color.parseColor("#2C2C2C");
     private final double initialBalance = 6_000_000; // TODO: wire to Settings/account
     private FragmentHomeBinding binding;
     private FinanceViewModel viewModel;
@@ -99,8 +98,8 @@ public class HomeFragment extends Fragment {
         chart.getDescription().setEnabled(false);
         chart.setUsePercentValues(false);
         chart.setDrawHoleEnabled(true);
-        chart.setHoleColor(Color.TRANSPARENT);
-        chart.setTransparentCircleColor(Color.TRANSPARENT);
+        chart.setHoleColor(requireContext().getColor(R.color.donut_hole_bg));
+        chart.setTransparentCircleColor(requireContext().getColor(R.color.donut_hole_bg));
         chart.setTransparentCircleAlpha(0);
         chart.setHoleRadius(holeRadius);
         chart.setDrawCenterText(true);
@@ -255,9 +254,9 @@ public class HomeFragment extends Fragment {
             "Spent\n" + spentPct + "%",
             11f,
             CLR_ORANGE,
-            Color.TRANSPARENT);
+            requireContext().getColor(R.color.donut_hole_bg));
 
-        // Outer Ring: Saving (Dark Gray)
+        // Outer Ring: Saving (Gray)
         // User wants saving to be the diff between total income (incl initial) and spent
         float savingOfIncome = totalFunds <= 0 ? 0f
             : (float) Math.max(0, (totalFunds - totalSpent) / totalFunds);
@@ -266,8 +265,8 @@ public class HomeFragment extends Fragment {
             savingOfIncome,
             "",
             0f,
-            CLR_RING_BG,
-            Color.TRANSPARENT);
+            requireContext().getColor(R.color.chart_outer_gray),
+            requireContext().getColor(R.color.donut_hole_bg));
 
         // ── Mini donut: budget used % ─────────────────────────────────
         float spentOfBudget = totalBudgeted <= 0 ? 0f
@@ -279,7 +278,7 @@ public class HomeFragment extends Fragment {
             budgetPct + "%",
             9f,
             CLR_ORANGE,
-            CLR_RING_BG);
+            requireContext().getColor(R.color.donut_hole_bg));
     }
 
     /**

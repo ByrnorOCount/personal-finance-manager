@@ -110,14 +110,17 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.ViewHolder
             b.tvBudgetAmount.setText(CurrencyFormatter.formatVND(budget.limitAmount));
 
             int progress = item.getProgress();
-            b.categoryProgress.setProgressCompat(progress, true);
+            android.widget.LinearLayout.LayoutParams lp =
+                (android.widget.LinearLayout.LayoutParams) b.categoryProgressIndicator.getLayoutParams();
+            lp.weight = (float) Math.min(100, progress);
+            b.categoryProgressIndicator.setLayoutParams(lp);
             b.tvProgressPercent.setText(String.format(Locale.getDefault(), "%.1f%%",
                 budget.limitAmount == 0 ? 0 : (item.spentAmount / budget.limitAmount) * 100));
 
             boolean isOver = item.spentAmount > budget.limitAmount;
             int accentColor = isOver ? ctx.getColor(R.color.expense_red) : ctx.getColor(R.color.budget_yellow_accent);
 
-            b.categoryProgress.setIndicatorColor(accentColor);
+            b.categoryProgressIndicator.setBackgroundTintList(ColorStateList.valueOf(accentColor));
             b.tvRemainingAmount.setTextColor(accentColor);
 
             if (isOver) {

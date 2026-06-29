@@ -7,7 +7,9 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import com.mopr.personal_finance_manager.data.local.Budget;
+import com.mopr.personal_finance_manager.data.local.CategoryBudget;
 import com.mopr.personal_finance_manager.data.local.CategorySum;
+import com.mopr.personal_finance_manager.data.local.MainBudget;
 import com.mopr.personal_finance_manager.data.local.SavingsGoal;
 import com.mopr.personal_finance_manager.data.local.Transaction;
 import com.mopr.personal_finance_manager.data.repository.FinanceRepository;
@@ -97,6 +99,36 @@ public class FinanceViewModel extends AndroidViewModel {
 
     public LiveData<Double> getTotalBudgetedForMonth(String month) {
         return repo.getTotalBudgetedForMonth(month);
+    }
+
+    // ── NEW BUDGET SYSTEM ──────────────────────────────────────────
+
+    public void insertMainBudget(MainBudget mb, List<CategoryBudget> cbs) {
+        repo.insertMainBudget(mb, cbs);
+    }
+
+    public void updateMainBudget(MainBudget mb) {
+        repo.updateMainBudget(mb);
+    }
+
+    public void activateMainBudget(int id) {
+        repo.activateMainBudget(id);
+    }
+
+    public LiveData<List<MainBudget>> getAllMainBudgets() {
+        return repo.getAllMainBudgets();
+    }
+
+    public LiveData<MainBudget> getActiveMainBudget() {
+        return repo.getActiveMainBudget();
+    }
+
+    public LiveData<List<CategoryBudget>> getCategoryBudgetsForMainBudget(int mainBudgetId) {
+        return repo.getCategoryBudgetsForMainBudget(mainBudgetId);
+    }
+
+    public void deleteMainBudget(int id) {
+        repo.deleteMainBudget(id);
     }
 
     // ── Savings ───────────────────────────────────────────────────────

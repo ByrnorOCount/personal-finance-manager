@@ -7,7 +7,9 @@ import androidx.lifecycle.LiveData;
 import com.mopr.personal_finance_manager.data.local.AppDatabase;
 import com.mopr.personal_finance_manager.data.local.Budget;
 import com.mopr.personal_finance_manager.data.local.BudgetDao;
+import com.mopr.personal_finance_manager.data.local.CategoryBudget;
 import com.mopr.personal_finance_manager.data.local.CategorySum;
+import com.mopr.personal_finance_manager.data.local.MainBudget;
 import com.mopr.personal_finance_manager.data.local.SavingsGoal;
 import com.mopr.personal_finance_manager.data.local.SavingsGoalDao;
 import com.mopr.personal_finance_manager.data.local.Transaction;
@@ -142,6 +144,51 @@ public class FinanceRepository {
 
     public LiveData<Double> getTotalBudgetedForMonth(String month) {
         return budgetDao.getTotalBudgetedForMonth(month);
+    }
+
+    // ── NEW BUDGET SYSTEM ──────────────────────────────────────────
+
+    public void insertMainBudget(MainBudget mb, List<CategoryBudget> cbs) {
+        executor.execute(() -> {
+            if (mb.isActive) {
+                budgetDao.deactivateAllMainBudgets();
+            }
+            long id = budgetDao.insertMainBudget(mb);
+            for (CategoryBudget cb : cbs) {
+                cb.mainBudgetId = (int) id;
+            }
+            budgetDao.insertCategoryBudgets(cbs);
+        });
+    }
+
+    public void updateMainBudget(MainBudget mb) {
+        executor.execute(() -> budgetDao.updateMainBudget(mb));
+    }
+
+    public void activateMainBudget(int id) {
+        executor.execute(() -> {
+            budgetDao.deactivateAllMainBudgets();
+            budgetDao.activateMainBudget(id);
+        });
+    }
+
+    public LiveData<List<MainBudget>> getAllMainBudgets() {
+        return budgetDao.getAllMainBudgets();
+    }
+
+    public LiveData<MainBudget> getActiveMainBudget() {
+        return budgetDao.getActiveMainBudget();
+    }
+
+    public LiveData<List<CategoryBudget>> getCategoryBudgetsForMainBudget(int mainBudgetId) {
+        return budgetDao.getCategoryBudgetsForMainBudget(mainBudgetId);
+    }
+
+    public void deleteMainBudget(int id) {
+        executor.execute(() -> {
+            budgetDao.deleteMainBudgetById(id);
+            budgetDao.deleteCategoryBudgetsByMainBudgetId(id);
+        });
     }
 
     // ── Savings Goals ─────────────────────────────────────────────────

@@ -62,4 +62,42 @@ public interface BudgetDao {
 
     @Query("DELETE FROM budgets")
     void deleteAll();
+
+    // ── NEW BUDGET SYSTEM ──────────────────────────────────────────
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    long insertMainBudget(MainBudget mainBudget);
+
+    @Update
+    void updateMainBudget(MainBudget mainBudget);
+
+    @Query("SELECT * FROM main_budgets ORDER BY startDate DESC")
+    LiveData<List<MainBudget>> getAllMainBudgets();
+
+    @Query("SELECT * FROM main_budgets WHERE isActive = 1 LIMIT 1")
+    LiveData<MainBudget> getActiveMainBudget();
+
+    @Query("SELECT * FROM main_budgets WHERE id = :id")
+    MainBudget getMainBudgetSync(int id);
+
+    @Query("UPDATE main_budgets SET isActive = 0")
+    void deactivateAllMainBudgets();
+
+    @Query("UPDATE main_budgets SET isActive = 1 WHERE id = :id")
+    void activateMainBudget(int id);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertCategoryBudgets(List<CategoryBudget> categoryBudgets);
+
+    @Query("SELECT * FROM category_budgets WHERE mainBudgetId = :mainBudgetId")
+    LiveData<List<CategoryBudget>> getCategoryBudgetsForMainBudget(int mainBudgetId);
+
+    @Query("SELECT * FROM category_budgets WHERE mainBudgetId = :mainBudgetId")
+    List<CategoryBudget> getCategoryBudgetsForMainBudgetSync(int mainBudgetId);
+
+    @Query("DELETE FROM main_budgets WHERE id = :id")
+    void deleteMainBudgetById(int id);
+
+    @Query("DELETE FROM category_budgets WHERE mainBudgetId = :mainBudgetId")
+    void deleteCategoryBudgetsByMainBudgetId(int mainBudgetId);
 }

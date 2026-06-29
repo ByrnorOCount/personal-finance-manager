@@ -49,57 +49,13 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/tvBudgetPeriod"
+                android:id="@+id/tvBudgetSubtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
+                android:text="Your created budgets"
                 android:textColor="#99FFFFFF"
-                android:textSize="14sp"
-                tools:text="June 01-30, 2026" />
-
-            <!-- Period Type Toggle -->
-            <com.google.android.material.button.MaterialButtonToggleGroup
-                android:id="@+id/togglePeriodType"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                app:checkedButton="@id/btnMonth"
-                app:selectionRequired="true"
-                app:singleSelection="true">
-
-                <Button
-                    android:id="@+id/btnDay"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:paddingStart="12dp"
-                    android:paddingEnd="12dp"
-                    android:text="Day"
-                    android:textColor="#FFFFFF"
-                    app:strokeColor="#66FFFFFF" />
-
-                <Button
-                    android:id="@+id/btnWeek"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:paddingStart="12dp"
-                    android:paddingEnd="12dp"
-                    android:text="Week"
-                    android:textColor="#FFFFFF"
-                    app:strokeColor="#66FFFFFF" />
-
-                <Button
-                    android:id="@+id/btnMonth"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:paddingStart="12dp"
-                    android:paddingEnd="12dp"
-                    android:text="Month"
-                    android:textColor="#FFFFFF"
-                    app:strokeColor="#66FFFFFF" />
-            </com.google.android.material.button.MaterialButtonToggleGroup>
+                android:textSize="14sp" />
 
         </LinearLayout>
 
@@ -111,45 +67,6 @@
             android:background="@drawable/bg_sheet_top_rounded"
             android:orientation="vertical"
             android:paddingTop="16dp">
-
-            <!-- Period navigation -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp">
-
-                <ImageButton
-                    android:id="@+id/btnPrevPeriod"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="Previous"
-                    android:src="@drawable/ic_back"
-                    app:tint="?attr/colorOnSurface" />
-
-                <TextView
-                    android:id="@+id/tvSelectedPeriodKey"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:textColor="?attr/colorOnSurface"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    tools:text="June 2026" />
-
-                <ImageButton
-                    android:id="@+id/btnNextPeriod"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="Next"
-                    android:src="@drawable/ic_chevron_right"
-                    app:tint="?attr/colorOnSurface" />
-            </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvBudgets"

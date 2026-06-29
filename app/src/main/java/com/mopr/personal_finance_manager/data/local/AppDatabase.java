@@ -10,8 +10,8 @@ import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
 @Database(
-    entities = {Transaction.class, Budget.class, SavingsGoal.class},
-    version = 2,          // bumped from 1 → 2 for Budget schema change
+    entities = {Transaction.class, Budget.class, SavingsGoal.class, MainBudget.class, CategoryBudget.class},
+    version = 3,          // bumped from 2 → 3 for MainBudget/CategoryBudget
     exportSchema = false
 )
 public abstract class AppDatabase extends RoomDatabase {

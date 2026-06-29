@@ -83,11 +83,10 @@ public class HomeFragment extends Fragment {
     }
 
     private void setupCharts() {
-        // Outer ring: Saving (dark gray)
-        setupDonutChart(binding.chartSaving, 88f);
+        // Nested donuts: outer saving ring + inner income-spent ring
+        setupDonutChart(binding.chartSaving, 84f);
         binding.chartSaving.setDrawCenterText(false);
 
-        // Inner ring: Income Spent (orange-yellow) — larger hole for the center text
         setupDonutChart(binding.chartIncomeSpent, 72f);
 
         // Mini donut in the budget header
@@ -98,8 +97,8 @@ public class HomeFragment extends Fragment {
         chart.getDescription().setEnabled(false);
         chart.setUsePercentValues(false);
         chart.setDrawHoleEnabled(true);
-        chart.setHoleColor(requireContext().getColor(R.color.donut_hole_bg));
-        chart.setTransparentCircleColor(requireContext().getColor(R.color.donut_hole_bg));
+        chart.setHoleColor(Color.TRANSPARENT);
+        chart.setTransparentCircleColor(Color.TRANSPARENT);
         chart.setTransparentCircleAlpha(0);
         chart.setHoleRadius(holeRadius);
         chart.setDrawCenterText(true);
@@ -251,12 +250,13 @@ public class HomeFragment extends Fragment {
 
         updateDonut(binding.chartIncomeSpent,
             spentOfIncome,
-            "Spent\n" + spentPct + "%",
-            11f,
+            "Income\nSpent\n" + spentPct + "%",
+            8f,
             CLR_ORANGE,
             requireContext().getColor(R.color.donut_hole_bg));
+        binding.chartIncomeSpent.setCenterTextColor(CLR_ORANGE);
 
-        // Outer Ring: Saving (Gray)
+        // Saving donut
         // User wants saving to be the diff between total income (incl initial) and spent
         float savingOfIncome = totalFunds <= 0 ? 0f
             : (float) Math.max(0, (totalFunds - totalSpent) / totalFunds);
@@ -265,7 +265,7 @@ public class HomeFragment extends Fragment {
             savingOfIncome,
             "",
             0f,
-            requireContext().getColor(R.color.chart_outer_gray),
+            requireContext().getColor(R.color.saving_blue_accent),
             requireContext().getColor(R.color.donut_hole_bg));
 
         // ── Mini donut: budget used % ─────────────────────────────────

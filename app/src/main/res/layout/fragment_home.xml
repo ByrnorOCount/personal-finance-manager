@@ -437,8 +437,9 @@
 
                     <FrameLayout
                         android:id="@+id/flChartContainer"
-                        android:layout_width="116dp"
-                        android:layout_height="116dp"
+                        android:layout_width="124dp"
+                        android:layout_height="124dp"
+                        android:layout_marginTop="8dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tvSaving"
@@ -451,10 +452,32 @@
 
                         <com.github.mikephil.charting.charts.PieChart
                             android:id="@+id/chartIncomeSpent"
-                            android:layout_width="88dp"
-                            android:layout_height="88dp"
+                            android:layout_width="98dp"
+                            android:layout_height="98dp"
                             android:layout_gravity="center" />
                     </FrameLayout>
+
+                    <View
+                        android:id="@+id/vPointerSavingPurple"
+                        android:layout_width="2dp"
+                        android:layout_height="24dp"
+                        android:layout_marginBottom="-8dp"
+                        android:background="@drawable/dashed_line_v"
+                        android:backgroundTint="@color/saving_blue_accent"
+                        android:layerType="software"
+                        app:layout_constraintBottom_toTopOf="@id/flChartContainer"
+                        app:layout_constraintEnd_toEndOf="@id/flChartContainer"
+                        app:layout_constraintStart_toStartOf="@id/flChartContainer" />
+
+                    <View
+                        android:id="@+id/pointerHeadSavingPurple"
+                        android:layout_width="6dp"
+                        android:layout_height="6dp"
+                        android:background="@drawable/pointer_dot"
+                        android:backgroundTint="@color/saving_blue_accent"
+                        app:layout_constraintBottom_toTopOf="@id/vPointerSavingPurple"
+                        app:layout_constraintEnd_toEndOf="@id/vPointerSavingPurple"
+                        app:layout_constraintStart_toStartOf="@id/vPointerSavingPurple" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -473,9 +496,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingStart="16dp"
-                    android:paddingTop="14dp"
+                    android:paddingTop="8dp"
                     android:paddingEnd="16dp"
-                    android:paddingBottom="14dp">
+                    android:paddingBottom="8dp">
 
                     <ImageView
                         android:id="@+id/ivExpandToggle"
@@ -488,79 +511,97 @@
                         app:layout_constraintTop_toTopOf="parent"
                         app:tint="?attr/colorOnSurfaceVariant" />
 
-                    <LinearLayout
-                        android:id="@+id/llTotalBudgeted"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
-                        android:orientation="vertical"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/ivExpandToggle"
-                        app:layout_constraintTop_toTopOf="parent">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/total_budgeted_label"
-                            android:textColor="?attr/colorOnSurfaceVariant"
-                            android:textSize="11sp" />
-
-                        <TextView
-                            android:id="@+id/tvListTotalBudgeted"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="?attr/colorOnSurface"
-                            android:textSize="15sp"
-                            android:textStyle="bold"
-                            tools:text="5.626.000 ₫" />
-                    </LinearLayout>
-
-                    <com.github.mikephil.charting.charts.PieChart
-                        android:id="@+id/miniChartSpent"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@id/llTotalSpent"
-                        app:layout_constraintStart_toEndOf="@id/llTotalBudgeted"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <LinearLayout
-                        android:id="@+id/llTotalSpent"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="12dp"
-                        android:orientation="vertical"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@id/btnAddBudget"
-                        app:layout_constraintTop_toTopOf="parent">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/total_spent_label"
-                            android:textColor="?attr/colorOnSurfaceVariant"
-                            android:textSize="11sp" />
-
-                        <TextView
-                            android:id="@+id/tvListTotalSpent"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="?attr/colorOnSurface"
-                            android:textSize="15sp"
-                            android:textStyle="bold"
-                            tools:text="4.203.000 ₫" />
-                    </LinearLayout>
-
                     <ImageView
                         android:id="@+id/btnAddBudget"
-                        android:layout_width="26dp"
-                        android:layout_height="26dp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
                         android:contentDescription="@null"
                         android:src="@drawable/ic_add_nav"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:tint="?attr/colorOnSurfaceVariant" />
+
+                    <com.github.mikephil.charting.charts.PieChart
+                        android:id="@+id/miniChartSpent"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <LinearLayout
+                        android:id="@+id/llTotalBudgeted"
+                        android:layout_width="0dp"
+                        android:layout_height="44dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:gravity="center_vertical"
+                        android:orientation="vertical"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/miniChartSpent"
+                        app:layout_constraintStart_toEndOf="@id/ivExpandToggle"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:gravity="center"
+                            android:text="@string/total_budgeted_label"
+                            android:textColor="?attr/colorOnSurfaceVariant"
+                            android:textSize="11sp" />
+
+                        <TextView
+                            android:id="@+id/tvListTotalBudgeted"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:gravity="center"
+                            android:textColor="?attr/colorOnSurface"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            tools:text="5.626.000 ₫" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/llTotalSpent"
+                        android:layout_width="0dp"
+                        android:layout_height="44dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:gravity="center_vertical|end"
+                        android:orientation="vertical"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/btnAddBudget"
+                        app:layout_constraintStart_toEndOf="@id/miniChartSpent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:gravity="center"
+                            android:text="@string/total_spent_label"
+                            android:textColor="?attr/colorOnSurfaceVariant"
+                            android:textSize="11sp" />
+
+                        <TextView
+                            android:id="@+id/tvListTotalSpent"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:gravity="center"
+                            android:textColor="?attr/colorOnSurface"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            tools:text="4.203.000 ₫" />
+                    </LinearLayout>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>

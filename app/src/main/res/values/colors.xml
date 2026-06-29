@@ -46,7 +46,7 @@
     <color name="saving_blue_accent">#5C6BC0</color>
     <color name="chart_gray_bg">#2C2C2C</color>
     <color name="chart_outer_gray">#9AA0AE</color>
-    <color name="donut_hole_bg">#FFFFFF</color>
+    <color name="donut_hole_bg">#9AA0AE</color>
 
     <!-- Settings icons -->
     <color name="settings_dark_mode">#3B82F6</color>

@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.mopr.personal_finance_manager.R;
 import com.mopr.personal_finance_manager.data.local.Budget;
+import com.mopr.personal_finance_manager.data.local.Category;
 import com.mopr.personal_finance_manager.data.local.CategorySum;
 import com.mopr.personal_finance_manager.databinding.FragmentBudgetBinding;
 import com.mopr.personal_finance_manager.ui.common.FinanceViewModel;
@@ -32,9 +33,11 @@ public class BudgetFragment extends Fragment implements BudgetAdapter.OnBudgetCl
     private FragmentBudgetBinding binding;
     private FinanceViewModel viewModel;
     private BudgetAdapter adapter;
+    private java.util.List<Category> allCategories = new java.util.ArrayList<>();
 
     private String currentPeriodType = "MONTH";
-    private Calendar currentCalendar = Calendar.getInstance();
+    private String currentMode = "EXPENSE";
+    private final Calendar currentCalendar = Calendar.getInstance();
 
     @Nullable
     @Override
@@ -50,6 +53,7 @@ public class BudgetFragment extends Fragment implements BudgetAdapter.OnBudgetCl
 
         setupRecyclerView();
         setupPeriodToggles();
+        setupModeToggles();
         setupNavigation();
         setupFab();
 
@@ -75,6 +79,15 @@ public class BudgetFragment extends Fragment implements BudgetAdapter.OnBudgetCl
                 else if (checkedId == R.id.btnMonth) currentPeriodType = "MONTH";
 
                 updatePeriodDisplay();
+                observeData();
+            }
+        });
+    }
+
+    private void setupModeToggles() {
+        binding.toggleBudgetMode.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
+            if (isChecked) {
+                currentMode = (checkedId == R.id.btnModeIncome) ? "INCOME" : "EXPENSE";
                 observeData();
             }
         });
@@ -110,7 +123,7 @@ public class BudgetFragment extends Fragment implements BudgetAdapter.OnBudgetCl
     private void setupFab() {
         binding.fabAddBudget.setOnClickListener(v -> {
             String key = getCurrentPeriodKey();
-            AddBudgetDialogFragment.newInstance(currentPeriodType, key, null)
+            AddBudgetDialogFragment.newInstance(currentPeriodType, key, currentMode, null)
                 .show(getChildFragmentManager(), "AddBudget");
         });
     }
@@ -135,9 +148,12 @@ public class BudgetFragment extends Fragment implements BudgetAdapter.OnBudgetCl
 
     private String getCurrentPeriodKey() {
         switch (currentPeriodType) {
-            case "DAY": return DateUtils.getDayKey(currentCalendar);
-            case "WEEK": return DateUtils.getWeekKey(currentCalendar);
-            default: return DateUtils.getMonthKey(currentCalendar);
+            case "DAY":
+                return DateUtils.getDayKey(currentCalendar);
+            case "WEEK":
+                return DateUtils.getWeekKey(currentCalendar);
+            default:
+                return DateUtils.getMonthKey(currentCalendar);
         }
     }
 
@@ -145,24 +161,39 @@ public class BudgetFragment extends Fragment implements BudgetAdapter.OnBudgetCl
         String key = getCurrentPeriodKey();
         long[] range = DateUtils.getRangeForPeriod(currentPeriodType, key);
 
-        viewModel.getBudgetsForPeriod(currentPeriodType, key).observe(getViewLifecycleOwner(), budgets -> {
-            viewModel.getExpensesByCategory(range[0], range[1]).observe(getViewLifecycleOwner(), expenses -> {
-                combineAndSetItems(budgets, expenses);
+        viewModel.getAllCategories().observe(getViewLifecycleOwner(), categories -> {
+            allCategories = categories;
+            viewModel.getBudgetsInRange(currentMode, range[0], range[1]).observe(getViewLifecycleOwner(), budgets -> {
+                if ("INCOME".equals(currentMode)) {
+                    viewModel.getIncomeByCategoryInRange(range[0], range[1]).observe(getViewLifecycleOwner(), progress -> {
+                        combineAndSetItems(budgets, progress);
+                    });
+                } else {
+                    viewModel.getExpensesByCategory(range[0], range[1]).observe(getViewLifecycleOwner(), progress -> {
+                        combineAndSetItems(budgets, progress);
+                    });
+                }
             });
         });
     }
 
-    private void combineAndSetItems(List<Budget> budgets, List<CategorySum> expenses) {
-        Map<String, Double> expMap = new HashMap<>();
-        if (expenses != null) {
-            for (CategorySum cs : expenses) expMap.put(cs.category, cs.totalAmount);
+    private void combineAndSetItems(List<Budget> budgets, List<CategorySum> progress) {
+        Map<Integer, Double> progMap = new HashMap<>();
+        if (progress != null) {
+            for (CategorySum cs : progress) progMap.put(cs.categoryId, cs.totalAmount);
         }
+
+        Map<Integer, Category> catMap = new HashMap<>();
+        for (Category c : allCategories) catMap.put(c.id, c);
 
         List<BudgetAdapter.BudgetUIItem> uiItems = new ArrayList<>();
         if (budgets != null) {
             for (Budget b : budgets) {
-                Double spent = expMap.get(b.category);
-                uiItems.add(new BudgetAdapter.BudgetUIItem(b, spent != null ? spent : 0.0));
+                Double val = progMap.get(b.categoryId);
+                Category cat = catMap.get(b.categoryId);
+                if (cat != null) {
+                    uiItems.add(new BudgetAdapter.BudgetUIItem(b, cat, val != null ? val : 0.0));
+                }
             }
         }
         adapter.setItems(uiItems);
@@ -170,14 +201,14 @@ public class BudgetFragment extends Fragment implements BudgetAdapter.OnBudgetCl
 
     @Override
     public void onBudgetClick(Budget budget) {
-        AddBudgetDialogFragment.newInstance(currentPeriodType, getCurrentPeriodKey(), budget)
+        AddBudgetDialogFragment.newInstance(currentPeriodType, getCurrentPeriodKey(), budget.type, budget)
             .show(getChildFragmentManager(), "EditBudget");
     }
 
     @Override
-    public void onAddTransactionClick(String category) {
+    public void onAddTransactionClick(int categoryId) {
         Bundle args = new Bundle();
-        args.putString("category", category);
+        args.putInt("categoryId", categoryId);
         Navigation.findNavController(requireView()).navigate(R.id.navigation_add_transaction, args);
     }
 

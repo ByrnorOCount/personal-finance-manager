@@ -9,9 +9,13 @@ import androidx.room.RoomDatabase;
 import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
+import com.mopr.personal_finance_manager.R;
+
+import java.util.concurrent.Executors;
+
 @Database(
-    entities = {Transaction.class, Budget.class, SavingsGoal.class},
-    version = 2,          // bumped from 1 → 2 for Budget schema change
+    entities = {Transaction.class, Budget.class, SavingsGoal.class, Category.class, RecurringRule.class},
+    version = 3,
     exportSchema = false
 )
 public abstract class AppDatabase extends RoomDatabase {
@@ -54,11 +58,36 @@ public abstract class AppDatabase extends RoomDatabase {
                     AppDatabase.class,
                     "personal_finance_manager_db"
                 )
-                .addMigrations(MIGRATION_1_2)
+                .addCallback(new Callback() {
+                    @Override
+                    public void onCreate(@NonNull SupportSQLiteDatabase db) {
+                        super.onCreate(db);
+                        Executors.newSingleThreadExecutor().execute(() -> populateInitialCategories(getInstance(context)));
+                    }
+                })
                 .fallbackToDestructiveMigration()   // safety net for dev
                 .build();
         }
         return instance;
+    }
+
+    private static void populateInitialCategories(AppDatabase db) {
+        CategoryDao dao = db.categoryDao();
+
+        // Expense categories
+        dao.insert(new Category("Food", "EXPENSE", R.drawable.ic_cat_food, R.color.cat_food, true));
+        dao.insert(new Category("Transport", "EXPENSE", R.drawable.ic_cat_transport, R.color.cat_transport, true));
+        dao.insert(new Category("Bills", "EXPENSE", R.drawable.ic_cat_bills, R.color.cat_bills, true));
+        dao.insert(new Category("Shopping", "EXPENSE", R.drawable.ic_cat_shopping, R.color.cat_shopping, true));
+        dao.insert(new Category("Health", "EXPENSE", R.drawable.ic_cat_health, R.color.cat_health, true));
+        dao.insert(new Category("Entertainment", "EXPENSE", R.drawable.ic_cat_entertainment, R.color.cat_entertainment, true));
+        dao.insert(new Category("Other", "EXPENSE", R.drawable.ic_cat_other, R.color.cat_other, true));
+
+        // Income categories
+        dao.insert(new Category("Salary", "INCOME", R.drawable.ic_cat_salary, R.color.cat_food, true)); // Using food color as placeholder
+        dao.insert(new Category("Freelance", "INCOME", R.drawable.ic_cat_freelance, R.color.cat_transport, true));
+        dao.insert(new Category("Investment", "INCOME", R.drawable.ic_cat_investment, R.color.cat_bills, true));
+        dao.insert(new Category("Gift", "INCOME", R.drawable.ic_cat_gift, R.color.cat_shopping, true));
     }
 
     public abstract TransactionDao transactionDao();
@@ -66,4 +95,8 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract BudgetDao budgetDao();
 
     public abstract SavingsGoalDao savingsGoalDao();
+
+    public abstract CategoryDao categoryDao();
+
+    public abstract RecurringRuleDao recurringRuleDao();
 }

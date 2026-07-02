@@ -8,7 +8,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.mopr.personal_finance_manager.data.model.Category;
 import com.mopr.personal_finance_manager.data.model.CategoryBudgetUI;
 import com.mopr.personal_finance_manager.databinding.ItemCategoryBudgetBinding;
 import com.mopr.personal_finance_manager.util.CurrencyFormatter;
@@ -19,7 +18,20 @@ import java.util.Locale;
 
 public class CategoryBudgetAdapter extends RecyclerView.Adapter<CategoryBudgetAdapter.ViewHolder> {
 
+    public interface OnDeleteClickListener {
+        void onDelete(CategoryBudgetUI item);
+    }
+
     private List<CategoryBudgetUI> items = new ArrayList<>();
+    private OnDeleteClickListener deleteListener;
+
+    public void setDeleteListener(OnDeleteClickListener listener) {
+        this.deleteListener = listener;
+    }
+
+    public List<CategoryBudgetUI> getItems() {
+        return items;
+    }
 
     public void setItems(List<CategoryBudgetUI> newItems) {
         DiffUtil.DiffResult result = DiffUtil.calculateDiff(new DiffUtil.Callback() {
@@ -35,7 +47,7 @@ public class CategoryBudgetAdapter extends RecyclerView.Adapter<CategoryBudgetAd
 
             @Override
             public boolean areItemsTheSame(int o, int n) {
-                return items.get(o).category.equals(newItems.get(n).category);
+                return items.get(o).categoryId == newItems.get(n).categoryId;
             }
 
             @Override
@@ -76,11 +88,11 @@ public class CategoryBudgetAdapter extends RecyclerView.Adapter<CategoryBudgetAd
         void bind(CategoryBudgetUI item) {
             Context ctx = itemView.getContext();
 
-            b.tvCategoryName.setText(Category.getDisplayName(ctx, item.category));
-            b.ivCategoryIcon.setImageResource(Category.getIconRes(item.category));
+            b.tvCategoryName.setText(item.categoryName);
+            b.ivCategoryIcon.setImageResource(item.iconRes);
 
             // Category color circle background
-            int catColor = ctx.getColor(Category.getColorRes(item.category));
+            int catColor = ctx.getColor(item.colorRes);
             b.ivCategoryIcon.setBackgroundTintList(
                 android.content.res.ColorStateList.valueOf(catColor));
 

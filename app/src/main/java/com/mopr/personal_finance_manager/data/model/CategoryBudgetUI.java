@@ -3,12 +3,18 @@ package com.mopr.personal_finance_manager.data.model;
 import com.mopr.personal_finance_manager.data.local.Budget;
 
 public class CategoryBudgetUI {
-    public String category;
+    public int categoryId;
+    public String categoryName;
+    public int iconRes;
+    public int colorRes;
     public double budgetLimit;
     public double spentAmount;
 
-    public CategoryBudgetUI(String category, double budgetLimit, double spentAmount) {
-        this.category = category;
+    public CategoryBudgetUI(int categoryId, String categoryName, int iconRes, int colorRes, double budgetLimit, double spentAmount) {
+        this.categoryId = categoryId;
+        this.categoryName = categoryName;
+        this.iconRes = iconRes;
+        this.colorRes = colorRes;
         this.budgetLimit = budgetLimit;
         this.spentAmount = spentAmount;
     }

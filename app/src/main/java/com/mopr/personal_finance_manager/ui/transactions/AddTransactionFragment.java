@@ -16,7 +16,7 @@ import androidx.navigation.Navigation;
 
 import com.mopr.personal_finance_manager.R;
 import com.mopr.personal_finance_manager.data.local.Transaction;
-import com.mopr.personal_finance_manager.data.model.Category;
+import com.mopr.personal_finance_manager.data.local.Category;
 import com.mopr.personal_finance_manager.databinding.FragmentAddTransactionBinding;
 import com.mopr.personal_finance_manager.ui.common.FinanceViewModel;
 import com.mopr.personal_finance_manager.util.DateUtils;
@@ -29,6 +29,7 @@ public class AddTransactionFragment extends Fragment {
     private FragmentAddTransactionBinding binding;
     private FinanceViewModel viewModel;
     private boolean isExpense = true;
+    private java.util.List<Category> currentCategories = new java.util.ArrayList<>();
 
     @Nullable
     @Override
@@ -50,18 +51,36 @@ public class AddTransactionFragment extends Fragment {
     private void setupUI() {
         updateTypeToggleUI();
         updateDateDisplay();
-        refreshCategorySpinner();
+        observeCategories();
 
-        if (getArguments() != null && getArguments().containsKey("category")) {
-            String cat = getArguments().getString("category");
-            String[] keys = isExpense ? Category.expenseCategories() : Category.incomeCategories();
-            for (int i = 0; i < keys.length; i++) {
-                if (keys[i].equals(cat)) {
-                    binding.categorySpinner.setSelection(i);
-                    break;
+        if (getArguments() != null && getArguments().containsKey("categoryId")) {
+            int catId = getArguments().getInt("categoryId");
+            // Selection will be handled once categories are loaded
+        }
+    }
+
+    private void observeCategories() {
+        viewModel.getCategoriesByType(isExpense ? "EXPENSE" : "INCOME").observe(getViewLifecycleOwner(), categories -> {
+            currentCategories = categories;
+            String[] displayNames = new String[categories.size()];
+            for (int i = 0; i < categories.size(); i++) {
+                displayNames[i] = categories.get(i).name;
+            }
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                    requireContext(), R.layout.spinner_item, displayNames);
+            adapter.setDropDownViewResource(R.layout.spinner_item);
+            binding.categorySpinner.setAdapter(adapter);
+
+            if (getArguments() != null && getArguments().containsKey("categoryId")) {
+                int catId = getArguments().getInt("categoryId");
+                for (int i = 0; i < categories.size(); i++) {
+                    if (categories.get(i).id == catId) {
+                        binding.categorySpinner.setSelection(i);
+                        break;
+                    }
                 }
             }
-        }
+        });
     }
 
     private void setupListeners() {
@@ -72,7 +91,7 @@ public class AddTransactionFragment extends Fragment {
             if (!isExpense) {
                 isExpense = true;
                 updateTypeToggleUI();
-                refreshCategorySpinner();
+                observeCategories();
             }
         });
 
@@ -80,7 +99,7 @@ public class AddTransactionFragment extends Fragment {
             if (isExpense) {
                 isExpense = false;
                 updateTypeToggleUI();
-                refreshCategorySpinner();
+                observeCategories();
             }
         });
 
@@ -101,18 +120,6 @@ public class AddTransactionFragment extends Fragment {
             binding.toggleExpense.setBackground(null);
             binding.toggleExpense.setTextColor(requireContext().getColor(R.color.text_on_brand_secondary));
         }
-    }
-
-    private void refreshCategorySpinner() {
-        String[] keys = isExpense ? Category.expenseCategories() : Category.incomeCategories();
-        String[] displayNames = new String[keys.length];
-        for (int i = 0; i < keys.length; i++) {
-            displayNames[i] = Category.getDisplayName(requireContext(), keys[i]);
-        }
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-            requireContext(), R.layout.spinner_item, displayNames);
-        adapter.setDropDownViewResource(R.layout.spinner_item);
-        binding.categorySpinner.setAdapter(adapter);
     }
 
     private void showDatePicker() {
@@ -152,14 +159,18 @@ public class AddTransactionFragment extends Fragment {
             return;
         }
 
-        String[] keys = isExpense ? Category.expenseCategories() : Category.incomeCategories();
-        String category = keys[binding.categorySpinner.getSelectedItemPosition()];
+        if (currentCategories.isEmpty()) {
+            Toast.makeText(requireContext(), "Please select a category", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Category selectedCategory = currentCategories.get(binding.categorySpinner.getSelectedItemPosition());
         String note = binding.noteInput.getText().toString().trim();
 
         Transaction transaction = new Transaction(
             isExpense ? "EXPENSE" : "INCOME",
             amount,
-            category,
+            selectedCategory.id,
             selectedDate.getTimeInMillis(),
             note,
             "VND"

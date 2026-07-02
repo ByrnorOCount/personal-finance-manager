@@ -11,7 +11,6 @@ import java.util.List;
 
 @Dao
 public interface BudgetDao {
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insert(Budget budget);
 
@@ -21,45 +20,30 @@ public interface BudgetDao {
     @Query("DELETE FROM budgets WHERE id = :id")
     void deleteById(int id);
 
-    // ── Period-aware queries ──────────────────────────────────────────
+    @Query("SELECT * FROM budgets WHERE type = :type AND startDate <= :date AND endDate >= :date")
+    LiveData<List<Budget>> getBudgetsForDate(String type, long date);
 
-    /**
-     * All budgets for a given period type + key, e.g. ("MONTH", "2026-06")
-     */
-    @Query("SELECT * FROM budgets WHERE periodType = :type AND periodKey = :key ORDER BY category ASC")
-    LiveData<List<Budget>> getBudgetsForPeriod(String type, String key);
+    @Query("SELECT COALESCE(SUM(limitAmount), 0) FROM budgets WHERE type = :type AND startDate <= :date AND endDate >= :date")
+    LiveData<Double> getTotalBudgetedForDate(String type, long date);
 
-    /**
-     * Sum of all budget limits for a period
-     */
-    @Query("SELECT COALESCE(SUM(limitAmount), 0) FROM budgets WHERE periodType = :type AND periodKey = :key")
-    LiveData<Double> getTotalBudgetedForPeriod(String type, String key);
+    @Query("SELECT * FROM budgets WHERE categoryId = :categoryId AND startDate = :start AND endDate = :end LIMIT 1")
+    Budget getBudgetForCategoryAndPeriodSync(int categoryId, long start, long end);
 
-    /**
-     * Check if a budget already exists for this category + period
-     */
-    @Query("SELECT * FROM budgets WHERE category = :category AND periodType = :type AND periodKey = :key LIMIT 1")
-    Budget getBudgetForCategoryAndPeriodSync(String category, String type, String key);
+    @Query("SELECT * FROM budgets WHERE startDate = :start AND endDate = :end")
+    List<Budget> getBudgetsForExactRangeSync(long start, long end);
 
-    // ── Legacy month-based queries (keep for backwards compat) ───────
+    @Query("SELECT * FROM budgets WHERE startDate = :start AND endDate = :end")
+    LiveData<List<Budget>> getBudgetsForExactRange(long start, long end);
 
-    @Query("SELECT * FROM budgets WHERE periodKey = :month ORDER BY category ASC")
-    LiveData<List<Budget>> getBudgetsForMonth(String month);
+    @Query("SELECT COALESCE(SUM(limitAmount), 0) FROM budgets WHERE startDate = :start AND endDate = :end")
+    LiveData<Double> getTotalBudgetedForExactRange(long start, long end);
 
-    @Query("SELECT COALESCE(SUM(limitAmount), 0) FROM budgets WHERE periodKey = :month")
-    LiveData<Double> getTotalBudgetedForMonth(String month);
+    @Query("SELECT * FROM budgets WHERE type = :type AND NOT (endDate < :start OR startDate > :end)")
+    LiveData<List<Budget>> getBudgetsInRange(String type, long start, long end);
 
-    // ── Bulk operations ──────────────────────────────────────────────
-
-    /**
-     * Fetch budgets to clone to next period
-     */
-    @Query("SELECT * FROM budgets WHERE periodType = :type AND periodKey = :key")
-    List<Budget> getBudgetsToClone(String type, String key);
+    @Query("SELECT COALESCE(SUM(limitAmount), 0) FROM budgets WHERE type = :type AND NOT (endDate < :start OR startDate > :end)")
+    LiveData<Double> getTotalBudgetedInRange(String type, long start, long end);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(List<Budget> budgets);
-
-    @Query("DELETE FROM budgets")
-    void deleteAll();
 }

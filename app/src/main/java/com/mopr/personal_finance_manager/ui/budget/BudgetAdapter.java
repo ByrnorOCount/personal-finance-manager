@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.mopr.personal_finance_manager.R;
 import com.mopr.personal_finance_manager.data.local.Budget;
-import com.mopr.personal_finance_manager.data.model.Category;
+import com.mopr.personal_finance_manager.data.local.Category;
 import com.mopr.personal_finance_manager.databinding.ItemCategoryBudgetBinding;
 import com.mopr.personal_finance_manager.util.CurrencyFormatter;
 
@@ -23,7 +23,7 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.ViewHolder
 
     public interface OnBudgetClickListener {
         void onBudgetClick(Budget budget);
-        void onAddTransactionClick(String category);
+        void onAddTransactionClick(int categoryId);
     }
 
     private List<BudgetUIItem> items = new ArrayList<>();
@@ -35,10 +35,12 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.ViewHolder
 
     public static class BudgetUIItem {
         public Budget budget;
+        public Category category;
         public double spentAmount;
 
-        public BudgetUIItem(Budget budget, double spentAmount) {
+        public BudgetUIItem(Budget budget, Category category, double spentAmount) {
             this.budget = budget;
+            this.category = category;
             this.spentAmount = spentAmount;
         }
 
@@ -67,7 +69,7 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.ViewHolder
                 BudgetUIItem oldI = items.get(o), newI = newItems.get(n);
                 return oldI.budget.limitAmount == newI.budget.limitAmount &&
                        oldI.spentAmount == newI.spentAmount &&
-                       oldI.budget.category.equals(newI.budget.category);
+                       oldI.budget.categoryId == newI.budget.categoryId;
             }
         });
         this.items = new ArrayList<>(newItems);
@@ -100,24 +102,28 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.ViewHolder
         void bind(BudgetUIItem item, OnBudgetClickListener listener) {
             Context ctx = itemView.getContext();
             Budget budget = item.budget;
+            Category cat = item.category;
 
-            b.tvCategoryName.setText(Category.getDisplayName(ctx, budget.category));
-            b.ivCategoryIcon.setImageResource(Category.getIconRes(budget.category));
+            b.tvCategoryName.setText(cat.name);
+            b.ivCategoryIcon.setImageResource(cat.iconRes);
             b.ivCategoryIcon.setBackgroundTintList(ColorStateList.valueOf(
-                ctx.getColor(Category.getColorRes(budget.category))));
+                ctx.getColor(cat.colorRes)));
 
             b.tvSpentAmount.setText(CurrencyFormatter.formatVND(item.spentAmount));
             b.tvBudgetAmount.setText(CurrencyFormatter.formatVND(budget.limitAmount));
 
             int progress = item.getProgress();
-            b.categoryProgress.setProgressCompat(progress, true);
+            android.widget.LinearLayout.LayoutParams lp = (android.widget.LinearLayout.LayoutParams) b.categoryProgressIndicator.getLayoutParams();
+            lp.weight = (float) Math.min(100, progress);
+            b.categoryProgressIndicator.setLayoutParams(lp);
+
             b.tvProgressPercent.setText(String.format(Locale.getDefault(), "%.1f%%",
                 budget.limitAmount == 0 ? 0 : (item.spentAmount / budget.limitAmount) * 100));
 
             boolean isOver = item.spentAmount > budget.limitAmount;
             int accentColor = isOver ? ctx.getColor(R.color.expense_red) : ctx.getColor(R.color.budget_yellow_accent);
 
-            b.categoryProgress.setIndicatorColor(accentColor);
+            b.categoryProgressIndicator.setBackgroundTintList(ColorStateList.valueOf(accentColor));
             b.tvRemainingAmount.setTextColor(accentColor);
 
             if (isOver) {
@@ -127,7 +133,7 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.ViewHolder
             }
 
             itemView.setOnClickListener(v -> listener.onBudgetClick(budget));
-            b.btnAddTransaction.setOnClickListener(v -> listener.onAddTransactionClick(budget.category));
+            b.btnAddTransaction.setOnClickListener(v -> listener.onAddTransactionClick(budget.categoryId));
         }
     }
 }

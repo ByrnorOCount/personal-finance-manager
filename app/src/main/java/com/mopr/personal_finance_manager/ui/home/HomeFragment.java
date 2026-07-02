@@ -5,24 +5,25 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.mopr.personal_finance_manager.R;
 import com.mopr.personal_finance_manager.data.local.Budget;
+import com.mopr.personal_finance_manager.data.local.Category;
 import com.mopr.personal_finance_manager.data.local.CategorySum;
 import com.mopr.personal_finance_manager.data.model.CategoryBudgetUI;
 import com.mopr.personal_finance_manager.databinding.FragmentHomeBinding;
+import com.mopr.personal_finance_manager.ui.budget.AddBudgetDialogFragment;
 import com.mopr.personal_finance_manager.ui.common.FinanceViewModel;
 import com.mopr.personal_finance_manager.util.CurrencyFormatter;
 import com.mopr.personal_finance_manager.util.DateUtils;
@@ -32,6 +33,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class HomeFragment extends Fragment {
 
@@ -42,10 +44,16 @@ public class HomeFragment extends Fragment {
     private FragmentHomeBinding binding;
     private FinanceViewModel viewModel;
     private CategoryBudgetAdapter categoryAdapter;
+    private CategoryBudgetAdapter incomeAdapter;
+    private java.util.List<Category> allCategories = new java.util.ArrayList<>();
     // ── Financial state ───────────────────────────────────────────────
     private double totalIncome = 0;
     private double totalSpent = 0;   // actual expenses recorded
     private double totalBudgeted = 0;   // sum of all budget limits this month
+    private double totalIncomeGoal = 0; // sum of all income targets this month
+
+    private boolean isIncomeExpanded = true;
+    private boolean isBudgetExpanded = true;
 
     @Nullable
     @Override
@@ -72,7 +80,6 @@ public class HomeFragment extends Fragment {
     // ── Setup ─────────────────────────────────────────────────────────
 
     private String buildMonthLabel() {
-        Calendar cal = Calendar.getInstance();
         return DateUtils.getPeriodDisplayLabel("MONTH", DateUtils.getCurrentMonthKey());
     }
 
@@ -81,6 +88,50 @@ public class HomeFragment extends Fragment {
         binding.rvCategoryBudgets.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.rvCategoryBudgets.setAdapter(categoryAdapter);
         binding.rvCategoryBudgets.setNestedScrollingEnabled(false);
+        setupSwipeToDelete(binding.rvCategoryBudgets, categoryAdapter, "EXPENSE");
+
+        incomeAdapter = new CategoryBudgetAdapter();
+        binding.rvIncomeGoals.setLayoutManager(new LinearLayoutManager(requireContext()));
+        binding.rvIncomeGoals.setAdapter(incomeAdapter);
+        binding.rvIncomeGoals.setNestedScrollingEnabled(false);
+        setupSwipeToDelete(binding.rvIncomeGoals, incomeAdapter, "INCOME");
+    }
+
+    private void setupSwipeToDelete(RecyclerView recyclerView, CategoryBudgetAdapter adapter, String type) {
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView rv, @NonNull RecyclerView.ViewHolder vh, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                int position = viewHolder.getBindingAdapterPosition();
+                if (position == RecyclerView.NO_POSITION) return;
+
+                CategoryBudgetUI item = adapter.getItems().get(position);
+
+                Calendar cal = Calendar.getInstance();
+                long start = DateUtils.getStartOfMonth(cal);
+                long end = DateUtils.getEndOfMonth(cal);
+
+                // Use one-time observer to find and delete the specific budget
+                viewModel.getBudgetsInRange(type, start, end).observe(getViewLifecycleOwner(), new androidx.lifecycle.Observer<List<Budget>>() {
+                    @Override
+                    public void onChanged(List<Budget> budgets) {
+                        viewModel.getBudgetsInRange(type, start, end).removeObserver(this);
+                        if (budgets != null) {
+                            for (Budget b : budgets) {
+                                if (b.categoryId == item.categoryId) {
+                                    viewModel.deleteBudget(b.id);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }).attachToRecyclerView(recyclerView);
     }
 
     private void setupCharts() {
@@ -93,6 +144,8 @@ public class HomeFragment extends Fragment {
 
         // Mini donut in the budget header
         setupDonutChart(binding.miniChartSpent, 68f);
+        // Mini donut in the income header
+        setupDonutChart(binding.miniChartIncome, 68f);
     }
 
     private void setupDonutChart(com.github.mikephil.charting.charts.PieChart chart, float holeRadius) {
@@ -112,8 +165,22 @@ public class HomeFragment extends Fragment {
     }
 
     private void setupClickListeners() {
-        binding.btnAddBudget.setOnClickListener(v ->
-            Navigation.findNavController(v).navigate(R.id.navigation_budget));
+        binding.clIncomeHeader.setOnClickListener(v -> toggleIncomeList());
+        binding.ivExpandIncome.setOnClickListener(v -> toggleIncomeList());
+
+        binding.clBudgetHeader.setOnClickListener(v -> toggleBudgetList());
+        binding.ivExpandToggle.setOnClickListener(v -> toggleBudgetList());
+
+        binding.btnAddBudget.setOnClickListener(v -> {
+            String key = DateUtils.getCurrentMonthKey();
+            AddBudgetDialogFragment.newInstance("MONTH", key, "EXPENSE", null)
+                .show(getChildFragmentManager(), "AddBudget");
+        });
+        binding.btnAddIncome.setOnClickListener(v -> {
+            String key = DateUtils.getCurrentMonthKey();
+            AddBudgetDialogFragment.newInstance("MONTH", key, "INCOME", null)
+                .show(getChildFragmentManager(), "AddIncome");
+        });
     }
 
     // ── Data observation ──────────────────────────────────────────────
@@ -122,66 +189,70 @@ public class HomeFragment extends Fragment {
         Calendar cal = Calendar.getInstance();
         long start = DateUtils.getStartOfMonth(cal);
         long end = DateUtils.getEndOfMonth(cal);
-        String monthKey = DateUtils.getCurrentMonthKey();
+
+        viewModel.getAllCategories().observe(getViewLifecycleOwner(), categories -> {
+            allCategories = categories;
+            refreshDashboard();
+        });
 
         viewModel.getTotalIncome(start, end).observe(getViewLifecycleOwner(), income -> {
-            totalIncome = income != null ? income : 0.0;
+            totalIncome = Objects.requireNonNullElse(income, 0.0);
             refreshDashboard();
         });
 
         viewModel.getTotalExpense(start, end).observe(getViewLifecycleOwner(), expense -> {
-            totalSpent = expense != null ? expense : 0.0;
+            totalSpent = Objects.requireNonNullElse(expense, 0.0);
             refreshDashboard();
         });
 
-        // Use legacy month query (backwards-compat) so old data still shows
-        viewModel.getTotalBudgetedForMonth(monthKey).observe(getViewLifecycleOwner(), budgeted -> {
-            totalBudgeted = budgeted != null ? budgeted : 0.0;
+        viewModel.getTotalBudgetedInRange("EXPENSE", start, end).observe(getViewLifecycleOwner(), budgeted -> {
+            totalBudgeted = Objects.requireNonNullElse(budgeted, 0.0);
             refreshDashboard();
         });
 
-        viewModel.getBudgetsForMonth(monthKey).observe(getViewLifecycleOwner(), budgets ->
+        viewModel.getTotalBudgetedInRange("INCOME", start, end).observe(getViewLifecycleOwner(), goal -> {
+            totalIncomeGoal = Objects.requireNonNullElse(goal, 0.0);
+            refreshDashboard();
+        });
+
+        viewModel.getBudgetsInRange("EXPENSE", start, end).observe(getViewLifecycleOwner(), budgets ->
             viewModel.getExpensesByCategory(start, end).observe(getViewLifecycleOwner(), expenses ->
-                rebuildCategoryList(budgets, expenses)));
+                rebuildCategoryList(budgets, expenses, categoryAdapter)));
+
+        viewModel.getBudgetsInRange("INCOME", start, end).observe(getViewLifecycleOwner(), goals ->
+            viewModel.getIncomeByCategoryInRange(start, end).observe(getViewLifecycleOwner(), earned ->
+                rebuildCategoryList(goals, earned, incomeAdapter)));
     }
 
     // ── Category list ─────────────────────────────────────────────────
 
-    private void rebuildCategoryList(List<Budget> budgets, List<CategorySum> expenses) {
-        Map<String, Double> expMap = new HashMap<>();
-        if (expenses != null) {
-            for (CategorySum cs : expenses) expMap.put(cs.category, cs.totalAmount);
+    private void rebuildCategoryList(List<Budget> budgets, List<CategorySum> progress, CategoryBudgetAdapter adapter) {
+        Map<Integer, Double> progMap = new HashMap<>();
+        if (progress != null) {
+            for (CategorySum cs : progress) progMap.put(cs.categoryId, cs.totalAmount);
         }
+
+        Map<Integer, Category> catMap = new HashMap<>();
+        for (Category c : allCategories) catMap.put(c.id, c);
+
         List<CategoryBudgetUI> items = new ArrayList<>();
         if (budgets != null) {
             for (Budget b : budgets) {
-                Double spent = expMap.get(b.category);
-                items.add(new CategoryBudgetUI(b.category, b.limitAmount,
-                    spent != null ? spent : 0.0));
+                Double val = progMap.get(b.categoryId);
+                Category cat = catMap.get(b.categoryId);
+                if (cat != null) {
+                    items.add(new CategoryBudgetUI(b.categoryId, cat.name, cat.iconRes, cat.colorRes, b.limitAmount,
+                        Objects.requireNonNullElse(val, 0.0)));
+                }
             }
         }
-        categoryAdapter.setItems(items);
+        adapter.setItems(items);
     }
 
     // ── Dashboard refresh ─────────────────────────────────────────────
 
     private void refreshDashboard() {
         if (binding == null) return;
-
-        // ── Core financial figures ────────────────────────────────────
-        //
-        // totalFunds     = initialBalance + totalIncome
-        //   The total money available this month (what user sees as Total Income).
-        //
-        // provisionalBalance = totalFunds - totalSpent
-        //   What you'd have left if all recorded spending is deducted.
-        //   Shown in blue under the income bar.
-        //
-        // saving         = totalFunds - totalSpent
-        //   Difference between total income (incl initial) and total spent.
-        //
-        // remaining      = totalBudgeted - totalSpent
-        //   How much budget headroom is left. Shown in yellow under budget bar.
 
         double totalFunds = initialBalance + totalIncome;
         double provisionalBalance = totalFunds - totalSpent;
@@ -197,46 +268,34 @@ public class HomeFragment extends Fragment {
         binding.tvSaving.setText(CurrencyFormatter.formatVND(Math.max(0, saving)));
         binding.tvListTotalBudgeted.setText(CurrencyFormatter.formatVND(totalBudgeted));
         binding.tvListTotalSpent.setText(CurrencyFormatter.formatVND(totalSpent));
+        binding.tvListTotalIncomeGoal.setText(CurrencyFormatter.formatVND(totalIncomeGoal));
+        binding.tvListTotalEarned.setText(CurrencyFormatter.formatVND(totalIncome));
 
         // ── Income progress bar ───────────────────────────────────────
-        // Blue (Provisional) on left, Green (Spent) on right.
-        float spentOfFunds = totalFunds <= 0 ? 0f
-            : (float) Math.min(1.0, totalSpent / totalFunds);
-
-        updateBarWeights(binding.incomeBarProvisional, binding.incomeBarSpent, 1f - spentOfFunds);
+        // Shows Actual Earned vs Income Goal.
+        int incomeBarPct = totalIncomeGoal <= 0 ? 0
+            : (int) Math.min(100, (totalIncome / totalIncomeGoal) * 100);
+        binding.incomeProgress.setMax(100);
+        binding.incomeProgress.setProgressCompat(incomeBarPct, true);
 
         // ── Budget progress bar ───────────────────────────────────────
-        // Yellow (Remaining) on left, Purple (Spent) on right.
-        float spentOfBudget = totalBudgeted <= 0 ? 0f
-            : (float) Math.min(1.0, totalSpent / totalBudgeted);
-
-        updateBarWeights(binding.budgetBarRemaining, binding.budgetBarSpent, 1f - spentOfBudget);
+        // Yellow fill = how much of the budget limit has been spent.
+        int budgetBarPct = totalBudgeted <= 0 ? 0
+            : (int) Math.min(100, (totalSpent / totalBudgeted) * 100);
+        binding.budgetProgress.setMax(100);
+        binding.budgetProgress.setProgressCompat(budgetBarPct, true);
 
         // Over-budget: turn bar red
         if (totalBudgeted > 0 && totalSpent > totalBudgeted) {
-            binding.budgetBarSpent.setBackgroundTintList(
-                android.content.res.ColorStateList.valueOf(requireContext().getColor(R.color.expense_red)));
-            binding.tvRemaining.setTextColor(
-                requireContext().getColor(R.color.expense_red));
+            binding.budgetProgress.setIndicatorColor(requireContext().getColor(R.color.expense_red));
+            binding.tvRemaining.setTextColor(requireContext().getColor(R.color.expense_red));
         } else {
-            binding.budgetBarSpent.setBackgroundTintList(
-                android.content.res.ColorStateList.valueOf(requireContext().getColor(R.color.budget_purple_accent)));
-            binding.tvRemaining.setTextColor(
-                requireContext().getColor(R.color.budget_yellow_accent));
+            binding.budgetProgress.setIndicatorColor(requireContext().getColor(R.color.budget_yellow_accent));
+            binding.tvRemaining.setTextColor(requireContext().getColor(R.color.budget_yellow_accent));
         }
 
         // ── Charts ───────────────────────────────────────────────────
         refreshCharts();
-    }
-
-    private void updateBarWeights(View left, View right, float leftWeightFraction) {
-        float leftWeight = Math.max(0.01f, leftWeightFraction);
-        float rightWeight = Math.max(0.01f, 1f - leftWeightFraction);
-
-        left.setLayoutParams(new LinearLayout.LayoutParams(0,
-            ViewGroup.LayoutParams.MATCH_PARENT, leftWeight));
-        right.setLayoutParams(new LinearLayout.LayoutParams(0,
-            ViewGroup.LayoutParams.MATCH_PARENT, rightWeight));
     }
 
     private void refreshCharts() {
@@ -258,7 +317,6 @@ public class HomeFragment extends Fragment {
             Color.TRANSPARENT);
 
         // Outer Ring: Saving (Dark Gray)
-        // User wants saving to be the diff between total income (incl initial) and spent
         float savingOfIncome = totalFunds <= 0 ? 0f
             : (float) Math.max(0, (totalFunds - totalSpent) / totalFunds);
 
@@ -280,21 +338,23 @@ public class HomeFragment extends Fragment {
             9f,
             CLR_ORANGE,
             CLR_RING_BG);
+
+        // ── Mini donut: income goal % ─────────────────────────────────
+        float earnedOfGoal = totalIncomeGoal <= 0 ? 0f
+            : (float) Math.min(1.0, totalIncome / totalIncomeGoal);
+        int incomePct = Math.round(earnedOfGoal * 100);
+
+        updateDonut(binding.miniChartIncome,
+            earnedOfGoal,
+            incomePct + "%",
+            9f,
+            CLR_ORANGE,
+            CLR_RING_BG);
     }
 
-    /**
-     * Sets up a two-slice donut chart.
-     *
-     * @param filledFraction   0.0–1.0 — the primary color (filled) fraction
-     * @param centerLabel      text for the hole
-     * @param centerTextSizeSp sp size of the center text
-     * @param primaryColor     the color for the filled fraction
-     * @param secondaryColor   the color for the "empty" fraction
-     */
     private void updateDonut(com.github.mikephil.charting.charts.PieChart chart,
                              float filledFraction, String centerLabel, float centerTextSizeSp,
                              int primaryColor, int secondaryColor) {
-        // Always two slices — avoids MPAndroidChart single-entry crash
         float filled = Math.max(0.001f, Math.min(1f, filledFraction));
         float empty = Math.max(0.001f, 1f - filled);
 
@@ -310,12 +370,23 @@ public class HomeFragment extends Fragment {
         chart.setData(new PieData(ds));
         chart.setCenterText(centerLabel);
 
-        // Use theme-aware color for center text
         int textColor = requireContext().getColor(R.color.text_primary);
         chart.setCenterTextColor(textColor);
 
         chart.setCenterTextSize(centerTextSizeSp);
         chart.invalidate();
+    }
+
+    private void toggleIncomeList() {
+        isIncomeExpanded = !isIncomeExpanded;
+        binding.rvIncomeGoals.setVisibility(isIncomeExpanded ? View.VISIBLE : View.GONE);
+        binding.ivExpandIncome.animate().rotation(isIncomeExpanded ? 0 : 180).setDuration(200).start();
+    }
+
+    private void toggleBudgetList() {
+        isBudgetExpanded = !isBudgetExpanded;
+        binding.rvCategoryBudgets.setVisibility(isBudgetExpanded ? View.VISIBLE : View.GONE);
+        binding.ivExpandToggle.animate().rotation(isBudgetExpanded ? 0 : 180).setDuration(200).start();
     }
 
     @Override

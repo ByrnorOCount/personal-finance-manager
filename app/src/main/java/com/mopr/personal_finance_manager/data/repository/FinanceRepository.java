@@ -7,11 +7,18 @@ import androidx.lifecycle.LiveData;
 import com.mopr.personal_finance_manager.data.local.AppDatabase;
 import com.mopr.personal_finance_manager.data.local.Budget;
 import com.mopr.personal_finance_manager.data.local.BudgetDao;
+import com.mopr.personal_finance_manager.data.local.Category;
+import com.mopr.personal_finance_manager.data.local.CategoryDao;
 import com.mopr.personal_finance_manager.data.local.CategorySum;
+import com.mopr.personal_finance_manager.data.local.RecurringRule;
+import com.mopr.personal_finance_manager.data.local.RecurringRuleDao;
 import com.mopr.personal_finance_manager.data.local.SavingsGoal;
 import com.mopr.personal_finance_manager.data.local.SavingsGoalDao;
 import com.mopr.personal_finance_manager.data.local.Transaction;
 import com.mopr.personal_finance_manager.data.local.TransactionDao;
+import com.mopr.personal_finance_manager.data.local.TransactionWithCategory;
+import com.mopr.personal_finance_manager.data.logic.RecurringTransactionManager;
+import com.mopr.personal_finance_manager.util.DateUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +31,9 @@ public class FinanceRepository {
     private final TransactionDao transactionDao;
     private final BudgetDao budgetDao;
     private final SavingsGoalDao savingsGoalDao;
+    private final CategoryDao categoryDao;
+    private final RecurringRuleDao recurringRuleDao;
+    private final RecurringTransactionManager recurringManager;
     private final ExecutorService executor;
 
     private FinanceRepository(Application application) {
@@ -31,7 +41,13 @@ public class FinanceRepository {
         transactionDao = db.transactionDao();
         budgetDao = db.budgetDao();
         savingsGoalDao = db.savingsGoalDao();
+        categoryDao = db.categoryDao();
+        recurringRuleDao = db.recurringRuleDao();
+        recurringManager = new RecurringTransactionManager(recurringRuleDao, transactionDao, categoryDao);
         executor = Executors.newFixedThreadPool(4);
+
+        // Run recurring check on startup
+        executor.execute(recurringManager::checkAndGenerateTransactions);
     }
 
     public static FinanceRepository getInstance(Application application) {
@@ -57,12 +73,12 @@ public class FinanceRepository {
         executor.execute(() -> transactionDao.delete(t));
     }
 
-    public LiveData<List<Transaction>> getRecentTransactions() {
-        return transactionDao.getRecent5();
+    public LiveData<List<TransactionWithCategory>> getRecentTransactions() {
+        return transactionDao.getRecent5WithCategory();
     }
 
-    public LiveData<List<Transaction>> getAllTransactions() {
-        return transactionDao.getAll();
+    public LiveData<List<TransactionWithCategory>> getAllTransactions() {
+        return transactionDao.getAllWithCategory();
     }
 
     public LiveData<Double> getTotalBalance() {
@@ -79,6 +95,56 @@ public class FinanceRepository {
 
     public LiveData<List<CategorySum>> getExpensesByCategory(long start, long end) {
         return transactionDao.getExpensesByCategoryInRange(start, end);
+    }
+
+    public LiveData<List<CategorySum>> getIncomeByCategoryInRange(long start, long end) {
+        return transactionDao.getIncomeByCategoryInRange(start, end);
+    }
+
+    // ── Categories ────────────────────────────────────────────────────
+
+    public LiveData<List<Category>> getAllCategories() {
+        return categoryDao.getAllCategories();
+    }
+
+    public LiveData<List<Category>> getCategoriesByType(String type) {
+        return categoryDao.getCategoriesByType(type);
+    }
+
+    public void insertCategory(Category category) {
+        executor.execute(() -> categoryDao.insert(category));
+    }
+
+    public void updateCategory(Category category) {
+        executor.execute(() -> categoryDao.update(category));
+    }
+
+    public void deleteCategory(int id) {
+        executor.execute(() -> categoryDao.deleteById(id));
+    }
+
+    // ── Recurring Rules ───────────────────────────────────────────────
+
+    public LiveData<List<RecurringRule>> getAllRecurringRules() {
+        return recurringRuleDao.getAllRules();
+    }
+
+    public void insertRecurringRule(RecurringRule rule) {
+        executor.execute(() -> {
+            recurringRuleDao.insert(rule);
+            recurringManager.checkAndGenerateTransactions();
+        });
+    }
+
+    public void updateRecurringRule(RecurringRule rule) {
+        executor.execute(() -> {
+            recurringRuleDao.update(rule);
+            recurringManager.checkAndGenerateTransactions();
+        });
+    }
+
+    public void deleteRecurringRule(RecurringRule rule) {
+        executor.execute(() -> recurringRuleDao.delete(rule));
     }
 
     // ── Budgets — period-aware ────────────────────────────────────────
@@ -101,7 +167,7 @@ public class FinanceRepository {
     public void upsertBudget(Budget budget) {
         executor.execute(() -> {
             Budget existing = budgetDao.getBudgetForCategoryAndPeriodSync(
-                budget.category, budget.periodType, budget.periodKey);
+                budget.categoryId, budget.startDate, budget.endDate);
             if (existing != null) {
                 existing.limitAmount = budget.limitAmount;
                 budgetDao.update(existing);
@@ -111,12 +177,20 @@ public class FinanceRepository {
         });
     }
 
-    public LiveData<List<Budget>> getBudgetsForPeriod(String type, String key) {
-        return budgetDao.getBudgetsForPeriod(type, key);
+    public LiveData<List<Budget>> getBudgetsForDate(String type, long date) {
+        return budgetDao.getBudgetsForDate(type, date);
     }
 
-    public LiveData<Double> getTotalBudgetedForPeriod(String type, String key) {
-        return budgetDao.getTotalBudgetedForPeriod(type, key);
+    public LiveData<Double> getTotalBudgetedForDate(String type, long date) {
+        return budgetDao.getTotalBudgetedForDate(type, date);
+    }
+
+    public LiveData<List<Budget>> getBudgetsInRange(String type, long start, long end) {
+        return budgetDao.getBudgetsInRange(type, start, end);
+    }
+
+    public LiveData<Double> getTotalBudgetedInRange(String type, long start, long end) {
+        return budgetDao.getTotalBudgetedInRange(type, start, end);
     }
 
     /**
@@ -124,10 +198,13 @@ public class FinanceRepository {
      */
     public void cloneBudgets(String periodType, String fromKey, String toKey) {
         executor.execute(() -> {
-            List<Budget> source = budgetDao.getBudgetsToClone(periodType, fromKey);
+            long[] fromRange = DateUtils.getRangeForPeriod(periodType, fromKey);
+            List<Budget> source = budgetDao.getBudgetsForExactRangeSync(fromRange[0], fromRange[1]);
+
+            long[] toRange = DateUtils.getRangeForPeriod(periodType, toKey);
             List<Budget> clones = new ArrayList<>();
             for (Budget b : source) {
-                Budget clone = new Budget(b.category, b.limitAmount, periodType, toKey);
+                Budget clone = new Budget(b.categoryId, b.type, b.limitAmount, toRange[0], toRange[1]);
                 clones.add(clone);
             }
             if (!clones.isEmpty()) budgetDao.insertAll(clones);
@@ -137,11 +214,13 @@ public class FinanceRepository {
     // ── Legacy month-based (keep HomeFragment working) ────────────────
 
     public LiveData<List<Budget>> getBudgetsForMonth(String month) {
-        return budgetDao.getBudgetsForMonth(month);
+        long[] range = DateUtils.getRangeForPeriod("MONTH", month);
+        return budgetDao.getBudgetsForExactRange(range[0], range[1]);
     }
 
     public LiveData<Double> getTotalBudgetedForMonth(String month) {
-        return budgetDao.getTotalBudgetedForMonth(month);
+        long[] range = DateUtils.getRangeForPeriod("MONTH", month);
+        return budgetDao.getTotalBudgetedForExactRange(range[0], range[1]);
     }
 
     // ── Savings Goals ─────────────────────────────────────────────────

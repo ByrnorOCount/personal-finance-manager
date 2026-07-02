@@ -7,9 +7,12 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import com.mopr.personal_finance_manager.data.local.Budget;
+import com.mopr.personal_finance_manager.data.local.Category;
 import com.mopr.personal_finance_manager.data.local.CategorySum;
+import com.mopr.personal_finance_manager.data.local.RecurringRule;
 import com.mopr.personal_finance_manager.data.local.SavingsGoal;
 import com.mopr.personal_finance_manager.data.local.Transaction;
+import com.mopr.personal_finance_manager.data.local.TransactionWithCategory;
 import com.mopr.personal_finance_manager.data.repository.FinanceRepository;
 
 import java.util.List;
@@ -25,11 +28,11 @@ public class FinanceViewModel extends AndroidViewModel {
 
     // ── Transactions ──────────────────────────────────────────────────
 
-    public LiveData<List<Transaction>> getRecentTransactions() {
+    public LiveData<List<TransactionWithCategory>> getRecentTransactions() {
         return repo.getRecentTransactions();
     }
 
-    public LiveData<List<Transaction>> getAllTransactions() {
+    public LiveData<List<TransactionWithCategory>> getAllTransactions() {
         return repo.getAllTransactions();
     }
 
@@ -49,6 +52,10 @@ public class FinanceViewModel extends AndroidViewModel {
         return repo.getExpensesByCategory(start, end);
     }
 
+    public LiveData<List<CategorySum>> getIncomeByCategoryInRange(long start, long end) {
+        return repo.getIncomeByCategoryInRange(start, end);
+    }
+
     public void insertTransaction(Transaction t) {
         repo.insertTransaction(t);
     }
@@ -59,6 +66,46 @@ public class FinanceViewModel extends AndroidViewModel {
 
     public void deleteTransaction(Transaction t) {
         repo.deleteTransaction(t);
+    }
+
+    // ── Categories ────────────────────────────────────────────────────
+
+    public LiveData<List<Category>> getAllCategories() {
+        return repo.getAllCategories();
+    }
+
+    public LiveData<List<Category>> getCategoriesByType(String type) {
+        return repo.getCategoriesByType(type);
+    }
+
+    public void insertCategory(Category category) {
+        repo.insertCategory(category);
+    }
+
+    public void updateCategory(Category category) {
+        repo.updateCategory(category);
+    }
+
+    public void deleteCategory(int id) {
+        repo.deleteCategory(id);
+    }
+
+    // ── Recurring Rules ───────────────────────────────────────────────
+
+    public LiveData<List<RecurringRule>> getAllRecurringRules() {
+        return repo.getAllRecurringRules();
+    }
+
+    public void insertRecurringRule(RecurringRule rule) {
+        repo.insertRecurringRule(rule);
+    }
+
+    public void updateRecurringRule(RecurringRule rule) {
+        repo.updateRecurringRule(rule);
+    }
+
+    public void deleteRecurringRule(RecurringRule rule) {
+        repo.deleteRecurringRule(rule);
     }
 
     // ── Budgets ───────────────────────────────────────────────────────
@@ -78,12 +125,20 @@ public class FinanceViewModel extends AndroidViewModel {
         repo.deleteBudget(id);
     }
 
-    public LiveData<List<Budget>> getBudgetsForPeriod(String type, String key) {
-        return repo.getBudgetsForPeriod(type, key);
+    public LiveData<List<Budget>> getBudgetsForDate(String type, long date) {
+        return repo.getBudgetsForDate(type, date);
     }
 
-    public LiveData<Double> getTotalBudgetedForPeriod(String type, String key) {
-        return repo.getTotalBudgetedForPeriod(type, key);
+    public LiveData<Double> getTotalBudgetedForDate(String type, long date) {
+        return repo.getTotalBudgetedForDate(type, date);
+    }
+
+    public LiveData<List<Budget>> getBudgetsInRange(String type, long start, long end) {
+        return repo.getBudgetsInRange(type, start, end);
+    }
+
+    public LiveData<Double> getTotalBudgetedInRange(String type, long start, long end) {
+        return repo.getTotalBudgetedInRange(type, start, end);
     }
 
     public void cloneBudgets(String periodType, String fromKey, String toKey) {

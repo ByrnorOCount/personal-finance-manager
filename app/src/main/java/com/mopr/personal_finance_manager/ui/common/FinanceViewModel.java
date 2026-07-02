@@ -8,8 +8,9 @@ import androidx.lifecycle.LiveData;
 
 import com.mopr.personal_finance_manager.data.local.Budget;
 import com.mopr.personal_finance_manager.data.local.Category;
+import com.mopr.personal_finance_manager.data.local.CategoryBudget;
 import com.mopr.personal_finance_manager.data.local.CategorySum;
-import com.mopr.personal_finance_manager.data.local.RecurringRule;
+import com.mopr.personal_finance_manager.data.local.MainBudget;
 import com.mopr.personal_finance_manager.data.local.SavingsGoal;
 import com.mopr.personal_finance_manager.data.local.Transaction;
 import com.mopr.personal_finance_manager.data.local.TransactionWithCategory;
@@ -82,6 +83,10 @@ public class FinanceViewModel extends AndroidViewModel {
         repo.insertCategory(category);
     }
 
+    public void ensureCategoryExists(String name, String type) {
+        repo.ensureCategoryExists(name, type);
+    }
+
     public void updateCategory(Category category) {
         repo.updateCategory(category);
     }
@@ -90,29 +95,8 @@ public class FinanceViewModel extends AndroidViewModel {
         repo.deleteCategory(id);
     }
 
-    // ── Recurring Rules ───────────────────────────────────────────────
-
-    public LiveData<List<RecurringRule>> getAllRecurringRules() {
-        return repo.getAllRecurringRules();
-    }
-
-    public void insertRecurringRule(RecurringRule rule) {
-        repo.insertRecurringRule(rule);
-    }
-
-    public void updateRecurringRule(RecurringRule rule) {
-        repo.updateRecurringRule(rule);
-    }
-
-    public void deleteRecurringRule(RecurringRule rule) {
-        repo.deleteRecurringRule(rule);
-    }
-
     // ── Budgets ───────────────────────────────────────────────────────
 
-    /**
-     * Insert or silently update if same category+period already exists
-     */
     public void upsertBudget(Budget b) {
         repo.upsertBudget(b);
     }
@@ -125,14 +109,6 @@ public class FinanceViewModel extends AndroidViewModel {
         repo.deleteBudget(id);
     }
 
-    public LiveData<List<Budget>> getBudgetsForDate(String type, long date) {
-        return repo.getBudgetsForDate(type, date);
-    }
-
-    public LiveData<Double> getTotalBudgetedForDate(String type, long date) {
-        return repo.getTotalBudgetedForDate(type, date);
-    }
-
     public LiveData<List<Budget>> getBudgetsInRange(String type, long start, long end) {
         return repo.getBudgetsInRange(type, start, end);
     }
@@ -141,17 +117,66 @@ public class FinanceViewModel extends AndroidViewModel {
         return repo.getTotalBudgetedInRange(type, start, end);
     }
 
+    public LiveData<List<Budget>> getBudgetsForPeriod(String type, String key) {
+        return repo.getBudgetsForPeriod(type, key);
+    }
+
+    public LiveData<Double> getTotalBudgetedForPeriod(String type, String key) {
+        return repo.getTotalBudgetedForPeriod(type, key);
+    }
+
     public void cloneBudgets(String periodType, String fromKey, String toKey) {
         repo.cloneBudgets(periodType, fromKey, toKey);
     }
 
-    // Legacy month helpers used by HomeFragment
     public LiveData<List<Budget>> getBudgetsForMonth(String month) {
         return repo.getBudgetsForMonth(month);
     }
 
     public LiveData<Double> getTotalBudgetedForMonth(String month) {
         return repo.getTotalBudgetedForMonth(month);
+    }
+
+    // ── NEW BUDGET SYSTEM ──────────────────────────────────────────
+
+    public void insertMainBudget(MainBudget mb, List<CategoryBudget> cbs) {
+        repo.insertMainBudget(mb, cbs);
+    }
+
+    public void updateMainBudget(MainBudget mb) {
+        repo.updateMainBudget(mb);
+    }
+
+    public void activateMainBudget(int id) {
+        repo.activateMainBudget(id);
+    }
+
+    public LiveData<List<MainBudget>> getAllMainBudgets() {
+        return repo.getAllMainBudgets();
+    }
+
+    public LiveData<MainBudget> getActiveMainBudget() {
+        return repo.getActiveMainBudget();
+    }
+
+    public LiveData<List<CategoryBudget>> getCategoryBudgetsForMainBudget(int mainBudgetId) {
+        return repo.getCategoryBudgetsForMainBudget(mainBudgetId);
+    }
+
+    public void deleteMainBudget(int id) {
+        repo.deleteMainBudget(id);
+    }
+
+    public void updateCategoryBudget(CategoryBudget cb) {
+        repo.updateCategoryBudget(cb);
+    }
+
+    public void deleteCategoryBudget(CategoryBudget cb) {
+        repo.deleteCategoryBudget(cb);
+    }
+
+    public void insertCategoryBudget(CategoryBudget cb) {
+        repo.insertCategoryBudget(cb);
     }
 
     // ── Savings ───────────────────────────────────────────────────────
@@ -162,6 +187,10 @@ public class FinanceViewModel extends AndroidViewModel {
 
     public void updateSavingsGoal(SavingsGoal g) {
         repo.updateSavingsGoal(g);
+    }
+
+    public void deleteSavingsGoal(int id) {
+        repo.deleteSavingsGoal(id);
     }
 
     public LiveData<List<SavingsGoal>> getActiveSavingsGoals() {

@@ -9,13 +9,17 @@ import androidx.room.RoomDatabase;
 import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-import com.mopr.personal_finance_manager.R;
-
-import java.util.concurrent.Executors;
-
 @Database(
-    entities = {Transaction.class, Budget.class, SavingsGoal.class, Category.class, RecurringRule.class},
-    version = 3,
+    entities = {
+        Transaction.class,
+        Budget.class,
+        SavingsGoal.class,
+        MainBudget.class,
+        CategoryBudget.class,
+        Category.class,
+        RecurringRule.class
+    },
+    version = 5,          // bumped from 4 → 5: Added note to CategoryBudget
     exportSchema = false
 )
 public abstract class AppDatabase extends RoomDatabase {
@@ -24,9 +28,6 @@ public abstract class AppDatabase extends RoomDatabase {
      * Migration 1 → 2:
      * Budget table gains periodType (TEXT DEFAULT 'MONTH') and
      * renames the old "month" column to "periodKey".
-     * <p>
-     * SQLite doesn't support RENAME COLUMN before 3.25 (API 30+),
-     * so we recreate the table.
      */
     static final Migration MIGRATION_1_2 = new Migration(1, 2) {
         @Override
@@ -42,13 +43,14 @@ public abstract class AppDatabase extends RoomDatabase {
 
             // 2. Copy old data; old "month" column → periodKey
             db.execSQL("INSERT INTO `budgets_new` (id, category, limitAmount, periodType, periodKey, firestoreId) " +
-                "SELECT id, category, limitAmount, 'MONTH', month, firestoreId FROM `budgets`");
+                "SELECT id, category, limitAmount, 'MONTH', month, firestoreId FROM `budgets` ");
 
             // 3. Drop old, rename new
-            db.execSQL("DROP TABLE `budgets`");
-            db.execSQL("ALTER TABLE `budgets_new` RENAME TO `budgets`");
+            db.execSQL("DROP TABLE `budgets` ");
+            db.execSQL("ALTER TABLE `budgets_new` RENAME TO `budgets` ");
         }
     };
+
     private static volatile AppDatabase instance;
 
     public static synchronized AppDatabase getInstance(Context context) {
@@ -58,45 +60,16 @@ public abstract class AppDatabase extends RoomDatabase {
                     AppDatabase.class,
                     "personal_finance_manager_db"
                 )
-                .addCallback(new Callback() {
-                    @Override
-                    public void onCreate(@NonNull SupportSQLiteDatabase db) {
-                        super.onCreate(db);
-                        Executors.newSingleThreadExecutor().execute(() -> populateInitialCategories(getInstance(context)));
-                    }
-                })
+                .addMigrations(MIGRATION_1_2)
                 .fallbackToDestructiveMigration()   // safety net for dev
                 .build();
         }
         return instance;
     }
 
-    private static void populateInitialCategories(AppDatabase db) {
-        CategoryDao dao = db.categoryDao();
-
-        // Expense categories
-        dao.insert(new Category("Food", "EXPENSE", R.drawable.ic_cat_food, R.color.cat_food, true));
-        dao.insert(new Category("Transport", "EXPENSE", R.drawable.ic_cat_transport, R.color.cat_transport, true));
-        dao.insert(new Category("Bills", "EXPENSE", R.drawable.ic_cat_bills, R.color.cat_bills, true));
-        dao.insert(new Category("Shopping", "EXPENSE", R.drawable.ic_cat_shopping, R.color.cat_shopping, true));
-        dao.insert(new Category("Health", "EXPENSE", R.drawable.ic_cat_health, R.color.cat_health, true));
-        dao.insert(new Category("Entertainment", "EXPENSE", R.drawable.ic_cat_entertainment, R.color.cat_entertainment, true));
-        dao.insert(new Category("Other", "EXPENSE", R.drawable.ic_cat_other, R.color.cat_other, true));
-
-        // Income categories
-        dao.insert(new Category("Salary", "INCOME", R.drawable.ic_cat_salary, R.color.cat_food, true)); // Using food color as placeholder
-        dao.insert(new Category("Freelance", "INCOME", R.drawable.ic_cat_freelance, R.color.cat_transport, true));
-        dao.insert(new Category("Investment", "INCOME", R.drawable.ic_cat_investment, R.color.cat_bills, true));
-        dao.insert(new Category("Gift", "INCOME", R.drawable.ic_cat_gift, R.color.cat_shopping, true));
-    }
-
     public abstract TransactionDao transactionDao();
-
     public abstract BudgetDao budgetDao();
-
     public abstract SavingsGoalDao savingsGoalDao();
-
     public abstract CategoryDao categoryDao();
-
     public abstract RecurringRuleDao recurringRuleDao();
 }

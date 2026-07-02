@@ -81,8 +81,8 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         com.mopr.personal_finance_manager.data.local.Category cat = item.category;
 
         String catName = cat != null ? cat.name : "Unknown";
-        int iconRes = cat != null ? cat.iconRes : R.drawable.ic_cat_other;
-        int colorRes = cat != null ? cat.colorRes : R.color.cat_other;
+        int iconRes = (cat != null && cat.iconRes != 0) ? cat.iconRes : R.drawable.ic_cat_other;
+        int colorRes = (cat != null && cat.colorRes != 0) ? cat.colorRes : R.color.cat_other;
 
         holder.binding.tvCategory.setText(catName);
         holder.binding.ivIcon.setImageResource(iconRes);

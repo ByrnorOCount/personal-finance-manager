@@ -67,10 +67,14 @@ public interface TransactionDao {
     @Query("SELECT * FROM transactions WHERE type='EXPENSE' AND date >= :startMs AND date <= :endMs ORDER BY date DESC")
     List<Transaction> getExpensesInRange(long startMs, long endMs);
 
-    @Query("SELECT categoryId, SUM(amount) as totalAmount FROM transactions WHERE type='EXPENSE' AND date >= :startMs AND date <= :endMs GROUP BY categoryId")
+    @Query("SELECT t.categoryId, c.name as category, SUM(t.amount) as totalAmount " +
+           "FROM transactions t INNER JOIN categories c ON t.categoryId = c.id " +
+           "WHERE t.type='EXPENSE' AND t.date >= :startMs AND t.date <= :endMs GROUP BY t.categoryId")
     LiveData<List<CategorySum>> getExpensesByCategoryInRange(long startMs, long endMs);
 
-    @Query("SELECT categoryId, SUM(amount) as totalAmount FROM transactions WHERE type='INCOME' AND date >= :startMs AND date <= :endMs GROUP BY categoryId")
+    @Query("SELECT t.categoryId, c.name as category, SUM(t.amount) as totalAmount " +
+           "FROM transactions t INNER JOIN categories c ON t.categoryId = c.id " +
+           "WHERE t.type='INCOME' AND t.date >= :startMs AND t.date <= :endMs GROUP BY t.categoryId")
     LiveData<List<CategorySum>> getIncomeByCategoryInRange(long startMs, long endMs);
 
     // ── Budget Planner: total spent per category in a month ──────────────────

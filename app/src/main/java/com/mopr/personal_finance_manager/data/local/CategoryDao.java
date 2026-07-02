@@ -28,4 +28,7 @@ public interface CategoryDao {
 
     @Query("SELECT * FROM categories WHERE id = :id")
     Category getById(int id);
+
+    @Query("SELECT * FROM categories WHERE name = :name AND type = :type LIMIT 1")
+    Category getByNameAndType(String name, String type);
 }

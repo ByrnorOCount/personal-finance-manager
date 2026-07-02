@@ -8,17 +8,15 @@ import com.mopr.personal_finance_manager.data.local.AppDatabase;
 import com.mopr.personal_finance_manager.data.local.Budget;
 import com.mopr.personal_finance_manager.data.local.BudgetDao;
 import com.mopr.personal_finance_manager.data.local.Category;
+import com.mopr.personal_finance_manager.data.local.CategoryBudget;
 import com.mopr.personal_finance_manager.data.local.CategoryDao;
 import com.mopr.personal_finance_manager.data.local.CategorySum;
-import com.mopr.personal_finance_manager.data.local.RecurringRule;
-import com.mopr.personal_finance_manager.data.local.RecurringRuleDao;
+import com.mopr.personal_finance_manager.data.local.MainBudget;
 import com.mopr.personal_finance_manager.data.local.SavingsGoal;
 import com.mopr.personal_finance_manager.data.local.SavingsGoalDao;
 import com.mopr.personal_finance_manager.data.local.Transaction;
 import com.mopr.personal_finance_manager.data.local.TransactionDao;
 import com.mopr.personal_finance_manager.data.local.TransactionWithCategory;
-import com.mopr.personal_finance_manager.data.logic.RecurringTransactionManager;
-import com.mopr.personal_finance_manager.util.DateUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,8 +30,6 @@ public class FinanceRepository {
     private final BudgetDao budgetDao;
     private final SavingsGoalDao savingsGoalDao;
     private final CategoryDao categoryDao;
-    private final RecurringRuleDao recurringRuleDao;
-    private final RecurringTransactionManager recurringManager;
     private final ExecutorService executor;
 
     private FinanceRepository(Application application) {
@@ -42,12 +38,7 @@ public class FinanceRepository {
         budgetDao = db.budgetDao();
         savingsGoalDao = db.savingsGoalDao();
         categoryDao = db.categoryDao();
-        recurringRuleDao = db.recurringRuleDao();
-        recurringManager = new RecurringTransactionManager(recurringRuleDao, transactionDao, categoryDao);
         executor = Executors.newFixedThreadPool(4);
-
-        // Run recurring check on startup
-        executor.execute(recurringManager::checkAndGenerateTransactions);
     }
 
     public static FinanceRepository getInstance(Application application) {
@@ -123,30 +114,6 @@ public class FinanceRepository {
         executor.execute(() -> categoryDao.deleteById(id));
     }
 
-    // ── Recurring Rules ───────────────────────────────────────────────
-
-    public LiveData<List<RecurringRule>> getAllRecurringRules() {
-        return recurringRuleDao.getAllRules();
-    }
-
-    public void insertRecurringRule(RecurringRule rule) {
-        executor.execute(() -> {
-            recurringRuleDao.insert(rule);
-            recurringManager.checkAndGenerateTransactions();
-        });
-    }
-
-    public void updateRecurringRule(RecurringRule rule) {
-        executor.execute(() -> {
-            recurringRuleDao.update(rule);
-            recurringManager.checkAndGenerateTransactions();
-        });
-    }
-
-    public void deleteRecurringRule(RecurringRule rule) {
-        executor.execute(() -> recurringRuleDao.delete(rule));
-    }
-
     // ── Budgets — period-aware ────────────────────────────────────────
 
     public void insertBudget(Budget budget) {
@@ -161,13 +128,17 @@ public class FinanceRepository {
         executor.execute(() -> budgetDao.deleteById(id));
     }
 
-    /**
-     * Insert or update: if a budget for the same category+period exists, update its limit.
-     */
     public void upsertBudget(Budget budget) {
         executor.execute(() -> {
-            Budget existing = budgetDao.getBudgetForCategoryAndPeriodSync(
-                budget.categoryId, budget.startDate, budget.endDate);
+            Budget existing;
+            if (budget.periodKey != null) {
+                existing = budgetDao.getBudgetForCategoryAndPeriodSync(
+                    budget.category, budget.periodType, budget.periodKey);
+            } else {
+                existing = budgetDao.getBudgetForCategoryAndPeriodSync(
+                    budget.categoryId, budget.startDate, budget.endDate);
+            }
+
             if (existing != null) {
                 existing.limitAmount = budget.limitAmount;
                 budgetDao.update(existing);
@@ -175,14 +146,6 @@ public class FinanceRepository {
                 budgetDao.insert(budget);
             }
         });
-    }
-
-    public LiveData<List<Budget>> getBudgetsForDate(String type, long date) {
-        return budgetDao.getBudgetsForDate(type, date);
-    }
-
-    public LiveData<Double> getTotalBudgetedForDate(String type, long date) {
-        return budgetDao.getTotalBudgetedForDate(type, date);
     }
 
     public LiveData<List<Budget>> getBudgetsInRange(String type, long start, long end) {
@@ -193,34 +156,109 @@ public class FinanceRepository {
         return budgetDao.getTotalBudgetedInRange(type, start, end);
     }
 
-    /**
-     * Copy all budgets from one period key to another (same type).
-     */
+    public LiveData<List<Budget>> getBudgetsForPeriod(String type, String key) {
+        return budgetDao.getBudgetsForPeriod(type, key);
+    }
+
+    public LiveData<Double> getTotalBudgetedForPeriod(String type, String key) {
+        return budgetDao.getTotalBudgetedForPeriod(type, key);
+    }
+
     public void cloneBudgets(String periodType, String fromKey, String toKey) {
         executor.execute(() -> {
-            long[] fromRange = DateUtils.getRangeForPeriod(periodType, fromKey);
-            List<Budget> source = budgetDao.getBudgetsForExactRangeSync(fromRange[0], fromRange[1]);
-
-            long[] toRange = DateUtils.getRangeForPeriod(periodType, toKey);
+            List<Budget> source = budgetDao.getBudgetsToClone(periodType, fromKey);
             List<Budget> clones = new ArrayList<>();
             for (Budget b : source) {
-                Budget clone = new Budget(b.categoryId, b.type, b.limitAmount, toRange[0], toRange[1]);
+                Budget clone = new Budget(b.category, b.limitAmount, periodType, toKey);
                 clones.add(clone);
             }
             if (!clones.isEmpty()) budgetDao.insertAll(clones);
         });
     }
 
-    // ── Legacy month-based (keep HomeFragment working) ────────────────
-
     public LiveData<List<Budget>> getBudgetsForMonth(String month) {
-        long[] range = DateUtils.getRangeForPeriod("MONTH", month);
-        return budgetDao.getBudgetsForExactRange(range[0], range[1]);
+        return budgetDao.getBudgetsForMonth(month);
     }
 
     public LiveData<Double> getTotalBudgetedForMonth(String month) {
-        long[] range = DateUtils.getRangeForPeriod("MONTH", month);
-        return budgetDao.getTotalBudgetedForExactRange(range[0], range[1]);
+        return budgetDao.getTotalBudgetedForMonth(month);
+    }
+
+    // ── NEW BUDGET SYSTEM ──────────────────────────────────────────
+
+    public void insertMainBudget(MainBudget mb, List<CategoryBudget> cbs) {
+        executor.execute(() -> {
+            if (mb.isActive) {
+                budgetDao.deactivateAllMainBudgets();
+            }
+            long id = budgetDao.insertMainBudget(mb);
+            for (CategoryBudget cb : cbs) {
+                cb.mainBudgetId = (int) id;
+                ensureCategoryExists(cb.category, cb.type);
+            }
+            budgetDao.insertCategoryBudgets(cbs);
+        });
+    }
+
+    public void ensureCategoryExists(String name, String type) {
+        executor.execute(() -> {
+            Category existing = categoryDao.getByNameAndType(name, type);
+            if (existing == null) {
+                Category newCat = new Category(
+                    name,
+                    type,
+                    com.mopr.personal_finance_manager.data.model.Category.getIconRes(name),
+                    com.mopr.personal_finance_manager.data.model.Category.getColorRes(name),
+                    false
+                );
+                categoryDao.insert(newCat);
+            }
+        });
+    }
+
+    public void updateMainBudget(MainBudget mb) {
+        executor.execute(() -> budgetDao.updateMainBudget(mb));
+    }
+
+    public void activateMainBudget(int id) {
+        executor.execute(() -> {
+            budgetDao.deactivateAllMainBudgets();
+            budgetDao.activateMainBudget(id);
+        });
+    }
+
+    public LiveData<List<MainBudget>> getAllMainBudgets() {
+        return budgetDao.getAllMainBudgets();
+    }
+
+    public LiveData<MainBudget> getActiveMainBudget() {
+        return budgetDao.getActiveMainBudget();
+    }
+
+    public LiveData<List<CategoryBudget>> getCategoryBudgetsForMainBudget(int mainBudgetId) {
+        return budgetDao.getCategoryBudgetsForMainBudget(mainBudgetId);
+    }
+
+    public void deleteMainBudget(int id) {
+        executor.execute(() -> {
+            budgetDao.deleteMainBudgetById(id);
+            budgetDao.deleteCategoryBudgetsByMainBudgetId(id);
+        });
+    }
+
+    public void updateCategoryBudget(CategoryBudget cb) {
+        executor.execute(() -> budgetDao.updateCategoryBudget(cb));
+    }
+
+    public void deleteCategoryBudget(CategoryBudget cb) {
+        executor.execute(() -> budgetDao.deleteCategoryBudget(cb));
+    }
+
+    public void insertCategoryBudget(CategoryBudget cb) {
+        executor.execute(() -> {
+            ensureCategoryExists(cb.category, cb.type);
+            budgetDao.insertCategoryBudget(cb);
+        });
     }
 
     // ── Savings Goals ─────────────────────────────────────────────────

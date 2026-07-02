@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    app:cardBackgroundColor="#2D2D3F"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="0dp"
+    app:strokeWidth="0dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tvCategoryName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                tools:text="Daily Living" />
+
+            <TextView
+                android:id="@+id/tvCategoryLimit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tvCategoryName"
+                android:layout_marginTop="4dp"
+                android:textColor="#64B5F6"
+                android:textSize="14sp"
+                tools:text="4.160 ₫" />
+
+            <ImageView
+                android:id="@+id/btnEdit"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_edit"
+                app:tint="#66FFFFFF" />
+
+            <ImageView
+                android:id="@+id/btnRemove"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginEnd="12dp"
+                android:layout_toStartOf="@id/btnEdit"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_close"
+                app:tint="#F44336" />
+
+        </RelativeLayout>
+
+        <SeekBar
+            android:id="@+id/seekBarLimit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:max="10000000"
+            android:progress="0"
+            android:thumbTint="#448AFF"
+            android:progressTint="#448AFF"
+            android:progressBackgroundTint="#3D3D52" />
+
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

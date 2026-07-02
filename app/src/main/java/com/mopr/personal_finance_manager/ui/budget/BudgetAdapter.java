@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.mopr.personal_finance_manager.R;
 import com.mopr.personal_finance_manager.data.local.Budget;
-import com.mopr.personal_finance_manager.data.local.Category;
+import com.mopr.personal_finance_manager.data.model.Category;
 import com.mopr.personal_finance_manager.databinding.ItemCategoryBudgetBinding;
 import com.mopr.personal_finance_manager.util.CurrencyFormatter;
 
@@ -23,7 +23,6 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.ViewHolder
 
     public interface OnBudgetClickListener {
         void onBudgetClick(Budget budget);
-        void onAddTransactionClick(int categoryId);
     }
 
     private List<BudgetUIItem> items = new ArrayList<>();
@@ -35,12 +34,10 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.ViewHolder
 
     public static class BudgetUIItem {
         public Budget budget;
-        public Category category;
         public double spentAmount;
 
-        public BudgetUIItem(Budget budget, Category category, double spentAmount) {
+        public BudgetUIItem(Budget budget, double spentAmount) {
             this.budget = budget;
-            this.category = category;
             this.spentAmount = spentAmount;
         }
 
@@ -69,7 +66,7 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.ViewHolder
                 BudgetUIItem oldI = items.get(o), newI = newItems.get(n);
                 return oldI.budget.limitAmount == newI.budget.limitAmount &&
                        oldI.spentAmount == newI.spentAmount &&
-                       oldI.budget.categoryId == newI.budget.categoryId;
+                       oldI.budget.category.equals(newI.budget.category);
             }
         });
         this.items = new ArrayList<>(newItems);
@@ -102,21 +99,22 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.ViewHolder
         void bind(BudgetUIItem item, OnBudgetClickListener listener) {
             Context ctx = itemView.getContext();
             Budget budget = item.budget;
-            Category cat = item.category;
 
-            b.tvCategoryName.setText(cat.name);
-            b.ivCategoryIcon.setImageResource(cat.iconRes);
+            b.tvCategoryName.setText(Category.getDisplayName(ctx, budget.category));
+            int iconRes = Category.getIconRes(budget.category);
+            int colorRes = Category.getColorRes(budget.category);
+            b.ivCategoryIcon.setImageResource(iconRes != 0 ? iconRes : R.drawable.ic_cat_other);
             b.ivCategoryIcon.setBackgroundTintList(ColorStateList.valueOf(
-                ctx.getColor(cat.colorRes)));
+                ctx.getColor(colorRes != 0 ? colorRes : R.color.cat_other)));
 
             b.tvSpentAmount.setText(CurrencyFormatter.formatVND(item.spentAmount));
             b.tvBudgetAmount.setText(CurrencyFormatter.formatVND(budget.limitAmount));
 
             int progress = item.getProgress();
-            android.widget.LinearLayout.LayoutParams lp = (android.widget.LinearLayout.LayoutParams) b.categoryProgressIndicator.getLayoutParams();
+            android.widget.LinearLayout.LayoutParams lp =
+                (android.widget.LinearLayout.LayoutParams) b.categoryProgressIndicator.getLayoutParams();
             lp.weight = (float) Math.min(100, progress);
             b.categoryProgressIndicator.setLayoutParams(lp);
-
             b.tvProgressPercent.setText(String.format(Locale.getDefault(), "%.1f%%",
                 budget.limitAmount == 0 ? 0 : (item.spentAmount / budget.limitAmount) * 100));
 
@@ -132,8 +130,7 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.ViewHolder
                 b.tvRemainingAmount.setText(CurrencyFormatter.formatVND(item.getRemaining()) + " Left");
             }
 
-            itemView.setOnClickListener(v -> listener.onBudgetClick(budget));
-            b.btnAddTransaction.setOnClickListener(v -> listener.onAddTransactionClick(budget.categoryId));
+            b.btnAddTransaction.setOnClickListener(v -> listener.onBudgetClick(budget));
         }
     }
 }

@@ -10,10 +10,14 @@ public class Budget implements Serializable {
     public int id;
 
     public int categoryId;
+    public String category; // Name of category (redundant but used in some DAOs)
     public String type; // INCOME or EXPENSE
     public double limitAmount;
     public long startDate;
     public long endDate;
+    public String periodType; // e.g., "MONTH"
+    public String periodKey;  // e.g., "2026-06"
+    public String firestoreId;
 
     public Budget() {}
 
@@ -23,5 +27,12 @@ public class Budget implements Serializable {
         this.limitAmount = limitAmount;
         this.startDate = startDate;
         this.endDate = endDate;
+    }
+
+    public Budget(String category, double limitAmount, String periodType, String periodKey) {
+        this.category = category;
+        this.limitAmount = limitAmount;
+        this.periodType = periodType;
+        this.periodKey = periodKey;
     }
 }

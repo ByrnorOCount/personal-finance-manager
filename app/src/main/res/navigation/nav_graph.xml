@@ -31,4 +31,26 @@
         android:name="com.mopr.personal_finance_manager.ui.transactions.AddTransactionFragment"
         android:label="Add Transaction"
         tools:layout="@layout/fragment_add_transaction" />
+
+    <fragment
+        android:id="@+id/navigation_create_budget"
+        android:name="com.mopr.personal_finance_manager.ui.budget.CreateBudgetFragment"
+        android:label="Create Budget"
+        tools:layout="@layout/fragment_create_budget">
+        <action
+            android:id="@+id/action_createBudget_to_initialPlanning"
+            app:destination="@id/navigation_initial_planning" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_initial_planning"
+        android:name="com.mopr.personal_finance_manager.ui.budget.InitialPlanningFragment"
+        android:label="Initial Planning"
+        tools:layout="@layout/fragment_initial_planning" />
+
+    <fragment
+        android:id="@+id/navigation_add_category"
+        android:name="com.mopr.personal_finance_manager.ui.budget.AddCategoryFragment"
+        android:label="Add Category"
+        tools:layout="@layout/fragment_add_category" />
 </navigation>

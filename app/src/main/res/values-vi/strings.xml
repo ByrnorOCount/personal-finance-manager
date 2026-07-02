@@ -27,6 +27,7 @@
     <string name="amount_hint">0</string>
     <string name="content_desc_add">Thêm giao dịch</string>
     <string name="content_desc_back">Quay lại</string>
+    <string name="content_desc_manage_budgets">Quản lý ngân sách</string>
     <string name="current_balance">Số dư hiện tại</string>
     <string name="amount_required">Vui lòng nhập số tiền</string>
     <string name="invalid_amount">Số tiền không hợp lệ</string>
@@ -84,4 +85,8 @@
     <string name="saving_label">Tiết kiệm</string>
     <string name="total_spent_label">Tổng đã chi</string>
     <string name="placeholder_date_range">01-30 thg 6, 2026</string>
+    <string name="add_new_category">+ Danh mục mới</string>
+    <string name="new_category_hint">Nhập tên danh mục mới</string>
+    <string name="use_existing_category">Dùng danh mục cũ</string>
+    <string name="please_enter_category_name">Vui lòng nhập tên danh mục</string>
 </resources>

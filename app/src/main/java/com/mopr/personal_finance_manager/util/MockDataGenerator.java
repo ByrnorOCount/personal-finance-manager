@@ -18,8 +18,8 @@ public class MockDataGenerator {
         // 1: Food, 2: Transport, 3: Bills, 8: Salary
 
         // Budgets
-        repository.insertBudget(new Budget(1, "EXPENSE", 3300000, start, end));
-        repository.insertBudget(new Budget(3, "EXPENSE", 2186000, start, end));
+        repository.insertBudget(new Budget(1, "EXPENSE", 3300000.0, start, end));
+        repository.insertBudget(new Budget(3, "EXPENSE", 2186000.0, start, end));
 
         // Income
         repository.insertTransaction(new Transaction("INCOME", 6500000, 8, now, "Monthly Salary", "VND"));

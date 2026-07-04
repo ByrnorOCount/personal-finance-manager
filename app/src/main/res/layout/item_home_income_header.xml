@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="18dp"
+    android:layout_marginTop="16dp"
     app:cardBackgroundColor="?attr/colorSurface"
     app:cardCornerRadius="18dp"
     app:cardElevation="0dp"
@@ -14,119 +14,118 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingStart="16dp"
+        android:paddingStart="20dp"
         android:paddingTop="14dp"
-        android:paddingEnd="14dp"
+        android:paddingEnd="20dp"
         android:paddingBottom="14dp">
 
-        <!-- Section label row -->
         <ImageView
             android:id="@+id/ivExpandToggle"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
             android:contentDescription="@null"
             android:src="@drawable/ic_chevron_up"
-            app:layout_constraintBottom_toBottomOf="@id/tvSectionLabel"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/tvSectionLabel"
+            app:layout_constraintTop_toTopOf="parent"
             app:tint="?attr/colorIncome" />
 
-        <TextView
-            android:id="@+id/tvSectionLabel"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:letterSpacing="0.06"
-            android:text="INCOME"
-            android:textColor="?attr/colorIncome"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@id/btnAddIncome"
-            app:layout_constraintStart_toEndOf="@id/ivExpandToggle"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:id="@+id/btnAddIncome"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:background="@drawable/bg_circle"
-            android:backgroundTint="?attr/colorIncome"
-            android:contentDescription="Add Income Category"
-            android:padding="5dp"
-            android:src="@drawable/ic_add_nav"
+        <com.github.mikephil.charting.charts.PieChart
+            android:id="@+id/incomeProgressChart"
+            android:layout_width="46dp"
+            android:layout_height="46dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tint="?attr/colorOnIncome" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
             android:id="@+id/llIncomeGoalInfo"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
+            android:layout_height="46dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="8dp"
+            android:gravity="center_vertical"
             android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/incomeProgressChart"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvSectionLabel">
+            app:layout_constraintStart_toEndOf="@id/ivExpandToggle"
+            app:layout_constraintTop_toTopOf="parent">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="1"
                 android:text="Income goal"
                 android:textColor="?attr/colorOnSurfaceVariant"
                 android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/tvIncomeGoalValue"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="1dp"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="1"
                 android:textColor="?attr/colorOnSurface"
-                android:textSize="19sp"
+                android:textSize="18sp"
                 android:textStyle="bold"
                 tools:text="$200,000.00" />
         </LinearLayout>
 
-        <com.github.mikephil.charting.charts.PieChart
-            android:id="@+id/incomeProgressChart"
-            android:layout_width="54dp"
-            android:layout_height="54dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            app:layout_constraintBottom_toBottomOf="@id/llIncomeGoalInfo"
-            app:layout_constraintEnd_toStartOf="@id/llIncomeEarnedInfo"
-            app:layout_constraintStart_toEndOf="@id/llIncomeGoalInfo"
-            app:layout_constraintTop_toTopOf="@id/llIncomeGoalInfo" />
-
         <LinearLayout
             android:id="@+id/llIncomeEarnedInfo"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:gravity="end"
+            android:layout_height="46dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="10dp"
+            android:gravity="center_vertical|end"
             android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="@id/llIncomeGoalInfo"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btnAddIncome"
             app:layout_constraintStart_toEndOf="@id/incomeProgressChart"
-            app:layout_constraintTop_toTopOf="@id/llIncomeGoalInfo">
+            app:layout_constraintTop_toTopOf="parent">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="end"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="1"
                 android:text="Income Earned"
                 android:textColor="?attr/colorOnSurfaceVariant"
                 android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/tvIncomeEarnedValue"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="1dp"
-                android:gravity="end"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="1"
                 android:textColor="?attr/colorIncome"
-                android:textSize="19sp"
+                android:textSize="18sp"
                 android:textStyle="bold"
                 tools:text="$50,000.00" />
         </LinearLayout>
+
+        <ImageView
+            android:id="@+id/btnAddIncome"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="@drawable/bg_circle"
+            android:backgroundTint="?attr/colorIncome"
+            android:contentDescription="Add Income Category"
+            android:padding="7dp"
+            android:src="@drawable/ic_add_nav"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="?attr/colorOnIncome" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

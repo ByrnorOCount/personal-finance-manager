@@ -184,9 +184,10 @@ public class CategoryBudgetAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             chart.setDrawHoleEnabled(true);
             chart.setHoleColor(Color.TRANSPARENT);
             chart.setTransparentCircleAlpha(0);
-            chart.setHoleRadius(75f);
+            chart.setHoleRadius(68f);
             chart.setDrawCenterText(true);
             chart.setRotationEnabled(false);
+            chart.setHighlightPerTapEnabled(false);
             chart.getLegend().setEnabled(false);
             chart.setTouchEnabled(false);
 
@@ -201,8 +202,9 @@ public class CategoryBudgetAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             entries.add(new PieEntry(filled, ""));
             entries.add(new PieEntry(empty, ""));
             PieDataSet ds = new PieDataSet(entries, "");
-            ds.setColors(color, MaterialColors.getColor(chart, com.google.android.material.R.attr.colorSurfaceVariant));
+            ds.setColors(color, chart.getContext().getColor(R.color.donut_hole_bg));
             ds.setDrawValues(false);
+            ds.setSliceSpace(0f);
             chart.setData(new PieData(ds));
             chart.invalidate();
         }

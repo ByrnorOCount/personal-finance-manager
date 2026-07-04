@@ -15,7 +15,7 @@
         <item name="colorOnBackground">@color/text_primary</item>
 
         <!-- Custom Semantic Colors -->
-        <item name="colorIncome">@color/income_green_accent</item>
+        <item name="colorIncome">@color/income_green</item>
         <item name="colorOnIncome">@color/white</item>
         <item name="colorExpense">@color/expense_red</item>
         <item name="colorOnExpense">@color/white</item>

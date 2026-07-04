@@ -36,7 +36,6 @@ import java.util.Map;
 
 public class HomeFragment extends Fragment {
 
-    private static final int CLR_ORANGE = Color.parseColor("#FFC107");
     private FragmentHomeBinding binding;
     private FinanceViewModel viewModel;
     private CategoryBudgetAdapter categoryAdapter;
@@ -378,17 +377,20 @@ public class HomeFragment extends Fragment {
         if (binding == null || activeBudget == null) return;
         double totalFunds = activeBudget.initialBalance + totalIncome;
 
+        int incomeColor = com.google.android.material.color.MaterialColors.getColor(requireContext(), R.attr.colorIncome, Color.GREEN);
+        int expenseColor = com.google.android.material.color.MaterialColors.getColor(requireContext(), R.attr.colorExpense, Color.RED);
+
         float spentOfIncome = totalFunds <= 0 ? 0f : (float) Math.min(1.0, totalSpent / totalFunds);
         int spentPct = Math.round(spentOfIncome * 100);
-        updateDonut(binding.chartIncomeSpent, spentOfIncome, "Income\nSpent\n" + spentPct + "%", 10f, CLR_ORANGE, requireContext().getColor(R.color.donut_hole_bg));
-        binding.chartIncomeSpent.setCenterTextColor(CLR_ORANGE);
+        updateDonut(binding.chartIncomeSpent, spentOfIncome, "Income\nSpent\n" + spentPct + "%", 10f, incomeColor, requireContext().getColor(R.color.donut_hole_bg));
+        binding.chartIncomeSpent.setCenterTextColor(incomeColor);
 
         float savingOfIncome = totalFunds <= 0 ? 0f : (float) Math.max(0, (totalFunds - totalSpent) / totalFunds);
         updateDonut(binding.chartSaving, savingOfIncome, "", 0f, requireContext().getColor(R.color.saving_blue_accent), requireContext().getColor(R.color.donut_hole_bg));
 
         float spentOfBudget = totalBudgeted <= 0 ? 0f : (float) Math.min(1.0, totalSpent / totalBudgeted);
         int budgetPct = Math.round(spentOfBudget * 100);
-        updateDonut(binding.miniChartSpent, spentOfBudget, budgetPct + "%", 9f, CLR_ORANGE, requireContext().getColor(R.color.donut_hole_bg));
+        updateDonut(binding.miniChartSpent, spentOfBudget, budgetPct + "%", 9f, expenseColor, requireContext().getColor(R.color.donut_hole_bg));
     }
 
     private void updateDonut(com.github.mikephil.charting.charts.PieChart chart, float filledFraction, String centerLabel, float centerTextSizeSp, int primaryColor, int secondaryColor) {

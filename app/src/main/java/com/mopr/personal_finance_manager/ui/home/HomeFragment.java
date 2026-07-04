@@ -74,7 +74,6 @@ public class HomeFragment extends Fragment {
         setupDonutChart(binding.chartSaving, 84f);
         binding.chartSaving.setDrawCenterText(false);
         setupDonutChart(binding.chartIncomeSpent, 72f);
-        setupDonutChart(binding.miniChartSpent, 68f);
     }
 
     private void setupDonutChart(com.github.mikephil.charting.charts.PieChart chart, float holeRadius) {
@@ -183,17 +182,6 @@ public class HomeFragment extends Fragment {
             // Navigate to budget selection or show a picker
             Navigation.findNavController(v).navigate(R.id.navigation_budget);
         });
-
-        binding.ivExpandToggle.setOnClickListener(v -> {
-            isIncomeExpanded = !isIncomeExpanded;
-            isExpenseExpanded = isIncomeExpanded;
-            binding.ivExpandToggle.setImageResource(isIncomeExpanded ? R.drawable.ic_chevron_up : R.drawable.ic_arrow_downward);
-            categoryAdapter.setExpansionStates(isIncomeExpanded, isExpenseExpanded);
-            rebuildCategoryList(currentCategoryBudgets, lastExpenses, lastIncomes, allCategories);
-        });
-
-        binding.btnCreateBudget.setOnClickListener(v ->
-                Navigation.findNavController(v).navigate(R.id.navigation_create_budget));
     }
 
     private void observeData() {
@@ -316,14 +304,14 @@ public class HomeFragment extends Fragment {
 
         List<CategoryBudgetUI> finalItems = new ArrayList<>();
 
-        if (!incomeItems.isEmpty()) {
-            finalItems.add(new CategoryBudgetUI("Incomes", sectionIncomeBudgeted, sectionIncomeActual));
-            if (isIncomeExpanded) finalItems.addAll(incomeItems);
-        }
-
         if (!expenseItems.isEmpty()) {
             finalItems.add(new CategoryBudgetUI("Expenses", sectionExpenseBudgeted, sectionExpenseActual));
             if (isExpenseExpanded) finalItems.addAll(expenseItems);
+        }
+
+        if (!incomeItems.isEmpty()) {
+            finalItems.add(new CategoryBudgetUI("Incomes", sectionIncomeBudgeted, sectionIncomeActual));
+            if (isIncomeExpanded) finalItems.addAll(incomeItems);
         }
 
         totalBudgeted = sectionExpenseBudgeted;
@@ -346,8 +334,6 @@ public class HomeFragment extends Fragment {
         binding.tvProvisionalBalance.setText(CurrencyFormatter.formatVND(Math.max(0, provisionalBalance)));
         binding.tvRemaining.setText(CurrencyFormatter.formatVND(Math.max(0, remaining)));
         binding.tvSaving.setText(CurrencyFormatter.formatVND(Math.max(0, saving)));
-        binding.tvListTotalBudgeted.setText(CurrencyFormatter.formatVND(totalBudgeted));
-        binding.tvListTotalSpent.setText(CurrencyFormatter.formatVND(totalSpent));
 
         float spentOfFunds = totalFunds <= 0 ? 0f : (float) Math.min(1.0, totalSpent / totalFunds);
         updateBarWeights(binding.incomeBarProvisional, binding.incomeBarSpent, 1f - spentOfFunds);
@@ -378,7 +364,6 @@ public class HomeFragment extends Fragment {
         double totalFunds = activeBudget.initialBalance + totalIncome;
 
         int incomeColor = com.google.android.material.color.MaterialColors.getColor(requireContext(), R.attr.colorIncome, Color.GREEN);
-        int expenseColor = com.google.android.material.color.MaterialColors.getColor(requireContext(), R.attr.colorExpense, Color.RED);
 
         float spentOfIncome = totalFunds <= 0 ? 0f : (float) Math.min(1.0, totalSpent / totalFunds);
         int spentPct = Math.round(spentOfIncome * 100);
@@ -387,10 +372,6 @@ public class HomeFragment extends Fragment {
 
         float savingOfIncome = totalFunds <= 0 ? 0f : (float) Math.max(0, (totalFunds - totalSpent) / totalFunds);
         updateDonut(binding.chartSaving, savingOfIncome, "", 0f, requireContext().getColor(R.color.saving_blue_accent), requireContext().getColor(R.color.donut_hole_bg));
-
-        float spentOfBudget = totalBudgeted <= 0 ? 0f : (float) Math.min(1.0, totalSpent / totalBudgeted);
-        int budgetPct = Math.round(spentOfBudget * 100);
-        updateDonut(binding.miniChartSpent, spentOfBudget, budgetPct + "%", 9f, expenseColor, requireContext().getColor(R.color.donut_hole_bg));
     }
 
     private void updateDonut(com.github.mikephil.charting.charts.PieChart chart, float filledFraction, String centerLabel, float centerTextSizeSp, int primaryColor, int secondaryColor) {

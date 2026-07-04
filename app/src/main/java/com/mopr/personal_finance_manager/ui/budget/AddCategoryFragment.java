@@ -2,6 +2,8 @@ package com.mopr.personal_finance_manager.ui.budget;
 
 import android.content.res.ColorStateList;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
@@ -87,12 +90,68 @@ public class AddCategoryFragment extends Fragment {
         binding.btnBack.setOnClickListener(v -> Navigation.findNavController(v).navigateUp());
         binding.btnSave.setOnClickListener(v -> saveCategory());
 
-        // Simple mock for icon/color selection
-        View.OnClickListener selectAction = v -> {
-            Toast.makeText(requireContext(), "Icon/Color selection coming soon!", Toast.LENGTH_SHORT).show();
+        binding.btnSelectIcon.setOnClickListener(v -> showIconPickerDialog());
+        binding.btnSelectColor.setOnClickListener(v -> showColorPickerDialog());
+
+        binding.etTitle.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (existingItem == null) {
+                    String name = s.toString().trim();
+                    int icon = com.mopr.personal_finance_manager.data.model.Category.getIconRes(name);
+                    int color = com.mopr.personal_finance_manager.data.model.Category.getColorRes(name);
+                    if (icon != R.drawable.ic_cat_other) {
+                        selectedIconRes = icon;
+                        selectedColorRes = color;
+                        updateIconPreview();
+                    }
+                }
+            }
+        });
+    }
+
+    private void showIconPickerDialog() {
+        int[] icons = {
+                R.drawable.ic_cat_salary, R.drawable.ic_cat_freelance, R.drawable.ic_cat_investment,
+                R.drawable.ic_cat_gift, R.drawable.ic_cat_food, R.drawable.ic_cat_transport,
+                R.drawable.ic_cat_bills, R.drawable.ic_cat_shopping, R.drawable.ic_cat_health,
+                R.drawable.ic_cat_entertainment, R.drawable.ic_cat_other
         };
-        binding.btnSelectIcon.setOnClickListener(selectAction);
-        binding.btnSelectColor.setOnClickListener(selectAction);
+        String[] iconNames = {
+                "Salary", "Freelance", "Investment", "Gift", "Food", "Transport",
+                "Bills", "Shopping", "Health", "Entertainment", "Other"
+        };
+
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Select Icon")
+                .setItems(iconNames, (dialog, which) -> {
+                    selectedIconRes = icons[which];
+                    updateIconPreview();
+                })
+                .show();
+    }
+
+    private void showColorPickerDialog() {
+        int[] colorResIds = {
+                R.color.income_green, R.color.expense_red, R.color.cat_food,
+                R.color.cat_transport, R.color.cat_bills, R.color.cat_shopping,
+                R.color.cat_health, R.color.cat_entertainment, R.color.cat_other,
+                R.color.brand_primary, R.color.warning_amber
+        };
+        String[] colorNames = {
+                "Green", "Red", "Coral", "Blue", "Orange", "Purple",
+                "Emerald", "Deep Orange", "Grey", "Indigo", "Amber"
+        };
+
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Select Color")
+                .setItems(colorNames, (dialog, which) -> {
+                    selectedColorRes = colorResIds[which];
+                    updateIconPreview();
+                })
+                .show();
     }
 
     private void updateIconPreview() {

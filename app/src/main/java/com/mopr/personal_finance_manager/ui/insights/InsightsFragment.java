@@ -9,8 +9,17 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import android.content.Context;
+import android.content.res.ColorStateList;
+import android.widget.EditText;
+import androidx.appcompat.app.AlertDialog;
+import com.google.android.material.textfield.TextInputLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.github.mikephil.charting.charts.PieChart;
@@ -22,6 +31,7 @@ import com.mopr.personal_finance_manager.data.local.CategorySum;
 import com.mopr.personal_finance_manager.data.local.TransactionWithCategory;
 import com.mopr.personal_finance_manager.data.model.PredictionResult;
 import com.mopr.personal_finance_manager.ui.common.TransactionAdapter;
+import com.mopr.personal_finance_manager.util.CurrencyFormatter;
 import com.mopr.personal_finance_manager.viewmodel.AnalyticsViewModel;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +41,8 @@ public class InsightsFragment extends Fragment {
 
     private AnalyticsViewModel viewModel;
     private TextView tvProjectedSpend, tvProjectionStatus, tvBurnRate, tvDaysLeft, tvRecommendation, tvForecastAmount, tvAnomaliesHeader;
-    private View cardRecommendation;
+    private com.google.android.material.card.MaterialCardView cardRecommendation;
+    private com.google.android.material.button.MaterialButton btnSetBudget;
     private PieChart pieChart;
     private RecyclerView rvAnomalies;
     private TransactionAdapter anomalyAdapter;
@@ -51,15 +62,27 @@ public class InsightsFragment extends Fragment {
         cardRecommendation = view.findViewById(R.id.cardRecommendation);
         pieChart = view.findViewById(R.id.pieChart);
         rvAnomalies = view.findViewById(R.id.rvAnomalies);
+        btnSetBudget = view.findViewById(R.id.btnSetBudget);
+
+        btnSetBudget.setOnClickListener(v -> showSetLimitDialog());
 
         setupPieChart();
         setupRecyclerView();
+        setupWindowInsets(view);
 
         viewModel = new ViewModelProvider(this).get(AnalyticsViewModel.class);
 
         observeViewModel();
 
         return view;
+    }
+
+    private void setupWindowInsets(View view) {
+        ViewCompat.setOnApplyWindowInsetsListener(view.findViewById(R.id.insightsScrollView), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(0, systemBars.top, 0, 0);
+            return insets;
+        });
     }
 
     private void setupPieChart() {
@@ -70,7 +93,9 @@ public class InsightsFragment extends Fragment {
         pieChart.setDrawHoleEnabled(true);
         pieChart.setHoleColor(Color.TRANSPARENT);
         pieChart.setTransparentCircleRadius(61f);
-        pieChart.setEntryLabelColor(Color.WHITE);
+
+        int textColor = ContextCompat.getColor(requireContext(), R.color.text_primary);
+        pieChart.setEntryLabelColor(textColor);
         pieChart.setEntryLabelTextSize(12f);
         pieChart.getLegend().setEnabled(false);
     }
@@ -79,6 +104,41 @@ public class InsightsFragment extends Fragment {
         anomalyAdapter = new TransactionAdapter();
         rvAnomalies.setLayoutManager(new LinearLayoutManager(getContext()));
         rvAnomalies.setAdapter(anomalyAdapter);
+    }
+
+    private void showSetLimitDialog() {
+        Context ctx = requireContext();
+        AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+        builder.setTitle(R.string.set_insight_budget_title);
+        builder.setMessage(R.string.set_insight_budget_desc);
+
+        final EditText input = new EditText(ctx);
+        input.setHint(R.string.enter_limit_hint);
+        input.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
+
+        // Get current limit to pre-fill
+        Double current = viewModel.getLocalBudgetLimit().getValue();
+        if (current != null && current > 0) {
+            input.setText(String.valueOf(current.intValue()));
+        }
+
+        android.widget.FrameLayout container = new android.widget.FrameLayout(ctx);
+        android.widget.FrameLayout.LayoutParams params = new  android.widget.FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        int margin = (int) (20 * getResources().getDisplayMetrics().density);
+        params.leftMargin = margin;
+        params.rightMargin = margin;
+        input.setLayoutParams(params);
+        container.addView(input);
+        builder.setView(container);
+
+        builder.setPositiveButton(R.string.save_btn, (dialog, which) -> {
+            String val = input.getText().toString();
+            if (!val.isEmpty()) {
+                viewModel.setLocalBudgetLimit(Double.parseDouble(val));
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.cancel());
+        builder.show();
     }
 
     private void observeViewModel() {
@@ -99,10 +159,19 @@ public class InsightsFragment extends Fragment {
         viewModel.getAnomalies().observe(getViewLifecycleOwner(), anomalies -> {
             if (anomalies != null && !anomalies.isEmpty()) {
                 tvAnomaliesHeader.setVisibility(View.VISIBLE);
+                rvAnomalies.setVisibility(View.VISIBLE);
                 anomalyAdapter.setTransactions(anomalies);
+
+                // Show a brief alert message if anomalies exist
+                String anomalyMsg = getString(R.string.anomaly_alert_header) + ": " +
+                    getString(R.string.anomaly_detected_msg, anomalies.size());
+                tvAnomaliesHeader.setText(anomalyMsg);
+                tvAnomaliesHeader.setTextColor(ContextCompat.getColor(requireContext(), R.color.insight_warning));
             } else {
                 tvAnomaliesHeader.setVisibility(View.GONE);
-                anomalyAdapter.setTransactions(new ArrayList<>());
+                rvAnomalies.setVisibility(View.GONE);
+                tvAnomaliesHeader.setText(R.string.potential_anomalies);
+                tvAnomaliesHeader.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_primary));
             }
         });
     }
@@ -128,7 +197,7 @@ public class InsightsFragment extends Fragment {
 
         PieData data = new PieData(dataSet);
         data.setValueTextSize(10f);
-        data.setValueTextColor(Color.YELLOW);
+        data.setValueTextColor(ContextCompat.getColor(requireContext(), R.color.text_primary));
 
         pieChart.setData(data);
         pieChart.animateY(1400);
@@ -165,36 +234,55 @@ public class InsightsFragment extends Fragment {
     }
 
     private void updateProjectionUI(PredictionResult result) {
-        tvProjectedSpend.setText(String.format(Locale.getDefault(), "%,.0f ₫", result.projectedEndSpend));
-        tvBurnRate.setText(String.format(Locale.getDefault(), "%,.0f ₫ / day", result.dailyBurnRate));
-        tvDaysLeft.setText(String.format(Locale.getDefault(), "%d days", result.daysRemaining));
-        tvRecommendation.setText(result.recommendation);
+        tvProjectedSpend.setText(CurrencyFormatter.formatVND(result.projectedEndSpend));
+        tvBurnRate.setText(getString(R.string.daily_burn_rate_value, CurrencyFormatter.formatVND(result.dailyBurnRate)));
+        tvDaysLeft.setText(getString(R.string.days_remaining_label, result.daysRemaining));
 
         int statusColor;
         String statusText;
 
+        if (result.budgetLimit <= 0) {
+            btnSetBudget.setVisibility(View.VISIBLE);
+            statusColor = ContextCompat.getColor(requireContext(), R.color.text_secondary);
+            statusText = getString(R.string.no_budget_set);
+            tvProjectionStatus.setText(statusText);
+            tvProjectionStatus.setTextColor(statusColor);
+            cardRecommendation.setStrokeColor(android.content.res.ColorStateList.valueOf(statusColor));
+            tvRecommendation.setText(result.recommendation);
+            return;
+        }
+
+        btnSetBudget.setVisibility(View.GONE);
+
         switch (result.risk) {
             case HIGH:
-                statusColor = Color.parseColor("#EF5350"); // Red
+                statusColor = ContextCompat.getColor(requireContext(), R.color.insight_critical);
                 statusText = getString(R.string.risk_high);
                 break;
             case MEDIUM:
-                statusColor = Color.parseColor("#FFA726"); // Orange
+                statusColor = ContextCompat.getColor(requireContext(), R.color.insight_warning);
                 statusText = getString(R.string.risk_medium);
                 break;
             case LOW:
             default:
-                statusColor = Color.parseColor("#4CAF50"); // Green
+                statusColor = ContextCompat.getColor(requireContext(), R.color.insight_positive);
                 statusText = getString(R.string.risk_low);
                 break;
         }
 
+        // Custom messages for over-budget or close to budget
+        StringBuilder sb = new StringBuilder();
+        if (result.budgetLimit > 0 && result.projectedEndSpend > result.budgetLimit) {
+            double overAmount = result.projectedEndSpend - result.budgetLimit;
+            sb.append(getString(R.string.overbudget_alert_header)).append(": ")
+              .append(getString(R.string.over_budget_projection_msg, CurrencyFormatter.formatVND(overAmount)))
+              .append(" ");
+        }
+        sb.append(result.recommendation);
+
+        tvRecommendation.setText(sb.toString());
         tvProjectionStatus.setText(statusText);
         tvProjectionStatus.setTextColor(statusColor);
-
-        // Update recommendation card stroke color
-        if (cardRecommendation instanceof com.google.android.material.card.MaterialCardView) {
-            ((com.google.android.material.card.MaterialCardView) cardRecommendation).setStrokeColor(ColorStateList.valueOf(statusColor));
-        }
+        cardRecommendation.setStrokeColor(android.content.res.ColorStateList.valueOf(statusColor));
     }
 }

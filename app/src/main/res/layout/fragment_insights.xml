@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/insightsScrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#1E1E2C">
+    android:background="@color/background">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,7 +17,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             android:text="@string/financial_insights"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/text_primary"
             android:textSize="24sp"
             android:textStyle="bold" />
 
@@ -25,7 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            app:cardBackgroundColor="#2D2D3F"
+            app:cardBackgroundColor="@color/insight_card_bg"
             app:cardCornerRadius="16dp"
             app:strokeWidth="0dp">
 
@@ -39,7 +40,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/month_projection"
-                    android:textColor="#B0B0B0"
+                    android:textColor="@color/text_secondary"
                     android:textSize="14sp" />
 
                 <TextView
@@ -48,7 +49,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:text="0 ₫"
-                    android:textColor="#FFFFFF"
+                    android:textColor="@color/text_primary"
                     android:textSize="28sp"
                     android:textStyle="bold" />
 
@@ -58,14 +59,25 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:text="@string/on_track_status"
-                    android:textColor="#4CAF50"
+                    android:textColor="@color/insight_positive"
                     android:textSize="14sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnSetBudget"
+                    style="@style/Widget.Material3.Button.TonalButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/set_limit"
+                    android:textSize="12sp"
+                    android:visibility="gone"
+                    app:cornerRadius="8dp" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_marginVertical="16dp"
-                    android:background="#3D3D5A" />
+                    android:background="@color/insight_divider" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -82,7 +94,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/daily_burn_rate"
-                            android:textColor="#B0B0B0"
+                            android:textColor="@color/text_secondary"
                             android:textSize="12sp" />
 
                         <TextView
@@ -90,7 +102,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="0 ₫ / day"
-                            android:textColor="#FFFFFF"
+                            android:textColor="@color/text_primary"
                             android:textSize="16sp"
                             android:textStyle="bold" />
                     </LinearLayout>
@@ -105,7 +117,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/days_left"
-                            android:textColor="#B0B0B0"
+                            android:textColor="@color/text_secondary"
                             android:textSize="12sp" />
 
                         <TextView
@@ -113,7 +125,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="0 days"
-                            android:textColor="#FFFFFF"
+                            android:textColor="@color/text_primary"
                             android:textSize="16sp"
                             android:textStyle="bold" />
                     </LinearLayout>
@@ -127,9 +139,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            app:cardBackgroundColor="#3D3D5A"
+            app:cardBackgroundColor="@color/insight_card_accent"
             app:cardCornerRadius="16dp"
-            app:strokeColor="#4CAF50"
+            app:strokeColor="@color/insight_positive"
             app:strokeWidth="1dp">
 
             <LinearLayout
@@ -143,8 +155,8 @@
                     android:id="@+id/ivRecommendationIcon"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:src="@drawable/ic_ai_assistant"
-                    app:tint="#4CAF50" />
+                    android:src="@drawable/ic_budget"
+                    app:tint="@color/insight_positive" />
 
                 <TextView
                     android:id="@+id/tvRecommendation"
@@ -152,7 +164,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
                     android:text="@string/recommendation_placeholder"
-                    android:textColor="#FFFFFF"
+                    android:textColor="@color/text_primary"
                     android:textSize="14sp" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -161,7 +173,7 @@
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardBackgroundColor="#2D2D3F"
+            app:cardBackgroundColor="@color/insight_card_bg"
             app:cardCornerRadius="16dp"
             app:strokeWidth="0dp">
 
@@ -175,7 +187,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/next_month_forecast"
-                    android:textColor="#B0B0B0"
+                    android:textColor="@color/text_secondary"
                     android:textSize="14sp" />
 
                 <TextView
@@ -184,7 +196,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:text="0 ₫"
-                    android:textColor="#FFA726"
+                    android:textColor="@color/insight_warning"
                     android:textSize="24sp"
                     android:textStyle="bold" />
 
@@ -193,7 +205,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:text="@string/forecast_description"
-                    android:textColor="#B0B0B0"
+                    android:textColor="@color/text_secondary"
                     android:textSize="12sp" />
 
             </LinearLayout>
@@ -204,7 +216,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            app:cardBackgroundColor="#2D2D3F"
+            app:cardBackgroundColor="@color/insight_card_bg"
             app:cardCornerRadius="16dp"
             app:strokeWidth="0dp">
 
@@ -218,7 +230,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/spending_breakdown"
-                    android:textColor="#B0B0B0"
+                    android:textColor="@color/text_secondary"
                     android:textSize="14sp" />
 
                 <com.github.mikephil.charting.charts.PieChart
@@ -237,7 +249,7 @@
             android:layout_marginTop="24dp"
             android:layout_marginBottom="8dp"
             android:text="@string/potential_anomalies"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/text_primary"
             android:textSize="18sp"
             android:textStyle="bold"
             android:visibility="gone" />

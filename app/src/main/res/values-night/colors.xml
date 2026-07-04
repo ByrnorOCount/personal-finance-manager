@@ -60,8 +60,11 @@
     <color name="cat_health">#10B981</color>
     <color name="cat_entertainment">#F97316</color>
     <color name="cat_other">#6B7280</color>
-
-    <!-- Planning / Submenu Styles -->
-    <color name="planning_bg">#121212</color>
-    <color name="planning_bar_bg">#1E1E2E</color>
+    <!-- Insights specific (Dark Mode) -->
+    <color name="insight_card_bg">@color/surface</color>
+    <color name="insight_card_accent">@color/surface_elevated</color>
+    <color name="insight_divider">@color/border_subtle</color>
+    <color name="insight_positive">#4CAF50</color>
+    <color name="insight_warning">#FFA726</color>
+    <color name="insight_critical">#EF5350</color>
 </resources>

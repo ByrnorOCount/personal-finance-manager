@@ -58,7 +58,7 @@
                 android:ellipsize="end"
                 android:gravity="center"
                 android:maxLines="1"
-                android:text="Income goal"
+                android:text="@string/incomes_header"
                 android:textColor="?attr/colorOnSurfaceVariant"
                 android:textSize="12sp" />
 
@@ -95,7 +95,7 @@
                 android:ellipsize="end"
                 android:gravity="center"
                 android:maxLines="1"
-                android:text="Income Earned"
+                android:text="@string/total_income_label"
                 android:textColor="?attr/colorOnSurfaceVariant"
                 android:textSize="12sp" />
 

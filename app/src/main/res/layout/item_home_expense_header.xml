@@ -58,7 +58,7 @@
                 android:ellipsize="end"
                 android:gravity="center"
                 android:maxLines="1"
-                android:text="Total Budgeted"
+                android:text="@string/total_budgeted_label"
                 android:textColor="?attr/colorOnSurfaceVariant"
                 android:textSize="12sp" />
 
@@ -95,7 +95,7 @@
                 android:ellipsize="end"
                 android:gravity="center"
                 android:maxLines="1"
-                android:text="Total Spent"
+                android:text="@string/total_spent_label"
                 android:textColor="?attr/colorOnSurfaceVariant"
                 android:textSize="12sp" />
 

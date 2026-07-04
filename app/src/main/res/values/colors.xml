@@ -53,7 +53,7 @@
     <color name="settings_language">#10B981</color>
     <color name="settings_delete">#EF4444</color>
 
-    <!-- Categories colors -->
+    <!-- Category colors -->
     <color name="cat_food">#FF6B6B</color>
     <color name="cat_transport">#3B82F6</color>
     <color name="cat_bills">#F59E0B</color>
@@ -62,9 +62,13 @@
     <color name="cat_entertainment">#F97316</color>
     <color name="cat_other">#6B7280</color>
 
-    <!-- Planning / Submenu Styles -->
-    <color name="planning_bg">#F8FAFC</color>
-    <color name="planning_bar_bg">#FFFFFF</color>
+    <!-- Insights specific -->
+    <color name="insight_card_bg">@color/surface</color>
+    <color name="insight_card_accent">@color/surface_variant</color>
+    <color name="insight_divider">@color/border_subtle</color>
+    <color name="insight_positive">#4CAF50</color>
+    <color name="insight_warning">#FFA726</color>
+    <color name="insight_critical">#EF5350</color>
 
     <!-- Legacy aliases -->
     <color name="primary_purple">#5B4FE9</color>

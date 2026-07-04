@@ -99,9 +99,28 @@
     <string name="category_color_label">Category color</string>
     <string name="save_btn">Save</string>
     <string name="type_here">Type here</string>
+    <string name="incomes_header">Incomes</string>
+    <string name="expenses_header">Expenses</string>
+    <string name="budgeted_label">Budgeted</string>
+    <string name="spent_label">Spent</string>
+    <string name="left_label">Left</string>
+    <string name="over_label">Over</string>
+    <string name="goal_reached_label">Goal Reached!</string>
 
     <!-- Insights -->
     <string name="financial_insights">Financial Insights</string>
+    <string name="no_budget_set">No budget set for this month</string>
+    <string name="set_insight_budget_title">Set Projection Budget</string>
+    <string name="set_insight_budget_desc">This limit is used only for financial projections and risk alerts in this screen.</string>
+    <string name="enter_limit_hint">Enter monthly limit (₫)</string>
+    <string name="update_limit">Update Limit</string>
+    <string name="set_limit">Set Limit</string>
+    <string name="anomaly_alert_header">Careful! Anomaly Detected</string>
+    <string name="overbudget_alert_header">Budget Overrun Risk</string>
+    <string name="anomaly_detected_msg">Careful! We detected %d unusual transactions that are significantly higher than your average.</string>
+    <string name="over_budget_projection_msg">At this rate, you will exceed your budget by %s.</string>
+    <string name="days_remaining_label">%d days remaining</string>
+    <string name="daily_burn_rate_value">%s / day</string>
     <string name="month_projection">Month Projection</string>
     <string name="on_track_status">On track to stay within budget</string>
     <string name="daily_burn_rate">Daily Burn Rate</string>

@@ -30,33 +30,36 @@ public class BudgetPredictor {
         double projectedEndSpend = currentSpend + (dailyBurnRate * daysRemaining);
 
         PredictionResult.OverrunRisk risk = PredictionResult.OverrunRisk.LOW;
-        String recommendation = "You're doing great! You have " +
-            String.format(Locale.getDefault(), "%.0f%%", (1 - (currentSpend/budgetLimit)) * 100) +
-            " of your budget left with " +
-            String.format(Locale.getDefault(), "%.0f%%", ((double)daysRemaining/totalDays) * 100) +
-            " of the month remaining.";
+        String recommendation;
 
         if (budgetLimit > 0) {
             double spendPercent = currentSpend / budgetLimit;
             double timePercent = (double) elapsedDays / totalDays;
 
+            recommendation = String.format(Locale.getDefault(), "You've used %.0f%% of your budget with %.0f%% of the month remaining.",
+                spendPercent * 100, (1 - timePercent) * 100);
+
             if (spendPercent > timePercent + 0.15) {
                 risk = PredictionResult.OverrunRisk.HIGH;
-                recommendation = String.format(Locale.getDefault(), "Alert: You're spending faster than usual (%.0f%% of budget used in %.0f%% of time). Try to cut back on %s.",
-                    spendPercent * 100, timePercent * 100, "non-essentials");
+                recommendation = String.format(Locale.getDefault(), "Alert: You're spending faster than usual (%.0f%% used in %.0f%% of time). Try to cut back on non-essential categories.",
+                    spendPercent * 100, timePercent * 100);
             } else if (spendPercent > timePercent) {
                 risk = PredictionResult.OverrunRisk.MEDIUM;
-                recommendation = "You're slightly ahead of your budget. Consider reviewing your recent shopping or food expenses.";
+                recommendation = "You're slightly ahead of your budget. Consider reviewing your upcoming expenses for the next few days.";
             }
 
             double projectedPercent = projectedEndSpend / budgetLimit;
             if (projectedPercent > 1.0) {
                 risk = PredictionResult.OverrunRisk.HIGH;
-                recommendation = String.format(Locale.getDefault(), "Warning: At this rate, you will exceed your budget by %.0f ₫ (%.0f%% overhead).",
-                    projectedEndSpend - budgetLimit, (projectedPercent - 1) * 100);
+                recommendation = String.format(Locale.getDefault(), "Warning: At this rate, you will exceed your budget by %s (%.0f%% overhead).",
+                    CurrencyFormatter.formatVND(projectedEndSpend - budgetLimit), (projectedPercent - 1) * 100);
+            } else if (projectedPercent > 0.9) {
+                risk = PredictionResult.OverrunRisk.MEDIUM;
+                recommendation = "Heads up: You're projected to finish the month very close to your budget limit.";
             }
         } else {
-            recommendation = "Set a budget limit to get personalized spending advice and risk alerts.";
+            recommendation = String.format(Locale.getDefault(), "You've spent %s so far this month. Set a budget to see how this compares to your goals.",
+                CurrencyFormatter.formatVND(currentSpend));
         }
 
         return new PredictionResult(currentSpend, projectedEndSpend, budgetLimit, dailyBurnRate, daysRemaining, risk, recommendation);

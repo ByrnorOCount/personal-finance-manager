@@ -9,6 +9,9 @@ import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
@@ -64,10 +67,21 @@ public class HomeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         viewModel = new ViewModelProvider(requireActivity()).get(FinanceViewModel.class);
 
+        binding.homeScrollView.setClipToOutline(true);
+
         setupCharts();
         setupRecyclerView();
         setupClickListeners();
+        setupWindowInsets(view);
         observeData();
+    }
+
+    private void setupWindowInsets(View view) {
+        ViewCompat.setOnApplyWindowInsetsListener(binding.headerLayout, (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(0, systemBars.top, 0, 0);
+            return insets;
+        });
     }
 
     private void setupCharts() {

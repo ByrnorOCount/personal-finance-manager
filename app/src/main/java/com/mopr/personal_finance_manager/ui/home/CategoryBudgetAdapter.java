@@ -241,10 +241,10 @@ public class CategoryBudgetAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             lp.weight = (float) Math.min(100, pct);
             b.categoryProgressIndicator.setLayoutParams(lp);
 
-            b.tvProgressPercent.setText(String.format(Locale.getDefault(), "%.2f%%", progress * 100));
+            b.tvProgressPercent.setText(String.format(Locale.getDefault(), " · %.2f%%", progress * 100));
 
             boolean isIncome = item.type != null && item.type.equals("INCOME");
-            b.tvBudgetLabel.setText(isIncome ? "Goal" : "Budgeted");
+            b.tvBudgetLabel.setText(isIncome ? ctx.getString(R.string.budgeted_label) : ctx.getString(R.string.budgeted_label));
 
             // Handle note visibility
             if (item.note != null && !item.note.isEmpty()) {
@@ -256,29 +256,29 @@ public class CategoryBudgetAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
             if (isIncome) {
                 b.tvSpentAmount.setTextColor(MaterialColors.getColor(b.tvSpentAmount, R.attr.colorIncome));
-                b.tvSpentLabel.setText("Earned");
+                b.tvSpentLabel.setText(ctx.getString(R.string.total_income_label));
 
                 if (item.spentAmount >= item.budgetLimit && item.budgetLimit > 0) {
-                    b.tvRemainingAmount.setText("Goal Reached!");
+                    b.tvRemainingAmount.setText(ctx.getString(R.string.goal_reached_label));
                     b.tvRemainingAmount.setTextColor(MaterialColors.getColor(b.tvRemainingAmount, R.attr.colorIncome));
                 } else {
                     double diff = item.budgetLimit - item.spentAmount;
-                    b.tvRemainingAmount.setText(CurrencyFormatter.formatVND(Math.max(0, diff)) + " Left");
+                    b.tvRemainingAmount.setText(CurrencyFormatter.formatVND(Math.max(0, diff)) + " " + ctx.getString(R.string.left_label));
                     b.tvRemainingAmount.setTextColor(MaterialColors.getColor(b.tvRemainingAmount, R.attr.colorIncome));
                 }
                 b.categoryProgressIndicator.setBackgroundTintList(android.content.res.ColorStateList.valueOf(MaterialColors.getColor(b.categoryProgressIndicator, R.attr.colorIncome)));
             } else {
                 b.tvSpentAmount.setTextColor(MaterialColors.getColor(b.tvSpentAmount, com.google.android.material.R.attr.colorOnSurface));
-                b.tvSpentLabel.setText("Spent");
+                b.tvSpentLabel.setText(ctx.getString(R.string.spent_label));
 
                 boolean isOver = item.spentAmount > item.budgetLimit;
                 if (isOver) {
                     double over = item.spentAmount - item.budgetLimit;
-                    b.tvRemainingAmount.setText(CurrencyFormatter.formatVND(over) + " Over");
+                    b.tvRemainingAmount.setText(CurrencyFormatter.formatVND(over) + " " + ctx.getString(R.string.over_label));
                     b.tvRemainingAmount.setTextColor(MaterialColors.getColor(b.tvRemainingAmount, R.attr.colorExpense));
                 } else {
                     double remaining = item.getRemaining();
-                    b.tvRemainingAmount.setText(CurrencyFormatter.formatVND(remaining) + " Left");
+                    b.tvRemainingAmount.setText(CurrencyFormatter.formatVND(remaining) + " " + ctx.getString(R.string.left_label));
                     b.tvRemainingAmount.setTextColor(MaterialColors.getColor(b.tvRemainingAmount, R.attr.colorIncome));
                 }
                 b.categoryProgressIndicator.setBackgroundTintList(android.content.res.ColorStateList.valueOf(MaterialColors.getColor(b.categoryProgressIndicator, R.attr.colorExpense)));

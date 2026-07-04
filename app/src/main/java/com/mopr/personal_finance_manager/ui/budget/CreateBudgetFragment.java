@@ -27,6 +27,11 @@ public class CreateBudgetFragment extends Fragment {
     private Calendar startCalendar = Calendar.getInstance();
     private Calendar endCalendar = Calendar.getInstance();
     private SimpleDateFormat displayFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+    private SimpleDateFormat nameMonthFormat = new SimpleDateFormat("MMMM", Locale.getDefault());
+    private SimpleDateFormat nameYearFormat = new SimpleDateFormat("yyyy", Locale.getDefault());
+    private SimpleDateFormat nameDayFormat = new SimpleDateFormat("dd", Locale.getDefault());
+
+    private boolean userEditedName = false;
 
     @Nullable
     @Override
@@ -44,11 +49,16 @@ public class CreateBudgetFragment extends Fragment {
         endCalendar.set(Calendar.DAY_OF_MONTH, endCalendar.getActualMaximum(Calendar.DAY_OF_MONTH));
 
         updateDateViews();
+        updateDefaultName();
 
         binding.btnBack.setOnClickListener(v -> Navigation.findNavController(v).navigateUp());
 
         binding.etStartDate.setOnClickListener(v -> showDatePicker(true));
         binding.etEndDate.setOnClickListener(v -> showDatePicker(false));
+
+        binding.etBudgetName.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) userEditedName = true;
+        });
 
         binding.btnNext.setOnClickListener(v -> {
             String name = binding.etBudgetName.getText().toString().trim();
@@ -78,6 +88,18 @@ public class CreateBudgetFragment extends Fragment {
         binding.etEndDate.setText(displayFormat.format(endCalendar.getTime()));
     }
 
+    private void updateDefaultName() {
+        if (userEditedName) return;
+
+        String month = nameMonthFormat.format(startCalendar.getTime());
+        String startDay = nameDayFormat.format(startCalendar.getTime());
+        String endDay = nameDayFormat.format(endCalendar.getTime());
+        String year = nameYearFormat.format(startCalendar.getTime());
+
+        String defaultName = String.format("%s %s-%s, %s", month, startDay, endDay, year);
+        binding.etBudgetName.setText(defaultName);
+    }
+
     private void showDatePicker(boolean isStart) {
         Calendar cal = isStart ? startCalendar : endCalendar;
         new DatePickerDialog(requireContext(), (view, year, month, dayOfMonth) -> {
@@ -85,6 +107,7 @@ public class CreateBudgetFragment extends Fragment {
             cal.set(Calendar.MONTH, month);
             cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
             updateDateViews();
+            updateDefaultName();
         }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).show();
     }
 

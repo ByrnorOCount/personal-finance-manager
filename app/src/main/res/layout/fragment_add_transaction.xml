@@ -51,7 +51,9 @@
             android:text="Save"
             android:textColor="?attr/colorOnHeader"
             android:textSize="16sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:clickable="true"
+            android:focusable="true"/>
     </RelativeLayout>
 
     <!-- Content Card -->
@@ -69,33 +71,24 @@
             android:orientation="vertical"
             android:padding="24dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Amount"
-                android:textColor="?attr/colorOnSurface"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-
+            <!-- Amount Section -->
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                app:boxStrokeColor="@color/brand_primary"
-                app:hintEnabled="false"
+                android:hint="Amount"
+                app:boxBackgroundColor="?attr/colorSurface"
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/amountInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="0"
                     android:inputType="numberDecimal"
                     android:textColor="?attr/colorOnSurface"
-                    android:textSize="28sp"
-                    android:textStyle="bold" />
+                    android:textSize="16sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
+            <!-- Category Section -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -117,7 +110,8 @@
                     android:layout_height="wrap_content"
                     android:text="+ New"
                     android:textColor="@color/brand_primary"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:padding="4dp" />
             </LinearLayout>
 
             <Spinner
@@ -127,66 +121,47 @@
                 android:layout_marginTop="8dp"
                 android:background="@drawable/bg_input_field" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:text="Date"
-                android:textColor="?attr/colorOnSurface"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-
-            <LinearLayout
-                android:id="@+id/datePickerRow"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/bg_input_field"
-                android:gravity="center_vertical"
-                android:paddingHorizontal="16dp"
-                android:clickable="true"
-                android:focusable="true">
-
-                <TextView
-                    android:id="@+id/dateText"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textColor="?attr/colorOnSurface"
-                    android:textSize="16sp" />
-
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_calendar"
-                    app:tint="?attr/colorOnSurface" />
-            </LinearLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:text="Note (Optional)"
-                android:textColor="?attr/colorOnSurface"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-
+            <!-- Date Section -->
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                app:hintEnabled="false"
+                android:layout_marginTop="24dp"
+                android:hint="Date"
+                app:boxBackgroundColor="?attr/colorSurface"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/dateText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="false"
+                    android:drawableEnd="@drawable/ic_calendar"
+                    android:drawableTint="?attr/colorOnSurface"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="16sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <View android:id="@+id/datePickerRow" android:layout_width="0dp" android:layout_height="0dp"/>
+
+            <!-- Note Section -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:hint="Note (Optional)"
+                app:boxBackgroundColor="?attr/colorSurface"
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/noteInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Add a note..."
                     android:inputType="textMultiLine"
                     android:minLines="3"
                     android:gravity="top"
-                    android:textColor="?attr/colorOnSurface" />
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="16sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.button.MaterialButton

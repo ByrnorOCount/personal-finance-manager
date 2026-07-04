@@ -56,28 +56,20 @@
             android:orientation="vertical"
             android:padding="24dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Budget Name"
-                android:textColor="?attr/colorOnSurface"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                app:hintEnabled="false"
+                android:hint="Budget Name"
+                app:boxBackgroundColor="?attr/colorSurface"
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etBudgetName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Enter budget name"
                     android:inputType="textCapSentences"
-                    android:textColor="?attr/colorOnSurface" />
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="16sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <LinearLayout
@@ -86,84 +78,61 @@
                 android:layout_marginTop="24dp"
                 android:orientation="horizontal">
 
-                <LinearLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginEnd="8dp"
-                    android:orientation="vertical">
+                    android:hint="Start Date"
+                    app:boxBackgroundColor="?attr/colorSurface"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Start Date"
-                        android:textColor="?attr/colorOnSurface"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
-
-                    <EditText
+                    <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etStartDate"
                         android:layout_width="match_parent"
-                        android:layout_height="56dp"
-                        android:layout_marginTop="8dp"
-                        android:background="@drawable/bg_input_field"
-                        android:clickable="true"
+                        android:layout_height="wrap_content"
                         android:focusable="false"
-                        android:paddingHorizontal="16dp"
-                        android:textColor="?attr/colorOnSurface" />
-                </LinearLayout>
+                        android:clickable="true"
+                        android:textColor="?attr/colorOnSurface"
+                        android:textSize="16sp" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <LinearLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginStart="8dp"
-                    android:orientation="vertical">
+                    android:hint="End Date"
+                    app:boxBackgroundColor="?attr/colorSurface"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="End Date"
-                        android:textColor="?attr/colorOnSurface"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
-
-                    <EditText
+                    <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etEndDate"
                         android:layout_width="match_parent"
-                        android:layout_height="56dp"
-                        android:layout_marginTop="8dp"
-                        android:background="@drawable/bg_input_field"
-                        android:clickable="true"
+                        android:layout_height="wrap_content"
                         android:focusable="false"
-                        android:paddingHorizontal="16dp"
-                        android:textColor="?attr/colorOnSurface" />
-                </LinearLayout>
+                        android:clickable="true"
+                        android:textColor="?attr/colorOnSurface"
+                        android:textSize="16sp" />
+                </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:text="Initial Balance"
-                android:textColor="?attr/colorOnSurface"
-                android:textSize="14sp"
-                android:textStyle="bold" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                app:hintEnabled="false"
+                android:layout_marginTop="24dp"
+                android:hint="Initial Balance (Optional)"
+                app:boxBackgroundColor="?attr/colorSurface"
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etInitialBalance"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="0"
                     android:inputType="numberDecimal"
-                    android:textColor="?attr/colorOnSurface" />
+                    android:text="0"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="16sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.button.MaterialButton

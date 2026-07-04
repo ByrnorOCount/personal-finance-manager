@@ -89,6 +89,10 @@ public class FinanceRepository {
         return transactionDao.getIncomeByCategoryInRange(start, end);
     }
 
+    public LiveData<List<CategorySum>> getRawExpensesByCategoryInRange(long start, long end) {
+        return transactionDao.getRawExpensesByCategoryInRange(start, end);
+    }
+
     // ── Categories ────────────────────────────────────────────────────
 
     public LiveData<List<Category>> getAllCategories() {

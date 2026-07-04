@@ -57,6 +57,10 @@ public class FinanceViewModel extends AndroidViewModel {
         return repo.getIncomeByCategoryInRange(start, end);
     }
 
+    public LiveData<List<CategorySum>> getRawExpensesByCategoryInRange(long start, long end) {
+        return repo.getRawExpensesByCategoryInRange(start, end);
+    }
+
     public void insertTransaction(Transaction t) {
         repo.insertTransaction(t);
     }

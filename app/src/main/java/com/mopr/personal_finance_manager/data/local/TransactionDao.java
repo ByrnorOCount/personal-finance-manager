@@ -83,6 +83,11 @@ public interface TransactionDao {
            "GROUP BY COALESCE(c.parentId, c.id)")
     LiveData<List<CategorySum>> getIncomeByCategoryInRange(long startMs, long endMs);
 
+    @Query("SELECT t.categoryId, c.name as category, SUM(t.amount) as totalAmount " +
+           "FROM transactions t INNER JOIN categories c ON t.categoryId = c.id " +
+           "WHERE t.type='EXPENSE' AND t.date >= :startMs AND t.date <= :endMs GROUP BY t.categoryId")
+    LiveData<List<CategorySum>> getRawExpensesByCategoryInRange(long startMs, long endMs);
+
     // ── Budget Planner: total spent per category in a month ──────────────────
     @Query("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type='EXPENSE' AND categoryId = :categoryId AND date >= :startMs AND date <= :endMs")
     double getExpenseByCategory(int categoryId, long startMs, long endMs);

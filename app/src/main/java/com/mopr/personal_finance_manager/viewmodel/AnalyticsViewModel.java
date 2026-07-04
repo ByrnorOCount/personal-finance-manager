@@ -90,6 +90,20 @@ public class AnalyticsViewModel extends AndroidViewModel {
         return repo.getExpensesByCategory(start, end);
     }
 
+    public LiveData<List<CategorySum>> getCurrentMonthIncomeByCategory() {
+        Calendar cal = Calendar.getInstance();
+        long start = DateUtils.getStartOfMonth(cal);
+        long end = DateUtils.getEndOfMonth(cal);
+        return repo.getIncomeByCategoryInRange(start, end);
+    }
+
+    public LiveData<List<CategorySum>> getCurrentMonthRawExpenses() {
+        Calendar cal = Calendar.getInstance();
+        long start = DateUtils.getStartOfMonth(cal);
+        long end = DateUtils.getEndOfMonth(cal);
+        return repo.getRawExpensesByCategoryInRange(start, end);
+    }
+
     public LiveData<List<TransactionWithCategory>> getAnomalies() {
         Calendar cal = Calendar.getInstance();
         long start = DateUtils.getStartOfMonth(cal);

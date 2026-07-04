@@ -36,57 +36,30 @@
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:contentDescription="Back"
                     android:src="@drawable/ic_back"
-                    app:tint="#FFFFFF" />
+                    app:tint="?attr/colorOnHeader" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:text="@string/nav_budget"
-                    android:textColor="#FFFFFF"
+                    android:textColor="?attr/colorOnHeader"
                     android:textSize="26sp"
                     android:textStyle="bold" />
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/tvBudgetSubtitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:text="Your created budgets"
-                android:textColor="#99FFFFFF"
-                android:textSize="14sp" />
-
-            <!-- Mode Toggle (Income vs Expense) -->
-            <com.google.android.material.button.MaterialButtonToggleGroup
-                android:id="@+id/toggleBudgetMode"
+            <!-- Create New Budget Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCreateNewBudget"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                app:checkedButton="@id/btnModeExpense"
-                app:selectionRequired="true"
-                app:singleSelection="true">
-
-                <Button
-                    android:id="@+id/btnModeIncome"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_weight="1"
-                    android:text="Income Goals"
-                    android:textColor="#FFFFFF"
-                    app:strokeColor="#66FFFFFF" />
-
-                <Button
-                    android:id="@+id/btnModeExpense"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_weight="1"
-                    android:text="Expense Budgets"
-                    android:textColor="#FFFFFF"
-                    app:strokeColor="#66FFFFFF" />
-            </com.google.android.material.button.MaterialButtonToggleGroup>
+                android:layout_height="52dp"
+                android:layout_marginTop="16dp"
+                android:text="Create New Budget"
+                android:textColor="?attr/colorOnHeader"
+                app:rippleColor="?attr/colorOnHeader"
+                app:strokeColor="?attr/colorOnHeader"
+                app:strokeWidth="1.5dp" />
 
         </LinearLayout>
 
@@ -111,16 +84,5 @@
 
         </LinearLayout>
     </LinearLayout>
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabAddBudget"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="24dp"
-        android:contentDescription="Add Budget"
-        android:src="@drawable/ic_add_nav"
-        app:backgroundTint="@color/dashboard_text_primary"
-        app:tint="#FFFFFF" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

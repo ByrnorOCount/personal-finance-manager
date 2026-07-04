@@ -18,6 +18,7 @@
         <item name="colorOnIncome">@color/white</item>
         <item name="colorExpense">@color/expense_red</item>
         <item name="colorOnExpense">@color/white</item>
+        <item name="colorOnHeader">@color/black</item>
     </style>
 
     <style name="Theme.PersonalFinanceManager" parent="Base.Theme.PersonalFinanceManager" />

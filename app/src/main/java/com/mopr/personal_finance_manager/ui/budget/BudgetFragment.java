@@ -36,7 +36,7 @@ public class BudgetFragment extends Fragment implements MainBudgetAdapter.OnBudg
         viewModel = new ViewModelProvider(requireActivity()).get(FinanceViewModel.class);
 
         setupRecyclerView();
-        setupFab();
+        setupCreateButton();
 
         binding.btnBack.setOnClickListener(v -> Navigation.findNavController(v).navigateUp());
 
@@ -49,8 +49,8 @@ public class BudgetFragment extends Fragment implements MainBudgetAdapter.OnBudg
         binding.rvBudgets.setAdapter(adapter);
     }
 
-    private void setupFab() {
-        binding.fabAddBudget.setOnClickListener(v -> {
+    private void setupCreateButton() {
+        binding.btnCreateNewBudget.setOnClickListener(v -> {
             Navigation.findNavController(v).navigate(R.id.navigation_create_budget);
         });
     }

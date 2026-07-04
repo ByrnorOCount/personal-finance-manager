@@ -24,7 +24,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
-                android:layout_marginBottom="4dp">
+                android:layout_marginBottom="12dp">
 
                 <ImageView
                     android:id="@+id/btnMenu"
@@ -40,16 +40,16 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:layout_toEndOf="@id/btnMenu"
                     android:layout_toStartOf="@+id/llTopRightActions"
-                    app:drawableEndCompat="@drawable/ic_arrow_downward"
+                    android:layout_toEndOf="@id/btnMenu"
                     android:drawablePadding="4dp"
-                    app:drawableTint="?attr/colorOnBackground"
                     android:gravity="center"
                     android:text="@string/placeholder_date_range"
                     android:textColor="?attr/colorOnBackground"
                     android:textSize="17sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    app:drawableEndCompat="@drawable/ic_arrow_downward"
+                    app:drawableTint="?attr/colorOnBackground" />
 
                 <LinearLayout
                     android:id="@+id/llTopRightActions"
@@ -58,6 +58,15 @@
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/btnAddBudget"
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:layout_marginEnd="16dp"
+                        android:contentDescription="@string/content_desc_manage_budgets"
+                        android:src="@drawable/ic_budget"
+                        app:tint="?attr/colorOnBackground" />
 
                     <ImageView
                         android:layout_width="26dp"
@@ -83,13 +92,14 @@
                 android:layout_height="wrap_content"
                 app:cardBackgroundColor="?attr/colorSurface"
                 app:cardCornerRadius="20dp"
-                app:cardElevation="4dp"
-                app:strokeWidth="0dp">
+                app:cardElevation="0dp"
+                app:strokeColor="@color/surface_variant"
+                app:strokeWidth="1dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="18dp">
+                    android:padding="20dp">
 
                     <!-- Initial Balance row -->
                     <TextView
@@ -486,19 +496,20 @@
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="24dp"
                 app:cardBackgroundColor="?attr/colorSurface"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="2dp"
-                app:strokeWidth="0dp">
+                app:cardCornerRadius="18dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/budget_purple_accent"
+                app:strokeWidth="1dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingStart="16dp"
-                    android:paddingTop="8dp"
-                    android:paddingEnd="16dp"
-                    android:paddingBottom="8dp">
+                    android:paddingStart="20dp"
+                    android:paddingTop="14dp"
+                    android:paddingEnd="20dp"
+                    android:paddingBottom="14dp">
 
                     <ImageView
                         android:id="@+id/ivExpandToggle"
@@ -509,23 +520,12 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:tint="?attr/colorOnSurfaceVariant" />
-
-                    <ImageView
-                        android:id="@+id/btnAddBudget"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:contentDescription="@null"
-                        android:src="@drawable/ic_add_nav"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:tint="?attr/colorOnSurfaceVariant" />
+                        app:tint="@color/budget_purple_accent" />
 
                     <com.github.mikephil.charting.charts.PieChart
                         android:id="@+id/miniChartSpent"
-                        android:layout_width="44dp"
-                        android:layout_height="44dp"
+                        android:layout_width="46dp"
+                        android:layout_height="46dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -534,8 +534,8 @@
                     <LinearLayout
                         android:id="@+id/llTotalBudgeted"
                         android:layout_width="0dp"
-                        android:layout_height="44dp"
-                        android:layout_marginStart="8dp"
+                        android:layout_height="46dp"
+                        android:layout_marginStart="10dp"
                         android:layout_marginEnd="8dp"
                         android:gravity="center_vertical"
                         android:orientation="vertical"
@@ -548,8 +548,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:ellipsize="end"
-                            android:maxLines="1"
                             android:gravity="center"
+                            android:maxLines="1"
                             android:text="@string/total_budgeted_label"
                             android:textColor="?attr/colorOnSurfaceVariant"
                             android:textSize="11sp" />
@@ -558,11 +558,12 @@
                             android:id="@+id/tvListTotalBudgeted"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="1dp"
                             android:ellipsize="end"
-                            android:maxLines="1"
                             android:gravity="center"
+                            android:maxLines="1"
                             android:textColor="?attr/colorOnSurface"
-                            android:textSize="14sp"
+                            android:textSize="15sp"
                             android:textStyle="bold"
                             tools:text="5.626.000 ₫" />
                     </LinearLayout>
@@ -570,13 +571,13 @@
                     <LinearLayout
                         android:id="@+id/llTotalSpent"
                         android:layout_width="0dp"
-                        android:layout_height="44dp"
+                        android:layout_height="46dp"
                         android:layout_marginStart="8dp"
-                        android:layout_marginEnd="8dp"
+                        android:layout_marginEnd="10dp"
                         android:gravity="center_vertical|end"
                         android:orientation="vertical"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@id/btnAddBudget"
+                        app:layout_constraintEnd_toStartOf="@id/btnCreateBudget"
                         app:layout_constraintStart_toEndOf="@id/miniChartSpent"
                         app:layout_constraintTop_toTopOf="parent">
 
@@ -584,8 +585,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:ellipsize="end"
-                            android:maxLines="1"
                             android:gravity="center"
+                            android:maxLines="1"
                             android:text="@string/total_spent_label"
                             android:textColor="?attr/colorOnSurfaceVariant"
                             android:textSize="11sp" />
@@ -594,14 +595,29 @@
                             android:id="@+id/tvListTotalSpent"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="1dp"
                             android:ellipsize="end"
-                            android:maxLines="1"
                             android:gravity="center"
-                            android:textColor="?attr/colorOnSurface"
-                            android:textSize="14sp"
+                            android:maxLines="1"
+                            android:textColor="@color/budget_purple_accent"
+                            android:textSize="15sp"
                             android:textStyle="bold"
                             tools:text="4.203.000 ₫" />
                     </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/btnCreateBudget"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:background="@drawable/bg_circle"
+                        android:backgroundTint="@color/budget_purple_accent"
+                        android:contentDescription="Create Budget"
+                        android:padding="7dp"
+                        android:src="@drawable/ic_add_nav"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:tint="@color/white" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -610,7 +626,7 @@
                 android:id="@+id/rvCategoryBudgets"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="4dp"
                 android:nestedScrollingEnabled="false"
                 tools:listitem="@layout/item_category_budget" />
 

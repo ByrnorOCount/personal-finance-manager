@@ -6,11 +6,18 @@
         <item name="colorOnPrimary">@color/text_on_brand</item>
         <item name="colorSecondary">@color/brand_gradient_end</item>
         <item name="colorSurface">@color/surface</item>
+        <item name="colorSurfaceVariant">@color/surface_variant</item>
         <item name="colorOnSurface">@color/text_primary</item>
         <item name="android:colorBackground">@color/background</item>
         <item name="android:statusBarColor">@color/background</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
         <item name="colorOnBackground">@color/text_primary</item>
+
+        <!-- Custom Semantic Colors -->
+        <item name="colorIncome">@color/income_green_accent</item>
+        <item name="colorOnIncome">@color/white</item>
+        <item name="colorExpense">@color/expense_red</item>
+        <item name="colorOnExpense">@color/white</item>
     </style>
 
     <style name="Theme.PersonalFinanceManager" parent="Base.Theme.PersonalFinanceManager" />

@@ -57,6 +57,37 @@
                 android:textColor="#99FFFFFF"
                 android:textSize="14sp" />
 
+            <!-- Mode Toggle (Income vs Expense) -->
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                android:id="@+id/toggleBudgetMode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                app:checkedButton="@id/btnModeExpense"
+                app:selectionRequired="true"
+                app:singleSelection="true">
+
+                <Button
+                    android:id="@+id/btnModeIncome"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:text="Income Goals"
+                    android:textColor="#FFFFFF"
+                    app:strokeColor="#66FFFFFF" />
+
+                <Button
+                    android:id="@+id/btnModeExpense"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:text="Expense Budgets"
+                    android:textColor="#FFFFFF"
+                    app:strokeColor="#66FFFFFF" />
+            </com.google.android.material.button.MaterialButtonToggleGroup>
+
         </LinearLayout>
 
         <LinearLayout
@@ -66,7 +97,7 @@
             android:layout_weight="1"
             android:background="@drawable/bg_sheet_top_rounded"
             android:orientation="vertical"
-            android:paddingTop="16dp">
+            android:paddingTop="8dp">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvBudgets"
@@ -74,7 +105,7 @@
                 android:layout_height="match_parent"
                 android:clipToPadding="false"
                 android:paddingStart="16dp"
-                android:paddingTop="12dp"
+                android:paddingTop="4dp"
                 android:paddingEnd="16dp"
                 android:paddingBottom="100dp" />
 

@@ -13,6 +13,7 @@ public class CategoryBudget implements Serializable {
     public String category;
     public double limitAmount;
     public String type; // INCOME or EXPENSE
+    public String note;
 
     public CategoryBudget() {}
 
@@ -21,5 +22,13 @@ public class CategoryBudget implements Serializable {
         this.category = category;
         this.limitAmount = limitAmount;
         this.type = type;
+    }
+
+    public CategoryBudget(int mainBudgetId, String category, double limitAmount, String type, String note) {
+        this.mainBudgetId = mainBudgetId;
+        this.category = category;
+        this.limitAmount = limitAmount;
+        this.type = type;
+        this.note = note;
     }
 }

@@ -23,7 +23,6 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.ViewHolder
 
     public interface OnBudgetClickListener {
         void onBudgetClick(Budget budget);
-        void onAddTransactionClick(String category);
     }
 
     private List<BudgetUIItem> items = new ArrayList<>();
@@ -102,9 +101,11 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.ViewHolder
             Budget budget = item.budget;
 
             b.tvCategoryName.setText(Category.getDisplayName(ctx, budget.category));
-            b.ivCategoryIcon.setImageResource(Category.getIconRes(budget.category));
+            int iconRes = Category.getIconRes(budget.category);
+            int colorRes = Category.getColorRes(budget.category);
+            b.ivCategoryIcon.setImageResource(iconRes != 0 ? iconRes : R.drawable.ic_cat_other);
             b.ivCategoryIcon.setBackgroundTintList(ColorStateList.valueOf(
-                ctx.getColor(Category.getColorRes(budget.category))));
+                ctx.getColor(colorRes != 0 ? colorRes : R.color.cat_other)));
 
             b.tvSpentAmount.setText(CurrencyFormatter.formatVND(item.spentAmount));
             b.tvBudgetAmount.setText(CurrencyFormatter.formatVND(budget.limitAmount));
@@ -129,8 +130,7 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.ViewHolder
                 b.tvRemainingAmount.setText(CurrencyFormatter.formatVND(item.getRemaining()) + " Left");
             }
 
-            itemView.setOnClickListener(v -> listener.onBudgetClick(budget));
-            b.btnAddTransaction.setOnClickListener(v -> listener.onAddTransactionClick(budget.category));
+            b.btnAddTransaction.setOnClickListener(v -> listener.onBudgetClick(budget));
         }
     }
 }

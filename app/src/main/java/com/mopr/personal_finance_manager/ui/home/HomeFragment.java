@@ -12,12 +12,15 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.mopr.personal_finance_manager.R;
+import com.mopr.personal_finance_manager.data.local.Category;
 import com.mopr.personal_finance_manager.data.local.CategoryBudget;
 import com.mopr.personal_finance_manager.data.local.CategorySum;
 import com.mopr.personal_finance_manager.data.local.MainBudget;
@@ -39,9 +42,16 @@ public class HomeFragment extends Fragment {
     private CategoryBudgetAdapter categoryAdapter;
 
     private MainBudget activeBudget;
+    private List<CategoryBudget> currentCategoryBudgets;
+    private List<com.mopr.personal_finance_manager.data.local.Category> allCategories;
+    private List<CategorySum> lastExpenses;
+    private List<CategorySum> lastIncomes;
+
     private double totalIncome = 0;
     private double totalSpent = 0;
     private double totalBudgeted = 0;
+    private boolean isIncomeExpanded = true;
+    private boolean isExpenseExpanded = true;
 
     @Nullable
     @Override
@@ -89,11 +99,102 @@ public class HomeFragment extends Fragment {
         binding.rvCategoryBudgets.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.rvCategoryBudgets.setAdapter(categoryAdapter);
         binding.rvCategoryBudgets.setNestedScrollingEnabled(false);
+
+        setupSwipeToDelete();
+        setupAdapterListeners();
+    }
+
+    private void setupSwipeToDelete() {
+        ItemTouchHelper.SimpleCallback swipeCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public int getSwipeDirs(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+                if (viewHolder instanceof CategoryBudgetAdapter.HeaderViewHolder) return 0;
+                return super.getSwipeDirs(recyclerView, viewHolder);
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                int position = viewHolder.getBindingAdapterPosition();
+                CategoryBudgetUI item = categoryAdapter.getItems().get(position);
+
+                new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                        .setTitle("Remove Category Budget")
+                        .setMessage("Are you sure you want to remove '" + item.categoryName + "' from this budget plan?")
+                        .setPositiveButton("Remove", (dialog, which) -> {
+                            // Find and delete the CategoryBudget entity
+                            viewModel.getCategoryBudgetsForMainBudget(activeBudget.id).observe(getViewLifecycleOwner(), budgets -> {
+                                if (budgets != null) {
+                                    for (CategoryBudget cb : budgets) {
+                                        if (cb.category.equals(item.categoryName)) {
+                                            viewModel.deleteCategoryBudget(cb);
+                                            break;
+                                        }
+                                    }
+                                }
+                            });
+                        })
+                        .setNegativeButton("Cancel", (dialog, which) -> {
+                            categoryAdapter.notifyItemChanged(position);
+                        })
+                        .show();
+            }
+        };
+        new ItemTouchHelper(swipeCallback).attachToRecyclerView(binding.rvCategoryBudgets);
+    }
+
+    private void setupAdapterListeners() {
+        categoryAdapter.setActionListener(new CategoryBudgetAdapter.OnCategoryActionListener() {
+            @Override
+            public void onEdit(CategoryBudgetUI item) {
+                Bundle args = new Bundle();
+                args.putSerializable("existingItem", item);
+                Navigation.findNavController(requireView()).navigate(R.id.navigation_add_category, args);
+            }
+
+            @Override
+            public void onToggleExpand(boolean isIncome) {
+                if (isIncome) {
+                    isIncomeExpanded = !isIncomeExpanded;
+                } else {
+                    isExpenseExpanded = !isExpenseExpanded;
+                }
+                categoryAdapter.setExpansionStates(isIncomeExpanded, isExpenseExpanded);
+                rebuildCategoryList(currentCategoryBudgets, lastExpenses, lastIncomes, allCategories);
+            }
+
+            @Override
+            public void onAddCategory(boolean isIncome) {
+                Bundle args = new Bundle();
+                args.putString("type", isIncome ? "INCOME" : "EXPENSE");
+                Navigation.findNavController(requireView()).navigate(R.id.navigation_add_category, args);
+            }
+        });
     }
 
     private void setupClickListeners() {
         binding.btnAddBudget.setOnClickListener(v ->
             Navigation.findNavController(v).navigate(R.id.navigation_budget));
+
+        binding.tvDateRange.setOnClickListener(v -> {
+            // Navigate to budget selection or show a picker
+            Navigation.findNavController(v).navigate(R.id.navigation_budget);
+        });
+
+        binding.ivExpandToggle.setOnClickListener(v -> {
+            isIncomeExpanded = !isIncomeExpanded;
+            isExpenseExpanded = isIncomeExpanded;
+            binding.ivExpandToggle.setImageResource(isIncomeExpanded ? R.drawable.ic_chevron_up : R.drawable.ic_arrow_downward);
+            categoryAdapter.setExpansionStates(isIncomeExpanded, isExpenseExpanded);
+            rebuildCategoryList(currentCategoryBudgets, lastExpenses, lastIncomes, allCategories);
+        });
+
+        binding.btnCreateBudget.setOnClickListener(v ->
+                Navigation.findNavController(v).navigate(R.id.navigation_create_budget));
     }
 
     private void observeData() {
@@ -120,30 +221,115 @@ public class HomeFragment extends Fragment {
         });
 
         viewModel.getCategoryBudgetsForMainBudget(budget.id).observe(getViewLifecycleOwner(), categoryBudgets -> {
+            this.currentCategoryBudgets = categoryBudgets;
             viewModel.getExpensesByCategory(budget.startDate, budget.endDate).observe(getViewLifecycleOwner(), expenses -> {
-                rebuildCategoryList(categoryBudgets, expenses);
+                this.lastExpenses = expenses;
+                viewModel.getIncomeByCategoryInRange(budget.startDate, budget.endDate).observe(getViewLifecycleOwner(), incomes -> {
+                    this.lastIncomes = incomes;
+                    viewModel.getAllCategories().observe(getViewLifecycleOwner(), allCats -> {
+                        this.allCategories = allCats;
+                        rebuildCategoryList(categoryBudgets, expenses, incomes, allCats);
+                    });
+                });
             });
         });
     }
 
-    private void rebuildCategoryList(List<CategoryBudget> categoryBudgets, List<CategorySum> expenses) {
+    private void rebuildCategoryList(List<CategoryBudget> categoryBudgets, List<CategorySum> expenses, List<CategorySum> incomes, List<com.mopr.personal_finance_manager.data.local.Category> allCategories) {
+        if (allCategories == null || categoryBudgets == null) return;
+
         Map<String, Double> actualMap = new HashMap<>();
-        if (expenses != null) {
-            for (CategorySum cs : expenses) actualMap.put(cs.category, cs.totalAmount);
+        if (expenses != null) for (CategorySum cs : expenses) actualMap.put(cs.category, cs.totalAmount);
+        if (incomes != null) for (CategorySum cs : incomes) actualMap.put(cs.category, cs.totalAmount);
+
+        Map<String, com.mopr.personal_finance_manager.data.local.Category> categoryDetailsMap = new HashMap<>();
+        for (com.mopr.personal_finance_manager.data.local.Category cat : allCategories) {
+            categoryDetailsMap.put(cat.name, cat);
         }
 
-        List<CategoryBudgetUI> items = new ArrayList<>();
-        totalBudgeted = 0;
+        List<CategoryBudgetUI> incomeItems = new ArrayList<>();
+        List<CategoryBudgetUI> expenseItems = new ArrayList<>();
 
+        double sectionIncomeBudgeted = 0;
+        double sectionIncomeActual = 0;
+        double sectionExpenseBudgeted = 0;
+        double sectionExpenseActual = 0;
+
+        java.util.Set<String> handledCategories = new java.util.HashSet<>();
+
+        // 1. Process budgeted categories
         for (CategoryBudget cb : categoryBudgets) {
-            if ("EXPENSE".equals(cb.type)) {
-                Double actual = actualMap.get(cb.category);
-                if (actual == null) actual = 0.0;
-                items.add(new CategoryBudgetUI(cb.category, cb.limitAmount, actual));
-                totalBudgeted += cb.limitAmount;
+            Double actual = actualMap.get(cb.category);
+            if (actual == null) actual = 0.0;
+            double limit = cb.limitAmount;
+
+            com.mopr.personal_finance_manager.data.local.Category cat = categoryDetailsMap.get(cb.category);
+            int catId = (cat != null) ? cat.id : 0;
+            int iconRes = (cat != null && cat.iconRes != 0) ? cat.iconRes : R.drawable.ic_cat_other;
+            int colorRes = (cat != null && cat.colorRes != 0) ? cat.colorRes : R.color.cat_other;
+
+            CategoryBudgetUI uiItem = new CategoryBudgetUI(catId, cb.category, iconRes, colorRes, limit, actual, cb.type, cb.note);
+
+            if ("INCOME".equals(cb.type)) {
+                incomeItems.add(uiItem);
+                sectionIncomeBudgeted += limit;
+                sectionIncomeActual += actual;
+            } else {
+                expenseItems.add(uiItem);
+                sectionExpenseBudgeted += limit;
+                sectionExpenseActual += actual;
+            }
+            handledCategories.add(cb.category);
+        }
+
+        // 2. Add unbudgeted categories that have actual transactions
+        if (expenses != null) {
+            for (CategorySum cs : expenses) {
+                if (!handledCategories.contains(cs.category)) {
+                    com.mopr.personal_finance_manager.data.local.Category cat = categoryDetailsMap.get(cs.category);
+                    int catId = (cat != null) ? cat.id : 0;
+                    int iconRes = (cat != null && cat.iconRes != 0) ? cat.iconRes : R.drawable.ic_cat_other;
+                    int colorRes = (cat != null && cat.colorRes != 0) ? cat.colorRes : R.color.cat_other;
+
+                    CategoryBudgetUI uiItem = new CategoryBudgetUI(catId, cs.category, iconRes, colorRes, 0, cs.totalAmount, "EXPENSE", "");
+                    expenseItems.add(uiItem);
+                    sectionExpenseActual += cs.totalAmount;
+                    handledCategories.add(cs.category);
+                }
             }
         }
-        categoryAdapter.setItems(items);
+
+        if (incomes != null) {
+            for (CategorySum cs : incomes) {
+                if (!handledCategories.contains(cs.category)) {
+                    com.mopr.personal_finance_manager.data.local.Category cat = categoryDetailsMap.get(cs.category);
+                    int catId = (cat != null) ? cat.id : 0;
+                    int iconRes = (cat != null && cat.iconRes != 0) ? cat.iconRes : R.drawable.ic_cat_other;
+                    int colorRes = (cat != null && cat.colorRes != 0) ? cat.colorRes : R.color.cat_other;
+
+                    CategoryBudgetUI uiItem = new CategoryBudgetUI(catId, cs.category, iconRes, colorRes, 0, cs.totalAmount, "INCOME", "");
+                    incomeItems.add(uiItem);
+                    sectionIncomeActual += cs.totalAmount;
+                    handledCategories.add(cs.category);
+                }
+            }
+        }
+
+        List<CategoryBudgetUI> finalItems = new ArrayList<>();
+
+        if (!incomeItems.isEmpty()) {
+            finalItems.add(new CategoryBudgetUI("Incomes", sectionIncomeBudgeted, sectionIncomeActual));
+            if (isIncomeExpanded) finalItems.addAll(incomeItems);
+        }
+
+        if (!expenseItems.isEmpty()) {
+            finalItems.add(new CategoryBudgetUI("Expenses", sectionExpenseBudgeted, sectionExpenseActual));
+            if (isExpenseExpanded) finalItems.addAll(expenseItems);
+        }
+
+        totalBudgeted = sectionExpenseBudgeted;
+        categoryAdapter.setItems(finalItems);
+
         refreshDashboard();
     }
 

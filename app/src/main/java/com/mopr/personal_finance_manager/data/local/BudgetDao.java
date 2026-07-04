@@ -2,6 +2,7 @@ package com.mopr.personal_finance_manager.data.local;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
@@ -21,27 +22,29 @@ public interface BudgetDao {
     @Query("DELETE FROM budgets WHERE id = :id")
     void deleteById(int id);
 
-    // ── Period-aware queries ──────────────────────────────────────────
+    // ── Date range queries ───────────────────────────────────────────
 
-    /**
-     * All budgets for a given period type + key, e.g. ("MONTH", "2026-06")
-     */
+    @Query("SELECT * FROM budgets WHERE type = :type AND NOT (endDate < :start OR startDate > :end)")
+    LiveData<List<Budget>> getBudgetsInRange(String type, long start, long end);
+
+    @Query("SELECT COALESCE(SUM(limitAmount), 0) FROM budgets WHERE type = :type AND NOT (endDate < :start OR startDate > :end)")
+    LiveData<Double> getTotalBudgetedInRange(String type, long start, long end);
+
+    @Query("SELECT * FROM budgets WHERE categoryId = :categoryId AND startDate = :start AND endDate = :end LIMIT 1")
+    Budget getBudgetForCategoryAndPeriodSync(int categoryId, long start, long end);
+
+    // ── Period Key queries ────────────────────────────────────────────
+
     @Query("SELECT * FROM budgets WHERE periodType = :type AND periodKey = :key ORDER BY category ASC")
     LiveData<List<Budget>> getBudgetsForPeriod(String type, String key);
 
-    /**
-     * Sum of all budget limits for a period
-     */
     @Query("SELECT COALESCE(SUM(limitAmount), 0) FROM budgets WHERE periodType = :type AND periodKey = :key")
     LiveData<Double> getTotalBudgetedForPeriod(String type, String key);
 
-    /**
-     * Check if a budget already exists for this category + period
-     */
     @Query("SELECT * FROM budgets WHERE category = :category AND periodType = :type AND periodKey = :key LIMIT 1")
     Budget getBudgetForCategoryAndPeriodSync(String category, String type, String key);
 
-    // ── Legacy month-based queries (keep for backwards compat) ───────
+    // ── Legacy month-based queries ───────
 
     @Query("SELECT * FROM budgets WHERE periodKey = :month ORDER BY category ASC")
     LiveData<List<Budget>> getBudgetsForMonth(String month);
@@ -51,9 +54,6 @@ public interface BudgetDao {
 
     // ── Bulk operations ──────────────────────────────────────────────
 
-    /**
-     * Fetch budgets to clone to next period
-     */
     @Query("SELECT * FROM budgets WHERE periodType = :type AND periodKey = :key")
     List<Budget> getBudgetsToClone(String type, String key);
 
@@ -100,4 +100,13 @@ public interface BudgetDao {
 
     @Query("DELETE FROM category_budgets WHERE mainBudgetId = :mainBudgetId")
     void deleteCategoryBudgetsByMainBudgetId(int mainBudgetId);
+
+    @Update
+    void updateCategoryBudget(CategoryBudget categoryBudget);
+
+    @Delete
+    void deleteCategoryBudget(CategoryBudget categoryBudget);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertCategoryBudget(CategoryBudget categoryBudget);
 }

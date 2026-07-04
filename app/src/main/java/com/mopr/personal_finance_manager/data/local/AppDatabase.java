@@ -10,8 +10,16 @@ import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
 @Database(
-    entities = {Transaction.class, Budget.class, SavingsGoal.class, MainBudget.class, CategoryBudget.class},
-    version = 3,          // bumped from 2 → 3 for MainBudget/CategoryBudget
+    entities = {
+        Transaction.class,
+        Budget.class,
+        SavingsGoal.class,
+        MainBudget.class,
+        CategoryBudget.class,
+        Category.class,
+        RecurringRule.class
+    },
+    version = 5,          // bumped from 4 → 5: Added note to CategoryBudget
     exportSchema = false
 )
 public abstract class AppDatabase extends RoomDatabase {
@@ -20,9 +28,6 @@ public abstract class AppDatabase extends RoomDatabase {
      * Migration 1 → 2:
      * Budget table gains periodType (TEXT DEFAULT 'MONTH') and
      * renames the old "month" column to "periodKey".
-     * <p>
-     * SQLite doesn't support RENAME COLUMN before 3.25 (API 30+),
-     * so we recreate the table.
      */
     static final Migration MIGRATION_1_2 = new Migration(1, 2) {
         @Override
@@ -38,13 +43,14 @@ public abstract class AppDatabase extends RoomDatabase {
 
             // 2. Copy old data; old "month" column → periodKey
             db.execSQL("INSERT INTO `budgets_new` (id, category, limitAmount, periodType, periodKey, firestoreId) " +
-                "SELECT id, category, limitAmount, 'MONTH', month, firestoreId FROM `budgets`");
+                "SELECT id, category, limitAmount, 'MONTH', month, firestoreId FROM `budgets` ");
 
             // 3. Drop old, rename new
-            db.execSQL("DROP TABLE `budgets`");
-            db.execSQL("ALTER TABLE `budgets_new` RENAME TO `budgets`");
+            db.execSQL("DROP TABLE `budgets` ");
+            db.execSQL("ALTER TABLE `budgets_new` RENAME TO `budgets` ");
         }
     };
+
     private static volatile AppDatabase instance;
 
     public static synchronized AppDatabase getInstance(Context context) {
@@ -62,8 +68,8 @@ public abstract class AppDatabase extends RoomDatabase {
     }
 
     public abstract TransactionDao transactionDao();
-
     public abstract BudgetDao budgetDao();
-
     public abstract SavingsGoalDao savingsGoalDao();
+    public abstract CategoryDao categoryDao();
+    public abstract RecurringRuleDao recurringRuleDao();
 }

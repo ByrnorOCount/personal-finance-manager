@@ -27,6 +27,7 @@
     <string name="amount_hint">0</string>
     <string name="content_desc_add">Add transaction</string>
     <string name="content_desc_back">Back</string>
+    <string name="content_desc_manage_budgets">Manage Budgets</string>
     <string name="current_balance">Current Balance</string>
     <string name="amount_required">Please enter an amount</string>
     <string name="invalid_amount">Invalid amount</string>
@@ -84,4 +85,18 @@
     <string name="saving_label">Saving</string>
     <string name="total_spent_label">Total Spent</string>
     <string name="placeholder_date_range">Jun 01-30, 2026</string>
+    <string name="add_new_category">+ New Category</string>
+    <string name="new_category_hint">Enter new category name</string>
+    <string name="use_existing_category">Use existing category</string>
+    <string name="please_enter_category_name">Please enter category name</string>
+
+    <!-- Add Category -->
+    <string name="add_category">Add Category</string>
+    <string name="title_label">Title</string>
+    <string name="estimated_budget_label">Estimated Budget</string>
+    <string name="note_optional_label">Note (Optional)</string>
+    <string name="category_icon_label">Category icon</string>
+    <string name="category_color_label">Category color</string>
+    <string name="save_btn">Save</string>
+    <string name="type_here">Type here</string>
 </resources>

@@ -18,7 +18,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.mopr.personal_finance_manager.R;
 import com.mopr.personal_finance_manager.data.local.Transaction;
-import com.mopr.personal_finance_manager.data.model.Category;
+import com.mopr.personal_finance_manager.data.local.TransactionWithCategory;
+import com.mopr.personal_finance_manager.data.local.Category;
 import com.mopr.personal_finance_manager.databinding.FragmentHistoryBinding;
 import com.mopr.personal_finance_manager.ui.common.FinanceViewModel;
 import com.mopr.personal_finance_manager.ui.common.TransactionAdapter;
@@ -38,11 +39,11 @@ public class HistoryFragment extends Fragment {
     private TransactionAdapter adapter;
 
     // Full unfiltered list from DB
-    private List<Transaction> allTransactions = new ArrayList<>();
+    private List<TransactionWithCategory> allTransactions = new ArrayList<>();
 
     // Current filter state
     private String activeTypeFilter = FILTER_ALL;
-    private String activeCategoryFilter = null; // null = no category filter
+    private Integer activeCategoryIdFilter = null; // null = no category filter
 
     // Current search query
     private String searchQuery = "";
@@ -75,15 +76,15 @@ public class HistoryFragment extends Fragment {
 
         adapter.setListener(new TransactionAdapter.OnTransactionClickListener() {
             @Override
-            public void onTransactionClick(Transaction transaction, int position) {
+            public void onTransactionClick(TransactionWithCategory item, int position) {
                 // TODO: navigate to edit screen when implemented
                 Toast.makeText(requireContext(),
-                    Category.getDisplayName(requireContext(), transaction.category), Toast.LENGTH_SHORT).show();
+                    item.category != null ? item.category.name : "Unknown", Toast.LENGTH_SHORT).show();
             }
 
             @Override
-            public void onTransactionLongClick(Transaction transaction, int position) {
-                showDeleteDialog(transaction);
+            public void onTransactionLongClick(TransactionWithCategory item, int position) {
+                showDeleteDialog(item.transaction);
             }
         });
     }
@@ -121,43 +122,38 @@ public class HistoryFragment extends Fragment {
         // Type chips
         binding.chipAll.setOnClickListener(v -> {
             activeTypeFilter = FILTER_ALL;
-            activeCategoryFilter = null;
+            activeCategoryIdFilter = null;
             updateChipStates();
             applyFilters();
         });
         binding.chipIncome.setOnClickListener(v -> {
             activeTypeFilter = FILTER_INCOME;
-            activeCategoryFilter = null;
+            activeCategoryIdFilter = null;
             updateChipStates();
             applyFilters();
         });
         binding.chipExpense.setOnClickListener(v -> {
             activeTypeFilter = FILTER_EXPENSE;
-            activeCategoryFilter = null;
+            activeCategoryIdFilter = null;
             updateChipStates();
             applyFilters();
         });
 
-        // Category chips (toggle: tap again to deselect)
-        binding.chipFood.setOnClickListener(v ->
-            toggleCategoryFilter(Category.FOOD));
-        binding.chipTransport.setOnClickListener(v ->
-            toggleCategoryFilter(Category.TRANSPORT));
-        binding.chipShopping.setOnClickListener(v ->
-            toggleCategoryFilter(Category.SHOPPING));
-        binding.chipBills.setOnClickListener(v ->
-            toggleCategoryFilter(Category.BILLS));
-        binding.chipHealth.setOnClickListener(v ->
-            toggleCategoryFilter(Category.HEALTH));
+        // Category chips - using IDs from pre-populated data for now
+        binding.chipFood.setOnClickListener(v -> toggleCategoryFilter(1));
+        binding.chipTransport.setOnClickListener(v -> toggleCategoryFilter(2));
+        binding.chipShopping.setOnClickListener(v -> toggleCategoryFilter(4));
+        binding.chipBills.setOnClickListener(v -> toggleCategoryFilter(3));
+        binding.chipHealth.setOnClickListener(v -> toggleCategoryFilter(5));
     }
 
-    private void toggleCategoryFilter(String category) {
-        if (category.equals(activeCategoryFilter)) {
+    private void toggleCategoryFilter(int categoryId) {
+        if (activeCategoryIdFilter != null && activeCategoryIdFilter == categoryId) {
             // Deselect
-            activeCategoryFilter = null;
+            activeCategoryIdFilter = null;
         } else {
-            activeCategoryFilter = category;
-            // Category filter implies ALL types
+            activeCategoryIdFilter = categoryId;
+            // Category filter implies ALL types (actually it matches the category type, but we show it)
             activeTypeFilter = FILTER_ALL;
         }
         updateChipStates();
@@ -166,15 +162,15 @@ public class HistoryFragment extends Fragment {
 
     private void updateChipStates() {
         // Reset all chips
-        setChipSelected(binding.chipAll, activeTypeFilter.equals(FILTER_ALL) && activeCategoryFilter == null);
+        setChipSelected(binding.chipAll, activeTypeFilter.equals(FILTER_ALL) && activeCategoryIdFilter == null);
         setChipSelected(binding.chipIncome, activeTypeFilter.equals(FILTER_INCOME));
         setChipSelected(binding.chipExpense, activeTypeFilter.equals(FILTER_EXPENSE));
 
-        setChipSelected(binding.chipFood, Category.FOOD.equals(activeCategoryFilter));
-        setChipSelected(binding.chipTransport, Category.TRANSPORT.equals(activeCategoryFilter));
-        setChipSelected(binding.chipShopping, Category.SHOPPING.equals(activeCategoryFilter));
-        setChipSelected(binding.chipBills, Category.BILLS.equals(activeCategoryFilter));
-        setChipSelected(binding.chipHealth, Category.HEALTH.equals(activeCategoryFilter));
+        setChipSelected(binding.chipFood, activeCategoryIdFilter != null && activeCategoryIdFilter == 1);
+        setChipSelected(binding.chipTransport, activeCategoryIdFilter != null && activeCategoryIdFilter == 2);
+        setChipSelected(binding.chipShopping, activeCategoryIdFilter != null && activeCategoryIdFilter == 4);
+        setChipSelected(binding.chipBills, activeCategoryIdFilter != null && activeCategoryIdFilter == 3);
+        setChipSelected(binding.chipHealth, activeCategoryIdFilter != null && activeCategoryIdFilter == 5);
     }
 
     private void setChipSelected(TextView chip, boolean selected) {
@@ -190,13 +186,16 @@ public class HistoryFragment extends Fragment {
     // ── Filter logic ──────────────────────────────────────────────────────
 
     private void applyFilters() {
-        List<Transaction> filtered = new ArrayList<>();
+        List<TransactionWithCategory> filtered = new ArrayList<>();
 
-        for (Transaction t : allTransactions) {
+        for (TransactionWithCategory item : allTransactions) {
+            Transaction t = item.transaction;
+            Category c = item.category;
+
             // 1. Type / category filter
             boolean passesType;
-            if (activeCategoryFilter != null) {
-                passesType = activeCategoryFilter.equals(t.category);
+            if (activeCategoryIdFilter != null) {
+                passesType = t.categoryId == activeCategoryIdFilter;
             } else {
                 switch (activeTypeFilter) {
                     case FILTER_INCOME:
@@ -214,12 +213,12 @@ public class HistoryFragment extends Fragment {
             boolean passesSearch = true;
             if (!searchQuery.isEmpty()) {
                 String note = t.note != null ? t.note.toLowerCase() : "";
-                String category = Category.getDisplayName(requireContext(), t.category).toLowerCase();
+                String category = c != null ? c.name.toLowerCase() : "";
                 passesSearch = note.contains(searchQuery) || category.contains(searchQuery);
             }
 
             if (passesType && passesSearch) {
-                filtered.add(t);
+                filtered.add(item);
             }
         }
 

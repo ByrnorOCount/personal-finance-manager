@@ -68,6 +68,18 @@ public class BudgetFragment extends Fragment implements MainBudgetAdapter.OnBudg
     }
 
     @Override
+    public void onDeleteClick(MainBudget budget) {
+        new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                .setTitle("Delete Budget Plan")
+                .setMessage("Are you sure you want to delete '" + budget.name + "'? This will also delete all category budgets associated with it.")
+                .setPositiveButton("Delete", (dialog, which) -> {
+                    viewModel.deleteMainBudget(budget.id);
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;

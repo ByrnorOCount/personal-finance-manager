@@ -15,8 +15,8 @@ public class Transaction implements Serializable {
 
     public double amount;
 
-    // Category key: FOOD, TRANSPORT, BILLS, SHOPPING, HEALTH, ENTERTAINMENT, OTHER
-    public String category;
+    // Category ID from categories table
+    public int categoryId;
 
     // Date stored as epoch milliseconds for easy sorting and filtering
     public long date;
@@ -32,14 +32,14 @@ public class Transaction implements Serializable {
 
     public Transaction() {}
 
-    public Transaction(String type, double amount, String category,
+    public Transaction(String type, double amount, int categoryId,
                        long date, String note, String currency) {
-        this.type     = type;
-        this.amount   = amount;
-        this.category = category;
-        this.date     = date;
-        this.note     = note;
-        this.currency = currency;
+        this.type       = type;
+        this.amount     = amount;
+        this.categoryId = categoryId;
+        this.date       = date;
+        this.note       = note;
+        this.currency   = currency;
     }
 
     // Convenience

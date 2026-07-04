@@ -16,12 +16,14 @@ import com.mopr.personal_finance_manager.R;
 import com.mopr.personal_finance_manager.data.local.CategoryBudget;
 import com.mopr.personal_finance_manager.data.local.MainBudget;
 import com.mopr.personal_finance_manager.data.model.Category;
+import com.mopr.personal_finance_manager.data.model.CategoryBudgetUI;
 import com.mopr.personal_finance_manager.databinding.FragmentInitialPlanningBinding;
 import com.mopr.personal_finance_manager.ui.common.FinanceViewModel;
 import com.mopr.personal_finance_manager.util.CurrencyFormatter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class InitialPlanningFragment extends Fragment {
 
@@ -32,6 +34,11 @@ public class InitialPlanningFragment extends Fragment {
     private List<CategoryBudget> expenseBudgets = new ArrayList<>();
     private PlanningBudgetAdapter incomeAdapter;
     private PlanningBudgetAdapter expenseAdapter;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
     @Nullable
     @Override
@@ -50,9 +57,51 @@ public class InitialPlanningFragment extends Fragment {
         }
 
         setupRecyclerViews();
-        setupDefaults();
         setupClickListeners();
+        setupResultListeners();
+        setupDefaults();
         updateTotals();
+    }
+
+    private void setupResultListeners() {
+        getParentFragmentManager().setFragmentResultListener("add_category_result", getViewLifecycleOwner(), (requestKey, result) -> {
+            CategoryBudget cb = (CategoryBudget) result.getSerializable("categoryBudget");
+            if (cb != null) {
+                if ("INCOME".equals(cb.type)) {
+                    incomeBudgets.add(cb);
+                    incomeAdapter.setItems(new ArrayList<>(incomeBudgets));
+                } else {
+                    expenseBudgets.add(cb);
+                    expenseAdapter.setItems(new ArrayList<>(expenseBudgets));
+                }
+                updateTotals();
+            }
+        });
+
+        getParentFragmentManager().setFragmentResultListener("edit_category_result", getViewLifecycleOwner(), (requestKey, result) -> {
+            CategoryBudget updated = (CategoryBudget) result.getSerializable("categoryBudget");
+            String oldName = result.getString("oldName");
+            if (updated != null && oldName != null) {
+                if ("INCOME".equals(updated.type)) {
+                    for (int i = 0; i < incomeBudgets.size(); i++) {
+                        if (incomeBudgets.get(i).category.equals(oldName)) {
+                            incomeBudgets.set(i, updated);
+                            break;
+                        }
+                    }
+                    incomeAdapter.setItems(new ArrayList<>(incomeBudgets));
+                } else {
+                    for (int i = 0; i < expenseBudgets.size(); i++) {
+                        if (expenseBudgets.get(i).category.equals(oldName)) {
+                            expenseBudgets.set(i, updated);
+                            break;
+                        }
+                    }
+                    expenseAdapter.setItems(new ArrayList<>(expenseBudgets));
+                }
+                updateTotals();
+            }
+        });
     }
 
     private void setupRecyclerViews() {
@@ -64,6 +113,15 @@ public class InitialPlanningFragment extends Fragment {
                 incomeBudgets.remove(budget);
                 incomeAdapter.setItems(new ArrayList<>(incomeBudgets));
                 updateTotals();
+            }
+            @Override
+            public void onEditBudget(CategoryBudget budget) {
+                Bundle args = new Bundle();
+                args.putString("type", budget.type);
+                CategoryBudgetUI ui = new CategoryBudgetUI(0, budget.category, 0, 0, budget.limitAmount, 0, budget.type, budget.note);
+                args.putSerializable("existingItem", ui);
+                args.putBoolean("returnResult", true);
+                Navigation.findNavController(requireView()).navigate(R.id.navigation_add_category, args);
             }
         });
         binding.rvIncomeBudgets.setLayoutManager(new LinearLayoutManager(requireContext()));
@@ -78,19 +136,30 @@ public class InitialPlanningFragment extends Fragment {
                 expenseAdapter.setItems(new ArrayList<>(expenseBudgets));
                 updateTotals();
             }
+            @Override
+            public void onEditBudget(CategoryBudget budget) {
+                Bundle args = new Bundle();
+                args.putString("type", budget.type);
+                CategoryBudgetUI ui = new CategoryBudgetUI(0, budget.category, 0, 0, budget.limitAmount, 0, budget.type, budget.note);
+                args.putSerializable("existingItem", ui);
+                args.putBoolean("returnResult", true);
+                Navigation.findNavController(requireView()).navigate(R.id.navigation_add_category, args);
+            }
         });
         binding.rvExpenseBudgets.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.rvExpenseBudgets.setAdapter(expenseAdapter);
     }
 
     private void setupDefaults() {
-        // Add some default categories
-        incomeBudgets.add(new CategoryBudget(0, Category.SALARY, 20000000, "INCOME"));
-        incomeBudgets.add(new CategoryBudget(0, Category.FREELANCE, 5000000, "INCOME"));
+        if (incomeBudgets.isEmpty() && expenseBudgets.isEmpty()) {
+            // Add some default categories
+            incomeBudgets.add(new CategoryBudget(0, Category.SALARY, 20000000, "INCOME"));
+            incomeBudgets.add(new CategoryBudget(0, Category.FREELANCE, 5000000, "INCOME"));
 
-        expenseBudgets.add(new CategoryBudget(0, Category.FOOD, 4000000, "EXPENSE"));
-        expenseBudgets.add(new CategoryBudget(0, Category.TRANSPORT, 1000000, "EXPENSE"));
-        expenseBudgets.add(new CategoryBudget(0, Category.BILLS, 2000000, "EXPENSE"));
+            expenseBudgets.add(new CategoryBudget(0, Category.FOOD, 4000000, "EXPENSE"));
+            expenseBudgets.add(new CategoryBudget(0, Category.TRANSPORT, 1000000, "EXPENSE"));
+            expenseBudgets.add(new CategoryBudget(0, Category.BILLS, 2000000, "EXPENSE"));
+        }
 
         incomeAdapter.setItems(new ArrayList<>(incomeBudgets));
         expenseAdapter.setItems(new ArrayList<>(expenseBudgets));
@@ -98,6 +167,20 @@ public class InitialPlanningFragment extends Fragment {
 
     private void setupClickListeners() {
         binding.toolbar.setNavigationOnClickListener(v -> Navigation.findNavController(v).navigateUp());
+
+        binding.btnAddIncomeCategoryBtn.setOnClickListener(v -> {
+            Bundle args = new Bundle();
+            args.putString("type", "INCOME");
+            args.putBoolean("returnResult", true);
+            Navigation.findNavController(v).navigate(R.id.navigation_add_category, args);
+        });
+
+        binding.btnAddExpenseCategoryBtn.setOnClickListener(v -> {
+            Bundle args = new Bundle();
+            args.putString("type", "EXPENSE");
+            args.putBoolean("returnResult", true);
+            Navigation.findNavController(v).navigate(R.id.navigation_add_category, args);
+        });
 
         View.OnClickListener saveAction = v -> {
             List<CategoryBudget> all = new ArrayList<>();

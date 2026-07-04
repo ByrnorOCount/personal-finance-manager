@@ -1,6 +1,7 @@
 package com.mopr.personal_finance_manager.data.local;
 
 public class CategorySum {
-    public String category;
+    public int categoryId;
+    public String category; // Category name
     public double totalAmount;
 }

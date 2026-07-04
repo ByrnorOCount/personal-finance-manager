@@ -22,6 +22,7 @@ public class PlanningBudgetAdapter extends RecyclerView.Adapter<PlanningBudgetAd
     public interface OnBudgetChangeListener {
         void onBudgetChanged();
         void onRemoveBudget(CategoryBudget budget);
+        void onEditBudget(CategoryBudget budget);
     }
 
     public PlanningBudgetAdapter(OnBudgetChangeListener listener) {
@@ -78,6 +79,14 @@ public class PlanningBudgetAdapter extends RecyclerView.Adapter<PlanningBudgetAd
 
             b.btnRemove.setOnClickListener(v -> {
                 if (listener != null) listener.onRemoveBudget(item);
+            });
+
+            b.btnEdit.setOnClickListener(v -> {
+                if (listener != null) listener.onEditBudget(item);
+            });
+
+            itemView.setOnClickListener(v -> {
+                if (listener != null) listener.onEditBudget(item);
             });
         }
     }

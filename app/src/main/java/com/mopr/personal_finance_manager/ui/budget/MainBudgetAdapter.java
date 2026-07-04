@@ -23,6 +23,7 @@ public class MainBudgetAdapter extends RecyclerView.Adapter<MainBudgetAdapter.Vi
 
     public interface OnBudgetClickListener {
         void onBudgetClick(MainBudget budget);
+        void onDeleteClick(MainBudget budget);
     }
 
     public MainBudgetAdapter(OnBudgetClickListener listener) {
@@ -63,6 +64,10 @@ public class MainBudgetAdapter extends RecyclerView.Adapter<MainBudgetAdapter.Vi
             b.tvBudgetName.setText(item.name);
             b.tvBudgetDates.setText(sdf.format(item.startDate) + " - " + sdf.format(item.endDate));
             b.ivActiveIndicator.setVisibility(item.isActive ? View.VISIBLE : View.GONE);
+
+            b.btnDeleteBudget.setOnClickListener(v -> {
+                if (listener != null) listener.onDeleteClick(item);
+            });
 
             itemView.setOnClickListener(v -> {
                 if (listener != null) listener.onBudgetClick(item);

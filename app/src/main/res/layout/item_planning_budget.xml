@@ -4,11 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="8dp"
-    app:cardBackgroundColor="#2D2D3F"
-    app:cardCornerRadius="12dp"
+    android:layout_marginTop="12dp"
+    app:cardBackgroundColor="?attr/colorSurface"
+    app:cardCornerRadius="16dp"
     app:cardElevation="0dp"
-    app:strokeWidth="0dp">
+    app:strokeColor="?attr/colorSurfaceVariant"
+    app:strokeWidth="1.5dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -24,8 +25,9 @@
                 android:id="@+id/tvCategoryName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#FFFFFF"
+                android:textColor="?attr/colorOnSurface"
                 android:textSize="16sp"
+                android:textStyle="bold"
                 tools:text="Daily Living" />
 
             <TextView
@@ -34,28 +36,31 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tvCategoryName"
                 android:layout_marginTop="4dp"
-                android:textColor="#64B5F6"
-                android:textSize="14sp"
+                android:textColor="@color/brand_primary"
+                android:textSize="15sp"
+                android:textStyle="bold"
                 tools:text="4.160 ₫" />
 
             <ImageView
                 android:id="@+id/btnEdit"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
+                android:padding="4dp"
                 android:src="@drawable/ic_edit"
-                app:tint="#66FFFFFF" />
+                app:tint="?attr/colorOnSurfaceVariant" />
 
             <ImageView
                 android:id="@+id/btnRemove"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
                 android:layout_marginEnd="12dp"
                 android:layout_toStartOf="@id/btnEdit"
                 android:layout_centerVertical="true"
+                android:padding="4dp"
                 android:src="@drawable/ic_close"
-                app:tint="#F44336" />
+                app:tint="@color/expense_red" />
 
         </RelativeLayout>
 
@@ -63,12 +68,12 @@
             android:id="@+id/seekBarLimit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="16dp"
             android:max="10000000"
             android:progress="0"
-            android:thumbTint="#448AFF"
-            android:progressTint="#448AFF"
-            android:progressBackgroundTint="#3D3D52" />
+            android:thumbTint="@color/brand_primary"
+            android:progressTint="@color/brand_primary"
+            android:progressBackgroundTint="?attr/colorSurfaceVariant" />
 
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

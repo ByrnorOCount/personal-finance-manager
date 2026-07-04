@@ -3,12 +3,14 @@ package com.mopr.personal_finance_manager;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.mopr.personal_finance_manager.databinding.ActivityMainBinding;
 import com.mopr.personal_finance_manager.util.LanguageManager;
 import com.mopr.personal_finance_manager.util.ThemeManager;
@@ -36,12 +38,15 @@ public class MainActivity extends AppCompatActivity {
             NavController navController = navHostFragment.getNavController();
             NavigationUI.setupWithNavController(binding.bottomNavigation, navController);
 
-            // FAB Click -> Add Transaction
-            binding.fabAdd.setOnClickListener(v -> navController.navigate(R.id.navigation_add_transaction));
+            // FAB Click -> Show Bottom Sheet
+            binding.fabAdd.setOnClickListener(v -> showAddOptions(navController));
 
             // Control visibility of Bottom Navigation and FAB
             navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
-                if (destination.getId() == R.id.navigation_add_transaction) {
+                if (destination.getId() == R.id.navigation_add_transaction ||
+                    destination.getId() == R.id.navigation_create_budget ||
+                    destination.getId() == R.id.navigation_initial_planning ||
+                    destination.getId() == R.id.navigation_add_category) {
                     binding.bottomNavigation.setVisibility(View.GONE);
                     binding.fabAdd.setVisibility(View.GONE);
                 } else {
@@ -50,5 +55,32 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    private void showAddOptions(NavController navController) {
+        BottomSheetDialog dialog = new BottomSheetDialog(this);
+        View sheetView = getLayoutInflater().inflate(R.layout.bottom_sheet_add_options, null);
+        dialog.setContentView(sheetView);
+
+        sheetView.findViewById(R.id.optionAddExpense).setOnClickListener(v -> {
+            Bundle args = new Bundle();
+            args.putBoolean("isExpense", true);
+            navController.navigate(R.id.navigation_add_transaction, args);
+            dialog.dismiss();
+        });
+
+        sheetView.findViewById(R.id.optionAddIncome).setOnClickListener(v -> {
+            Bundle args = new Bundle();
+            args.putBoolean("isExpense", false);
+            navController.navigate(R.id.navigation_add_transaction, args);
+            dialog.dismiss();
+        });
+
+        sheetView.findViewById(R.id.optionAddCategory).setOnClickListener(v -> {
+            navController.navigate(R.id.navigation_add_category);
+            dialog.dismiss();
+        });
+
+        dialog.show();
     }
 }

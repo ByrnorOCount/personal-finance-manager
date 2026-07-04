@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/nav_history"
-            android:textColor="#FFFFFF"
+            android:textColor="?attr/colorOnHeader"
             android:textSize="26sp"
             android:textStyle="bold" />
 
@@ -30,7 +30,7 @@
             android:id="@+id/tvTransactionCount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#FFFFFF"
+            android:textColor="?attr/colorOnHeader"
             android:textSize="17sp" />
 
     </LinearLayout>

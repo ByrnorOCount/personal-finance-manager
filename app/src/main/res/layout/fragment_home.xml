@@ -14,7 +14,7 @@
         <!-- ── HEADER ─────────────────────────────────────────── -->
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="90dp"
+            android:layout_height="100dp"
             android:background="@drawable/bg_header_gradient">
 
             <TextView
@@ -22,26 +22,26 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="20dp"
                 android:drawablePadding="6dp"
                 android:gravity="center"
                 android:text="@string/placeholder_date_range"
-                android:textColor="#FFFFFF"
+                android:textColor="?attr/colorOnHeader"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:drawableEndCompat="@drawable/ic_arrow_downward"
-                app:drawableTint="#FFFFFF" />
+                app:drawableTint="?attr/colorOnHeader" />
 
             <ImageView
                 android:id="@+id/btnSettings"
                 android:layout_width="28dp"
                 android:layout_height="28dp"
                 android:layout_gravity="end|top"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginEnd="20dp"
                 android:contentDescription="@string/nav_settings"
                 android:src="@drawable/ic_settings"
-                app:tint="#FFFFFF" />
+                app:tint="?attr/colorOnHeader" />
 
         </FrameLayout>
 

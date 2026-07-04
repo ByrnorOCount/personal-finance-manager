@@ -105,11 +105,11 @@ public class AddCategoryFragment extends Fragment {
     private void updateLabels() {
         boolean isEdit = existingItem != null;
         if ("INCOME".equals(currentType)) {
-            binding.tvBudgetLabel.setText("Income Goal");
-            binding.tvToolbarTitle.setText(isEdit ? "Edit Income Goal" : "Add Income Goal");
+            binding.budgetInputLabel.setText("Income Goal");
+            binding.toolbarTitle.setText(isEdit ? "Edit Income Goal" : "Add Income Goal");
         } else {
-            binding.tvBudgetLabel.setText(R.string.estimated_budget_label);
-            binding.tvToolbarTitle.setText(isEdit ? "Edit Expense Budget" : "Add Expense Budget");
+            binding.budgetInputLabel.setText("Estimated Budget");
+            binding.toolbarTitle.setText(isEdit ? "Edit Expense Budget" : "Add Expense Budget");
         }
     }
 

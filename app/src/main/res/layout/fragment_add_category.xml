@@ -1,33 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?android:attr/colorBackground"
-    android:orientation="vertical">
+    android:background="?android:attr/colorBackground">
 
-    <!-- Custom Toolbar -->
-    <RelativeLayout
+    <!-- Header Gradient Background -->
+    <View
+        android:id="@+id/headerBg"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="160dp"
+        android:background="@drawable/bg_header_gradient" />
+
+    <!-- Custom Toolbar area -->
+    <RelativeLayout
+        android:id="@+id/toolbarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_marginTop="24dp"
         android:paddingHorizontal="16dp">
 
         <ImageView
             android:id="@+id/btnBack"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_centerVertical="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="8dp"
             android:src="@drawable/ic_back"
-            app:tint="?attr/colorOnSurface" />
+            app:tint="?attr/colorOnHeader"
+            android:contentDescription="Back" />
 
         <TextView
-            android:id="@+id/tvToolbarTitle"
+            android:id="@+id/toolbarTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="@string/add_category"
-            android:textColor="?attr/colorOnSurface"
-            android:textSize="18sp"
+            android:text="Add Category"
+            android:textColor="?attr/colorOnHeader"
+            android:textSize="20sp"
             android:textStyle="bold" />
 
         <TextView
@@ -37,23 +48,26 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:padding="8dp"
-            android:text="@string/save_btn"
-            android:textColor="?attr/colorOnSurface"
+            android:text="Save"
+            android:textColor="?attr/colorOnHeader"
             android:textSize="16sp"
             android:textStyle="bold" />
     </RelativeLayout>
 
-    <ScrollView
+    <!-- Content Card -->
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbarLayout"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/bg_sheet_top_rounded"
         android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:padding="24dp">
 
             <!-- Expense/Income Toggle -->
             <com.google.android.material.button.MaterialButtonToggleGroup
@@ -80,112 +94,95 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/income" />
-
             </com.google.android.material.button.MaterialButtonToggleGroup>
 
             <!-- Title -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/title_label"
+                android:text="Title"
                 android:textColor="?attr/colorOnSurface"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
-            <RelativeLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:layout_marginBottom="20dp"
-                android:background="@drawable/bg_input_field"
-                android:paddingHorizontal="16dp">
+                app:hintEnabled="false"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
 
-                <EditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etTitle"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_toStartOf="@+id/ivTitleIcon"
-                    android:background="@null"
-                    android:hint="@string/type_here"
+                    android:layout_height="wrap_content"
+                    android:hint="Category Name"
                     android:inputType="textCapWords"
-                    android:textColor="?attr/colorOnSurface"
-                    android:textSize="15sp" />
-
-                <ImageView
-                    android:id="@+id/ivTitleIcon"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:src="@drawable/ic_cat_other"
-                    app:tint="@color/text_tertiary" />
-            </RelativeLayout>
+                    android:textColor="?attr/colorOnSurface" />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Estimated Budget -->
             <TextView
-                android:id="@+id/tvBudgetLabel"
+                android:id="@+id/budgetInputLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/estimated_budget_label"
+                android:layout_marginTop="20dp"
+                android:text="Estimated Budget"
                 android:textColor="?attr/colorOnSurface"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
-            <RelativeLayout
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/budgetInputLayout"
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:layout_marginBottom="20dp"
-                android:background="@drawable/bg_input_field"
-                android:paddingHorizontal="16dp">
+                app:hintEnabled="false"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
 
-                <EditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etBudget"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_toStartOf="@+id/ivBudgetIcon"
-                    android:background="@null"
+                    android:layout_height="wrap_content"
                     android:hint="0.00"
                     android:inputType="numberDecimal"
-                    android:textColor="?attr/colorOnSurface"
-                    android:textSize="15sp" />
+                    android:textColor="?attr/colorOnSurface" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-                <ImageView
-                    android:id="@+id/ivBudgetIcon"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:src="@drawable/ic_savings"
-                    app:tint="?attr/colorOnSurface" />
-            </RelativeLayout>
+            <TextView android:id="@+id/tvBudgetLabel" android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone"/>
 
             <!-- Note -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/note_optional_label"
+                android:layout_marginTop="20dp"
+                android:text="Note (Optional)"
                 android:textColor="?attr/colorOnSurface"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
-            <EditText
-                android:id="@+id/etNote"
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:layout_marginBottom="24dp"
-                android:background="@drawable/bg_input_field"
-                android:hint="@string/type_here"
-                android:inputType="textCapSentences"
-                android:paddingHorizontal="16dp"
-                android:textColor="?attr/colorOnSurface"
-                android:textSize="15sp" />
+                app:hintEnabled="false"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etNote"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Add a note..."
+                    android:inputType="textCapSentences"
+                    android:textColor="?attr/colorOnSurface" />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Icon and Color Selection -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:layout_marginBottom="100dp"
                 android:background="@drawable/bg_input_field"
                 android:orientation="horizontal"
                 android:padding="16dp"
@@ -254,5 +251,6 @@
             </LinearLayout>
 
         </LinearLayout>
-    </ScrollView>
-</LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</RelativeLayout>

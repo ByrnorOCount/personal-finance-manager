@@ -89,7 +89,7 @@ public class AddTransactionFragment extends Fragment {
     private void setupListeners() {
         binding.backButton.setOnClickListener(v -> Navigation.findNavController(v).navigateUp());
         binding.addCategoryAction.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.navigation_add_category));
-        binding.datePickerRow.setOnClickListener(v -> showDatePicker());
+        binding.dateText.setOnClickListener(v -> showDatePicker());
         binding.saveButton.setOnClickListener(v -> saveTransaction());
         binding.btnSaveTop.setOnClickListener(v -> saveTransaction());
     }

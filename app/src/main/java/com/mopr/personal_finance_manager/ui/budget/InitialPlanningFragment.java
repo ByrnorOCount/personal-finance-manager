@@ -155,10 +155,15 @@ public class InitialPlanningFragment extends Fragment {
             // Add some default categories
             incomeBudgets.add(new CategoryBudget(0, Category.SALARY, 20000000, "INCOME"));
             incomeBudgets.add(new CategoryBudget(0, Category.FREELANCE, 5000000, "INCOME"));
+            incomeBudgets.add(new CategoryBudget(0, Category.INVESTMENT, 2000000, "INCOME"));
+            incomeBudgets.add(new CategoryBudget(0, Category.GIFT, 500000, "INCOME"));
 
             expenseBudgets.add(new CategoryBudget(0, Category.FOOD, 4000000, "EXPENSE"));
             expenseBudgets.add(new CategoryBudget(0, Category.TRANSPORT, 1000000, "EXPENSE"));
             expenseBudgets.add(new CategoryBudget(0, Category.BILLS, 2000000, "EXPENSE"));
+            expenseBudgets.add(new CategoryBudget(0, Category.SHOPPING, 1500000, "EXPENSE"));
+            expenseBudgets.add(new CategoryBudget(0, Category.ENTERTAINMENT, 1000000, "EXPENSE"));
+            expenseBudgets.add(new CategoryBudget(0, Category.HEALTH, 500000, "EXPENSE"));
         }
 
         incomeAdapter.setItems(new ArrayList<>(incomeBudgets));

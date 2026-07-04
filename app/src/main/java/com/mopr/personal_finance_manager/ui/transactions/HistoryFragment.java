@@ -1,6 +1,7 @@
 package com.mopr.personal_finance_manager.ui.transactions;
 
 import android.app.AlertDialog;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -126,53 +127,85 @@ public class HistoryFragment extends Fragment {
             activeTypeFilter = FILTER_ALL;
             activeCategoryIdFilter = null;
             updateChipStates();
+            populateCategoryChips(allTransactions);
             applyFilters();
         });
         binding.chipIncome.setOnClickListener(v -> {
             activeTypeFilter = FILTER_INCOME;
             activeCategoryIdFilter = null;
             updateChipStates();
+            populateCategoryChips(allTransactions);
             applyFilters();
         });
         binding.chipExpense.setOnClickListener(v -> {
             activeTypeFilter = FILTER_EXPENSE;
             activeCategoryIdFilter = null;
             updateChipStates();
+            populateCategoryChips(allTransactions);
             applyFilters();
         });
-
-        // Category chips - using IDs from pre-populated data for now
-        binding.chipFood.setOnClickListener(v -> toggleCategoryFilter(1));
-        binding.chipTransport.setOnClickListener(v -> toggleCategoryFilter(2));
-        binding.chipShopping.setOnClickListener(v -> toggleCategoryFilter(4));
-        binding.chipBills.setOnClickListener(v -> toggleCategoryFilter(3));
-        binding.chipHealth.setOnClickListener(v -> toggleCategoryFilter(5));
     }
 
-    private void toggleCategoryFilter(int categoryId) {
-        if (activeCategoryIdFilter != null && activeCategoryIdFilter == categoryId) {
-            // Deselect
-            activeCategoryIdFilter = null;
-        } else {
-            activeCategoryIdFilter = categoryId;
-            // Category filter implies ALL types (actually it matches the category type, but we show it)
-            activeTypeFilter = FILTER_ALL;
+    private void populateCategoryChips(List<TransactionWithCategory> transactions) {
+        binding.cgCategoryFilters.removeAllViews();
+
+        java.util.Map<Integer, String> categories = new java.util.HashMap<>();
+        for (TransactionWithCategory tc : transactions) {
+            if (tc.category != null) {
+                // Filter categories shown based on active type filter
+                if (activeTypeFilter.equals(FILTER_ALL) ||
+                    (activeTypeFilter.equals(FILTER_INCOME) && "INCOME".equals(tc.transaction.type)) ||
+                    (activeTypeFilter.equals(FILTER_EXPENSE) && "EXPENSE".equals(tc.transaction.type))) {
+                    categories.put(tc.category.id, tc.category.name);
+                }
+            }
         }
-        updateChipStates();
-        applyFilters();
+
+        if (categories.isEmpty()) {
+            binding.filterDivider.setVisibility(View.GONE);
+            binding.cgCategoryFilters.setVisibility(View.GONE);
+            return;
+        }
+
+        binding.filterDivider.setVisibility(View.VISIBLE);
+        binding.cgCategoryFilters.setVisibility(View.VISIBLE);
+
+        for (java.util.Map.Entry<Integer, String> entry : categories.entrySet()) {
+            com.google.android.material.chip.Chip chip = new com.google.android.material.chip.Chip(requireContext());
+            chip.setText(entry.getValue());
+            chip.setCheckable(true);
+            chip.setClickable(true);
+
+            // Modern styling
+            chip.setChipBackgroundColorResource(R.color.surface_variant);
+            chip.setTextColor(requireContext().getColor(R.color.text_secondary));
+
+            if (activeCategoryIdFilter != null && activeCategoryIdFilter.equals(entry.getKey())) {
+                chip.setChecked(true);
+                chip.setChipBackgroundColorResource(R.color.brand_primary);
+                chip.setTextColor(Color.WHITE);
+            }
+
+            chip.setOnClickListener(v -> {
+                if (activeCategoryIdFilter != null && activeCategoryIdFilter.equals(entry.getKey())) {
+                    activeCategoryIdFilter = null;
+                } else {
+                    activeCategoryIdFilter = entry.getKey();
+                }
+                updateChipStates();
+                populateCategoryChips(allTransactions); // Refresh to show selection
+                applyFilters();
+            });
+
+            binding.cgCategoryFilters.addView(chip);
+        }
     }
 
     private void updateChipStates() {
-        // Reset all chips
+        // Reset top-level chips
         setChipSelected(binding.chipAll, activeTypeFilter.equals(FILTER_ALL) && activeCategoryIdFilter == null);
         setChipSelected(binding.chipIncome, activeTypeFilter.equals(FILTER_INCOME));
         setChipSelected(binding.chipExpense, activeTypeFilter.equals(FILTER_EXPENSE));
-
-        setChipSelected(binding.chipFood, activeCategoryIdFilter != null && activeCategoryIdFilter == 1);
-        setChipSelected(binding.chipTransport, activeCategoryIdFilter != null && activeCategoryIdFilter == 2);
-        setChipSelected(binding.chipShopping, activeCategoryIdFilter != null && activeCategoryIdFilter == 4);
-        setChipSelected(binding.chipBills, activeCategoryIdFilter != null && activeCategoryIdFilter == 3);
-        setChipSelected(binding.chipHealth, activeCategoryIdFilter != null && activeCategoryIdFilter == 5);
     }
 
     private void setChipSelected(TextView chip, boolean selected) {
@@ -260,6 +293,7 @@ public class HistoryFragment extends Fragment {
     private void observeData() {
         viewModel.getAllTransactions().observe(getViewLifecycleOwner(), transactions -> {
             allTransactions = transactions != null ? transactions : new ArrayList<>();
+            populateCategoryChips(allTransactions);
             applyFilters();
         });
     }

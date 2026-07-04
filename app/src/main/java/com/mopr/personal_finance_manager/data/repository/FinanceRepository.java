@@ -305,8 +305,8 @@ public class FinanceRepository {
             int mainBudgetId = (int) budgetDao.insertMainBudget(mainBudget);
 
             // 3. Categories and Budgets
-            String[] incomeCats = {"Salary", "Freelance", "Investment"};
-            String[] expenseCats = {"Food", "Transport", "Bills", "Shopping", "Entertainment"};
+            String[] incomeCats = {"Salary", "Freelance", "Investment", "Gift"};
+            String[] expenseCats = {"Food", "Transport", "Bills", "Shopping", "Entertainment", "Health"};
 
             java.util.List<CategoryBudget> catBudgets = new java.util.ArrayList<>();
 

@@ -13,6 +13,9 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
@@ -67,7 +70,16 @@ public class HistoryFragment extends Fragment {
         setupRecyclerView();
         setupSearch();
         setupChips();
+        setupWindowInsets();
         observeData();
+    }
+
+    private void setupWindowInsets() {
+        ViewCompat.setOnApplyWindowInsetsListener(binding.historyHeader, (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(v.getPaddingLeft(), v.getPaddingTop() + systemBars.top, v.getPaddingRight(), v.getPaddingBottom());
+            return WindowInsetsCompat.CONSUMED;
+        });
     }
 
     // ── RecyclerView ──────────────────────────────────────────────────────

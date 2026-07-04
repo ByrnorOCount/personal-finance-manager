@@ -89,4 +89,49 @@
     <string name="new_category_hint">Nhập tên danh mục mới</string>
     <string name="use_existing_category">Dùng danh mục cũ</string>
     <string name="please_enter_category_name">Vui lòng nhập tên danh mục</string>
+
+    <!-- Add Category -->
+    <string name="add_category">Thêm danh mục</string>
+    <string name="title_label">Tiêu đề</string>
+    <string name="estimated_budget_label">Ngân sách dự tính</string>
+    <string name="note_optional_label">Ghi chú (Tuỳ chọn)</string>
+    <string name="category_icon_label">Biểu tượng danh mục</string>
+    <string name="category_color_label">Màu sắc danh mục</string>
+    <string name="save_btn">Lưu</string>
+    <string name="type_here">Nhập tại đây</string>
+    <string name="incomes_header">Khoản thu</string>
+    <string name="expenses_header">Khoản chi</string>
+    <string name="budgeted_label">Ngân sách</string>
+    <string name="spent_label">Đã dùng</string>
+    <string name="left_label">Còn lại</string>
+    <string name="over_label">Vượt</string>
+    <string name="goal_reached_label">Đạt mục tiêu!</string>
+
+    <!-- Insights -->
+    <string name="financial_insights">Phân tích Tài chính</string>
+    <string name="no_budget_set">Chưa thiết lập ngân sách tháng này</string>
+    <string name="set_insight_budget_title">Thiết lập Ngân sách Dự tính</string>
+    <string name="set_insight_budget_desc">Hạn mức này chỉ dùng cho việc dự báo và cảnh báo rủi ro trong màn hình này.</string>
+    <string name="enter_limit_hint">Nhập hạn mức tháng (₫)</string>
+    <string name="update_limit">Cập nhật Hạn mức</string>
+    <string name="set_limit">Thiết lập</string>
+    <string name="anomaly_alert_header">Chú ý:
+    </string>
+    <string name="overbudget_alert_header">Rủi ro vượt ngân sách</string>
+    <string name="anomaly_detected_msg">Phát hiện %d giao dịch bất thường cao hơn nhiều so với mức trung bình của bạn.</string>
+    <string name="over_budget_projection_msg">Với tốc độ này, bạn sẽ vượt ngân sách khoảng %s.</string>
+    <string name="days_remaining_label">Còn lại %d ngày</string>
+    <string name="daily_burn_rate_value">%s / ngày</string>
+    <string name="month_projection">Dự tính trong tháng</string>
+    <string name="on_track_status">Đang đi đúng lộ trình ngân sách</string>
+    <string name="daily_burn_rate">Mức chi tiêu hàng ngày</string>
+    <string name="days_left">Số ngày còn lại</string>
+    <string name="recommendation_placeholder">Bạn đang làm rất tốt! Bạn còn 40% ngân sách trong khi 60% thời gian của tháng đã trôi qua.</string>
+    <string name="next_month_forecast">Dự báo tháng tới</string>
+    <string name="forecast_description">Dựa trên xu hướng chi tiêu 6 tháng qua của bạn.</string>
+    <string name="spending_breakdown">Phân bổ chi tiêu</string>
+    <string name="potential_anomalies">Giao dịch bất thường</string>
+    <string name="risk_high">Dự kiến sẽ vượt ngân sách</string>
+    <string name="risk_medium">Đang tiến gần hạn mức ngân sách</string>
+    <string name="risk_low">Đang đi đúng lộ trình ngân sách</string>
 </resources>

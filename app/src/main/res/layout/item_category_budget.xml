@@ -82,7 +82,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="6dp"
                 android:layout_marginBottom="2.5dp"
-                android:text="Spent"
+                android:text="@string/spent_label"
                 android:textColor="?attr/colorOnSurfaceVariant"
                 android:textSize="12sp" />
         </LinearLayout>
@@ -190,7 +190,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="end"
-                android:text="Goal"
+                android:text="@string/budgeted_label"
                 android:textColor="?attr/colorOnSurfaceVariant"
                 android:textSize="11sp" />
 

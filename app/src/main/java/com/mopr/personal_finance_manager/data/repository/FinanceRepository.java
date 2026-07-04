@@ -398,4 +398,53 @@ public class FinanceRepository {
     public LiveData<List<SavingsGoal>> getAllSavingsGoals() {
         return savingsGoalDao.getAll();
     }
+
+    // ── Analytics & Predictions ────────────────────────────────────────
+
+    public LiveData<com.mopr.personal_finance_manager.data.model.PredictionResult> getBudgetPrediction(long startMs, long endMs) {
+        androidx.lifecycle.MutableLiveData<com.mopr.personal_finance_manager.data.model.PredictionResult> result = new androidx.lifecycle.MutableLiveData<>();
+        executor.execute(() -> {
+            double currentSpend = transactionDao.getTotalExpenseInRangeSync(startMs, endMs);
+            double budgetLimit = budgetDao.getTotalBudgetedInRangeSync("EXPENSE", startMs, endMs);
+            result.postValue(com.mopr.personal_finance_manager.util.BudgetPredictor.analyzeCurrentPeriod(currentSpend, budgetLimit, startMs, endMs));
+        });
+        return result;
+    }
+
+    public LiveData<List<Double>> getHistoricalMonthlyExpenses(int months) {
+        androidx.lifecycle.MutableLiveData<List<Double>> result = new androidx.lifecycle.MutableLiveData<>();
+        executor.execute(() -> {
+            List<Double> history = new java.util.ArrayList<>();
+            java.util.Calendar cal = java.util.Calendar.getInstance();
+            for (int i = 0; i < months; i++) {
+                long start = com.mopr.personal_finance_manager.util.DateUtils.getStartOfMonth(cal);
+                long end = com.mopr.personal_finance_manager.util.DateUtils.getEndOfMonth(cal);
+                history.add(0, transactionDao.getTotalExpenseInRangeSync(start, end));
+                cal.add(java.util.Calendar.MONTH, -1);
+            }
+            result.postValue(history);
+        });
+        return result;
+    }
+
+    public LiveData<List<TransactionWithCategory>> getAnomalies(long startMs, long endMs) {
+        androidx.lifecycle.MutableLiveData<List<TransactionWithCategory>> result = new androidx.lifecycle.MutableLiveData<>();
+        executor.execute(() -> {
+            // 1. Get all expenses in current range
+            List<TransactionWithCategory> recent = transactionDao.getExpensesWithCategoryInRangeSync(startMs, endMs);
+
+            // 2. Get overall average spend per transaction (historically)
+            double overallAvg = transactionDao.getAverageExpenseAmountSync();
+
+            // 3. Filter using predictor
+            List<TransactionWithCategory> anomalies = new java.util.ArrayList<>();
+            for (TransactionWithCategory t : recent) {
+                if (t.transaction.amount > overallAvg * 2.5) {
+                    anomalies.add(t);
+                }
+            }
+            result.postValue(anomalies);
+        });
+        return result;
+    }
 }

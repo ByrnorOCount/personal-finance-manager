@@ -67,14 +67,20 @@ public interface TransactionDao {
     @Query("SELECT * FROM transactions WHERE type='EXPENSE' AND date >= :startMs AND date <= :endMs ORDER BY date DESC")
     List<Transaction> getExpensesInRange(long startMs, long endMs);
 
-    @Query("SELECT t.categoryId, c.name as category, SUM(t.amount) as totalAmount " +
+    @Query("SELECT COALESCE(c.parentId, c.id) as categoryId, " +
+           "(SELECT name FROM categories WHERE id = COALESCE(c.parentId, c.id)) as category, " +
+           "SUM(t.amount) as totalAmount " +
            "FROM transactions t INNER JOIN categories c ON t.categoryId = c.id " +
-           "WHERE t.type='EXPENSE' AND t.date >= :startMs AND t.date <= :endMs GROUP BY t.categoryId")
+           "WHERE t.type='EXPENSE' AND t.date >= :startMs AND t.date <= :endMs " +
+           "GROUP BY COALESCE(c.parentId, c.id)")
     LiveData<List<CategorySum>> getExpensesByCategoryInRange(long startMs, long endMs);
 
-    @Query("SELECT t.categoryId, c.name as category, SUM(t.amount) as totalAmount " +
+    @Query("SELECT COALESCE(c.parentId, c.id) as categoryId, " +
+           "(SELECT name FROM categories WHERE id = COALESCE(c.parentId, c.id)) as category, " +
+           "SUM(t.amount) as totalAmount " +
            "FROM transactions t INNER JOIN categories c ON t.categoryId = c.id " +
-           "WHERE t.type='INCOME' AND t.date >= :startMs AND t.date <= :endMs GROUP BY t.categoryId")
+           "WHERE t.type='INCOME' AND t.date >= :startMs AND t.date <= :endMs " +
+           "GROUP BY COALESCE(c.parentId, c.id)")
     LiveData<List<CategorySum>> getIncomeByCategoryInRange(long startMs, long endMs);
 
     // ── Budget Planner: total spent per category in a month ──────────────────

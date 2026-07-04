@@ -18,14 +18,13 @@ import com.mopr.personal_finance_manager.data.local.Transaction;
 import com.mopr.personal_finance_manager.data.local.TransactionDao;
 import com.mopr.personal_finance_manager.data.local.TransactionWithCategory;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class FinanceRepository {
 
-    private static volatile FinanceRepository instance;
+    private static FinanceRepository instance;
     private final TransactionDao transactionDao;
     private final BudgetDao budgetDao;
     private final SavingsGoalDao savingsGoalDao;
@@ -43,25 +42,23 @@ public class FinanceRepository {
 
     public static FinanceRepository getInstance(Application application) {
         if (instance == null) {
-            synchronized (FinanceRepository.class) {
-                if (instance == null) instance = new FinanceRepository(application);
-            }
+            instance = new FinanceRepository(application);
         }
         return instance;
     }
 
     // ── Transactions ──────────────────────────────────────────────────
 
-    public void insertTransaction(Transaction t) {
-        executor.execute(() -> transactionDao.insert(t));
+    public void insertTransaction(Transaction transaction) {
+        executor.execute(() -> transactionDao.insert(transaction));
     }
 
-    public void updateTransaction(Transaction t) {
-        executor.execute(() -> transactionDao.update(t));
+    public void updateTransaction(Transaction transaction) {
+        executor.execute(() -> transactionDao.update(transaction));
     }
 
-    public void deleteTransaction(Transaction t) {
-        executor.execute(() -> transactionDao.delete(t));
+    public void deleteTransaction(Transaction transaction) {
+        executor.execute(() -> transactionDao.delete(transaction));
     }
 
     public LiveData<List<TransactionWithCategory>> getRecentTransactions() {
@@ -102,6 +99,10 @@ public class FinanceRepository {
         return categoryDao.getCategoriesByType(type);
     }
 
+    public LiveData<List<Category>> getSubcategories(int parentId) {
+        return categoryDao.getSubcategories(parentId);
+    }
+
     public void insertCategory(Category category) {
         executor.execute(() -> categoryDao.insert(category));
     }
@@ -114,7 +115,7 @@ public class FinanceRepository {
         executor.execute(() -> categoryDao.deleteById(id));
     }
 
-    // ── Budgets — period-aware ────────────────────────────────────────
+    // ── Budgets (Individual) ──────────────────────────────────────────
 
     public void insertBudget(Budget budget) {
         executor.execute(() -> budgetDao.insert(budget));
@@ -130,15 +131,8 @@ public class FinanceRepository {
 
     public void upsertBudget(Budget budget) {
         executor.execute(() -> {
-            Budget existing;
-            if (budget.periodKey != null) {
-                existing = budgetDao.getBudgetForCategoryAndPeriodSync(
-                    budget.category, budget.periodType, budget.periodKey);
-            } else {
-                existing = budgetDao.getBudgetForCategoryAndPeriodSync(
+            Budget existing = budgetDao.getBudgetForCategoryAndPeriodSync(
                     budget.categoryId, budget.startDate, budget.endDate);
-            }
-
             if (existing != null) {
                 existing.limitAmount = budget.limitAmount;
                 budgetDao.update(existing);
@@ -164,15 +158,17 @@ public class FinanceRepository {
         return budgetDao.getTotalBudgetedForPeriod(type, key);
     }
 
-    public void cloneBudgets(String periodType, String fromKey, String toKey) {
+    public void cloneBudgets(String fromKey, String toKey, String periodType) {
         executor.execute(() -> {
-            List<Budget> source = budgetDao.getBudgetsToClone(periodType, fromKey);
-            List<Budget> clones = new ArrayList<>();
-            for (Budget b : source) {
-                Budget clone = new Budget(b.category, b.limitAmount, periodType, toKey);
-                clones.add(clone);
+            List<Budget> toClone = budgetDao.getBudgetsToClone(periodType, fromKey);
+            for (Budget b : toClone) {
+                Budget newB = new Budget();
+                newB.category = b.category;
+                newB.limitAmount = b.limitAmount;
+                newB.periodType = periodType;
+                newB.periodKey = toKey;
+                budgetDao.insert(newB);
             }
-            if (!clones.isEmpty()) budgetDao.insertAll(clones);
         });
     }
 
@@ -184,40 +180,36 @@ public class FinanceRepository {
         return budgetDao.getTotalBudgetedForMonth(month);
     }
 
-    // ── NEW BUDGET SYSTEM ──────────────────────────────────────────
+    // ── NEW BUDGET SYSTEM ──────────────────────────────────────────────
 
-    public void insertMainBudget(MainBudget mb, List<CategoryBudget> cbs) {
+    public void insertMainBudget(MainBudget mainBudget, List<CategoryBudget> categoryBudgets) {
         executor.execute(() -> {
-            if (mb.isActive) {
-                budgetDao.deactivateAllMainBudgets();
-            }
-            long id = budgetDao.insertMainBudget(mb);
-            for (CategoryBudget cb : cbs) {
-                cb.mainBudgetId = (int) id;
+            budgetDao.deactivateAllMainBudgets();
+            int mainBudgetId = (int) budgetDao.insertMainBudget(mainBudget);
+            for (CategoryBudget cb : categoryBudgets) {
+                cb.mainBudgetId = mainBudgetId;
                 ensureCategoryExists(cb.category, cb.type);
             }
-            budgetDao.insertCategoryBudgets(cbs);
+            budgetDao.insertCategoryBudgets(categoryBudgets);
         });
     }
 
     public void ensureCategoryExists(String name, String type) {
-        executor.execute(() -> {
-            Category existing = categoryDao.getByNameAndType(name, type);
-            if (existing == null) {
-                Category newCat = new Category(
-                    name,
-                    type,
-                    com.mopr.personal_finance_manager.data.model.Category.getIconRes(name),
-                    com.mopr.personal_finance_manager.data.model.Category.getColorRes(name),
-                    false
-                );
-                categoryDao.insert(newCat);
-            }
-        });
+        Category existing = categoryDao.getByNameAndType(name, type);
+        if (existing == null) {
+            Category newCat = new Category(
+                name,
+                type,
+                com.mopr.personal_finance_manager.data.model.Category.getIconRes(name),
+                com.mopr.personal_finance_manager.data.model.Category.getColorRes(name),
+                false
+            );
+            categoryDao.insert(newCat);
+        }
     }
 
-    public void updateMainBudget(MainBudget mb) {
-        executor.execute(() -> budgetDao.updateMainBudget(mb));
+    public void updateMainBudget(MainBudget mainBudget) {
+        executor.execute(() -> budgetDao.updateMainBudget(mainBudget));
     }
 
     public void activateMainBudget(int id) {
@@ -297,8 +289,8 @@ public class FinanceRepository {
                 yearFmt.format(start.getTime()));
 
             // 2. Initial Balance (Random even VND, last 3 zeros)
-            // Range 5M - 20M
-            double initialBalance = (5000 + random.nextInt(15001)) * 1000.0;
+            // Range 500k - 2M
+            double initialBalance = (500 + random.nextInt(1501)) * 1000.0;
 
             budgetDao.deactivateAllMainBudgets();
             MainBudget mainBudget = new MainBudget(budgetName, startMs, endMs, initialBalance, true);
@@ -308,57 +300,77 @@ public class FinanceRepository {
             String[] incomeCats = {"Salary", "Freelance", "Investment", "Gift"};
             String[] expenseCats = {"Food", "Transport", "Bills", "Shopping", "Entertainment", "Health"};
 
+            java.util.Map<String, String[]> subcatMap = new java.util.HashMap<>();
+            subcatMap.put("Salary", new String[]{"Primary Job", "Bonus"});
+            subcatMap.put("Freelance", new String[]{"Project Alpha", "Project Beta"});
+            subcatMap.put("Investment", new String[]{"Stocks", "Crypto"});
+            subcatMap.put("Gift", new String[]{"Birthday", "Holiday"});
+            subcatMap.put("Food", new String[]{"Groceries", "Restaurants", "Snacks"});
+            subcatMap.put("Transport", new String[]{"Taxi", "Fuel", "Maintenance"});
+            subcatMap.put("Bills", new String[]{"Electricity", "Water", "Internet"});
+            subcatMap.put("Shopping", new String[]{"Clothes", "Gadgets"});
+            subcatMap.put("Entertainment", new String[]{"Movies", "Gaming"});
+            subcatMap.put("Health", new String[]{"Pharmacy", "Checkup"});
+
             java.util.List<CategoryBudget> catBudgets = new java.util.ArrayList<>();
 
-            // Incomes: ~20M to 50M total
+            // Incomes: 1M to 3M per category
             for (String catName : incomeCats) {
-                double limit = (10000 + random.nextInt(20001)) * 1000.0;
-
-                // Synchronous check/insert since we're already in a background thread
+                double limit = (1000 + random.nextInt(2001)) * 1000.0;
                 Category existing = categoryDao.getByNameAndType(catName, "INCOME");
                 if (existing == null) {
                     categoryDao.insert(new Category(catName, "INCOME",
                         com.mopr.personal_finance_manager.data.model.Category.getIconRes(catName),
                         com.mopr.personal_finance_manager.data.model.Category.getColorRes(catName), false));
                 }
-
                 catBudgets.add(new CategoryBudget(mainBudgetId, catName, limit, "INCOME"));
             }
 
-            // Expenses: ~1M to 10M per category
+            // Expenses: 100k to 1M per category
             for (String catName : expenseCats) {
-                double limit = (1000 + random.nextInt(9001)) * 1000.0;
-
+                double limit = (100 + random.nextInt(901)) * 1000.0;
                 Category existing = categoryDao.getByNameAndType(catName, "EXPENSE");
                 if (existing == null) {
                     categoryDao.insert(new Category(catName, "EXPENSE",
                         com.mopr.personal_finance_manager.data.model.Category.getIconRes(catName),
                         com.mopr.personal_finance_manager.data.model.Category.getColorRes(catName), false));
                 }
-
                 catBudgets.add(new CategoryBudget(mainBudgetId, catName, limit, "EXPENSE"));
             }
             budgetDao.insertCategoryBudgets(catBudgets);
 
-            // 4. Random Transactions
-            // For each category, add some transactions that don't exceed the limit
+            // 4. Random Transactions with Mandatory Subcategories
             for (CategoryBudget cb : catBudgets) {
-                Category cat = categoryDao.getByNameAndType(cb.category, cb.type);
-                if (cat == null) continue;
+                Category parentCat = categoryDao.getByNameAndType(cb.category, cb.type);
+                if (parentCat == null) continue;
 
-                int numTrans = 2 + random.nextInt(5);
+                String[] subNames = subcatMap.get(cb.category);
+                if (subNames == null) subNames = new String[]{"Misc " + cb.category};
+
+                int numTrans = 4 + random.nextInt(9); // Doubled transaction count
                 double totalUsed = 0;
                 for (int i = 0; i < numTrans; i++) {
                     double remaining = cb.limitAmount - totalUsed;
                     if (remaining <= 1000) break;
 
-                    double amount = (1 + random.nextInt((int)(remaining / 2000))) * 1000.0;
-                    if (amount < 1000) amount = 1000;
+                    double maxPerTrans = remaining / (numTrans - i);
+                    if (maxPerTrans < 1000) maxPerTrans = 1000;
 
+                    double amount = (1 + random.nextInt((int)(maxPerTrans / 1000))) * 1000.0;
                     totalUsed += amount;
 
+                    // Ensure subcategory exists
+                    String subName = subNames[random.nextInt(subNames.length)];
+                    Category subCat = categoryDao.getByNameAndType(subName, cb.type);
+                    int subId;
+                    if (subCat == null) {
+                        subId = (int) categoryDao.insert(new Category(subName, cb.type, parentCat.iconRes, parentCat.colorRes, false, parentCat.id));
+                    } else {
+                        subId = subCat.id;
+                    }
+
                     long randomDate = startMs + (long)(random.nextDouble() * (endMs - startMs));
-                    Transaction t = new Transaction(cb.type, amount, cat.id, randomDate, "Random generated " + cat.name, "VND");
+                    Transaction t = new Transaction(cb.type, amount, subId, randomDate, "Random " + subName, "VND");
                     transactionDao.insert(t);
                 }
             }

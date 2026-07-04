@@ -30,6 +30,7 @@ public class AddTransactionFragment extends Fragment {
     private FinanceViewModel viewModel;
     private boolean isExpense = true;
     private java.util.List<Category> currentCategories = new java.util.ArrayList<>();
+    private java.util.List<Category> currentSubcategories = new java.util.ArrayList<>();
 
     @Nullable
     @Override
@@ -73,6 +74,14 @@ public class AddTransactionFragment extends Fragment {
                 adapter.setDropDownViewResource(R.layout.spinner_item);
                 binding.categorySpinner.setAdapter(adapter);
 
+                binding.categorySpinner.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(android.widget.AdapterView<?> parent, View view, int position, long id) {
+                        loadSubcategories(currentCategories.get(position).id);
+                    }
+                    @Override public void onNothingSelected(android.widget.AdapterView<?> parent) {}
+                });
+
                 if (getArguments() != null && getArguments().containsKey("categoryId")) {
                     int catId = getArguments().getInt("categoryId");
                     for (int i = 0; i < allCategories.size(); i++) {
@@ -86,9 +95,56 @@ public class AddTransactionFragment extends Fragment {
         });
     }
 
+    private void loadSubcategories(int parentId) {
+        viewModel.getSubcategories(parentId).observe(getViewLifecycleOwner(), subcategories -> {
+            currentSubcategories = subcategories;
+            if (subcategories.isEmpty()) {
+                binding.subcategoryGroup.setVisibility(View.GONE);
+            } else {
+                binding.subcategoryGroup.setVisibility(View.VISIBLE);
+                String[] displayNames = new String[subcategories.size() + 1];
+                displayNames[0] = "-- None --";
+                for (int i = 0; i < subcategories.size(); i++) {
+                    displayNames[i + 1] = subcategories.get(i).name;
+                }
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                        requireContext(), R.layout.spinner_item, displayNames);
+                adapter.setDropDownViewResource(R.layout.spinner_item);
+                binding.subcategorySpinner.setAdapter(adapter);
+            }
+        });
+    }
+
     private void setupListeners() {
         binding.backButton.setOnClickListener(v -> Navigation.findNavController(v).navigateUp());
         binding.addCategoryAction.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.navigation_add_category));
+
+        binding.btnAddSubcategory.setOnClickListener(v -> {
+            int selectedPos = binding.categorySpinner.getSelectedItemPosition();
+            if (selectedPos >= 0 && selectedPos < currentCategories.size()) {
+                int parentId = currentCategories.get(selectedPos).id;
+                android.widget.EditText input = new android.widget.EditText(requireContext());
+                input.setHint("Subcategory Name");
+                int padding = (int) (16 * getResources().getDisplayMetrics().density);
+                android.widget.FrameLayout container = new android.widget.FrameLayout(requireContext());
+                container.setPadding(padding, padding / 2, padding, padding / 2);
+                container.addView(input);
+
+                new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                        .setTitle("New Subcategory")
+                        .setView(container)
+                        .setPositiveButton("Add", (dialog, which) -> {
+                            String name = input.getText().toString().trim();
+                            if (!name.isEmpty()) {
+                                Category sub = new Category(name, isExpense ? "EXPENSE" : "INCOME", R.drawable.ic_cat_other, R.color.cat_other, false, parentId);
+                                viewModel.insertCategory(sub);
+                            }
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .show();
+            }
+        });
+
         binding.dateText.setOnClickListener(v -> showDatePicker());
         binding.saveButton.setOnClickListener(v -> saveTransaction());
         binding.btnSaveTop.setOnClickListener(v -> saveTransaction());
@@ -140,7 +196,14 @@ public class AddTransactionFragment extends Fragment {
              return;
         }
         Category selectedCategory = currentCategories.get(selectedPos);
-        saveWithCategory(amount, selectedCategory.id);
+
+        int finalCategoryId = selectedCategory.id;
+        int subPos = binding.subcategorySpinner.getSelectedItemPosition();
+        if (binding.subcategoryGroup.getVisibility() == View.VISIBLE && subPos > 0) {
+            finalCategoryId = currentSubcategories.get(subPos - 1).id;
+        }
+
+        saveWithCategory(amount, finalCategoryId);
     }
 
     private void saveWithCategory(double amount, int categoryId) {

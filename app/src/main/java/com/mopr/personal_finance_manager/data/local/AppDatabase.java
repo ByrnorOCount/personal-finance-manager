@@ -19,7 +19,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
         Category.class,
         RecurringRule.class
     },
-    version = 5,          // bumped from 4 → 5: Added note to CategoryBudget
+    version = 6,          // bumped from 5 → 6: Added parentId to Category
     exportSchema = false
 )
 public abstract class AppDatabase extends RoomDatabase {

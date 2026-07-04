@@ -149,18 +149,39 @@ public class HistoryFragment extends Fragment {
     private void populateCategoryChips(List<TransactionWithCategory> transactions) {
         binding.cgCategoryFilters.removeAllViews();
 
-        java.util.Map<Integer, String> categories = new java.util.HashMap<>();
-        for (TransactionWithCategory tc : transactions) {
-            if (tc.category != null) {
-                // Filter categories shown based on active type filter
-                if (activeTypeFilter.equals(FILTER_ALL) ||
-                    (activeTypeFilter.equals(FILTER_INCOME) && "INCOME".equals(tc.transaction.type)) ||
-                    (activeTypeFilter.equals(FILTER_EXPENSE) && "EXPENSE".equals(tc.transaction.type))) {
-                    categories.put(tc.category.id, tc.category.name);
+        java.util.Map<Integer, String> chipOptions = new java.util.HashMap<>();
+
+        // Use a background list of all categories to resolve parent names if needed
+        // but for now, we'll just show chips for categories that appear in the transaction list.
+        // If a transaction has a subcategory, we should ideally show the parent's chip.
+
+        viewModel.getAllCategories().observe(getViewLifecycleOwner(), allCats -> {
+            java.util.Map<Integer, Category> allMap = new java.util.HashMap<>();
+            for (Category c : allCats) allMap.put(c.id, c);
+
+            for (TransactionWithCategory tc : transactions) {
+                if (tc.category != null) {
+                    // Check type filter
+                    if (!activeTypeFilter.equals(FILTER_ALL)) {
+                        if (activeTypeFilter.equals(FILTER_INCOME) && !"INCOME".equals(tc.transaction.type)) continue;
+                        if (activeTypeFilter.equals(FILTER_EXPENSE) && !"EXPENSE".equals(tc.transaction.type)) continue;
+                    }
+
+                    Category topLevel = tc.category;
+                    while (topLevel.parentId != null) {
+                        Category parent = allMap.get(topLevel.parentId);
+                        if (parent == null) break;
+                        topLevel = parent;
+                    }
+                    chipOptions.put(topLevel.id, topLevel.name);
                 }
             }
-        }
 
+            renderChips(chipOptions);
+        });
+    }
+
+    private void renderChips(java.util.Map<Integer, String> categories) {
         if (categories.isEmpty()) {
             binding.filterDivider.setVisibility(View.GONE);
             binding.cgCategoryFilters.setVisibility(View.GONE);
@@ -176,7 +197,6 @@ public class HistoryFragment extends Fragment {
             chip.setCheckable(true);
             chip.setClickable(true);
 
-            // Modern styling
             chip.setChipBackgroundColorResource(R.color.surface_variant);
             chip.setTextColor(requireContext().getColor(R.color.text_secondary));
 
@@ -193,7 +213,7 @@ public class HistoryFragment extends Fragment {
                     activeCategoryIdFilter = entry.getKey();
                 }
                 updateChipStates();
-                populateCategoryChips(allTransactions); // Refresh to show selection
+                populateCategoryChips(allTransactions);
                 applyFilters();
             });
 
@@ -230,7 +250,8 @@ public class HistoryFragment extends Fragment {
             // 1. Type / category filter
             boolean passesType;
             if (activeCategoryIdFilter != null) {
-                passesType = t.categoryId == activeCategoryIdFilter;
+                // If it's exactly the filtered category, OR if the category's parent is the filtered one
+                passesType = (t.categoryId == activeCategoryIdFilter) || (c != null && c.parentId != null && c.parentId.equals(activeCategoryIdFilter));
             } else {
                 switch (activeTypeFilter) {
                     case FILTER_INCOME:
@@ -295,6 +316,12 @@ public class HistoryFragment extends Fragment {
             allTransactions = transactions != null ? transactions : new ArrayList<>();
             populateCategoryChips(allTransactions);
             applyFilters();
+        });
+
+        viewModel.getAllCategories().observe(getViewLifecycleOwner(), categories -> {
+            if (categories != null) {
+                adapter.setAllCategories(categories);
+            }
         });
     }
 

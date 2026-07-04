@@ -79,6 +79,10 @@ public class FinanceViewModel extends AndroidViewModel {
         return repo.getCategoriesByType(type);
     }
 
+    public LiveData<List<Category>> getSubcategories(int parentId) {
+        return repo.getSubcategories(parentId);
+    }
+
     public void insertCategory(Category category) {
         repo.insertCategory(category);
     }

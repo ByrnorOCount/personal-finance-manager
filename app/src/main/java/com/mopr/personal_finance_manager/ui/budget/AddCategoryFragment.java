@@ -24,6 +24,9 @@ import com.mopr.personal_finance_manager.data.model.CategoryBudgetUI;
 import com.mopr.personal_finance_manager.databinding.FragmentAddCategoryBinding;
 import com.mopr.personal_finance_manager.ui.common.FinanceViewModel;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class AddCategoryFragment extends Fragment {
 
     private FragmentAddCategoryBinding binding;
@@ -32,6 +35,8 @@ public class AddCategoryFragment extends Fragment {
     private MainBudget activeBudget;
     private CategoryBudgetUI existingItem;
     private boolean returnResult = false;
+    private SubcategorySmallAdapter subcategoryAdapter;
+    private List<Category> currentSubcategories = new ArrayList<>();
 
     private int selectedIconRes = R.drawable.ic_cat_other;
     private int selectedColorRes = R.color.cat_other;
@@ -59,7 +64,51 @@ public class AddCategoryFragment extends Fragment {
 
         if (existingItem != null) {
             populateFields();
+            setupSubcategories();
         }
+    }
+
+    private void setupSubcategories() {
+        binding.subcategoriesSection.setVisibility(View.VISIBLE);
+        subcategoryAdapter = new SubcategorySmallAdapter(subcategory -> {
+            new AlertDialog.Builder(requireContext())
+                    .setTitle("Remove Subcategory")
+                    .setMessage("Remove '" + subcategory.name + "'?")
+                    .setPositiveButton("Remove", (dialog, which) -> {
+                        viewModel.deleteCategory(subcategory.id);
+                    })
+                    .setNegativeButton("Cancel", null)
+                    .show();
+        });
+        binding.rvSubcategories.setLayoutManager(new androidx.recyclerview.widget.LinearLayoutManager(requireContext()));
+        binding.rvSubcategories.setAdapter(subcategoryAdapter);
+
+        viewModel.getSubcategories(existingItem.categoryId).observe(getViewLifecycleOwner(), subcategories -> {
+            currentSubcategories = subcategories;
+            subcategoryAdapter.setItems(subcategories);
+        });
+
+        binding.btnAddSubcategory.setOnClickListener(v -> {
+            android.widget.EditText input = new android.widget.EditText(requireContext());
+            input.setHint("Subcategory Name");
+            int padding = (int) (16 * getResources().getDisplayMetrics().density);
+            android.widget.FrameLayout container = new android.widget.FrameLayout(requireContext());
+            container.setPadding(padding, padding / 2, padding, padding / 2);
+            container.addView(input);
+
+            new AlertDialog.Builder(requireContext())
+                    .setTitle("New Subcategory")
+                    .setView(container)
+                    .setPositiveButton("Add", (dialog, which) -> {
+                        String name = input.getText().toString().trim();
+                        if (!name.isEmpty()) {
+                            Category sub = new Category(name, currentType, R.drawable.ic_cat_other, R.color.cat_other, false, existingItem.categoryId);
+                            viewModel.insertCategory(sub);
+                        }
+                    })
+                    .setNegativeButton("Cancel", null)
+                    .show();
+        });
     }
 
     private void populateFields() {

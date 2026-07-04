@@ -12,7 +12,7 @@ import java.util.List;
 public interface CategoryDao {
 
     @Insert
-    void insert(Category category);
+    long insert(Category category);
 
     @Update
     void update(Category category);
@@ -28,6 +28,12 @@ public interface CategoryDao {
 
     @Query("SELECT * FROM categories WHERE id = :id")
     Category getById(int id);
+
+    @Query("SELECT * FROM categories WHERE parentId = :parentId ORDER BY name ASC")
+    LiveData<List<Category>> getSubcategories(int parentId);
+
+    @Query("SELECT * FROM categories WHERE parentId = :parentId ORDER BY name ASC")
+    List<Category> getSubcategoriesSync(int parentId);
 
     @Query("SELECT * FROM categories WHERE name = :name AND type = :type LIMIT 1")
     Category getByNameAndType(String name, String type);

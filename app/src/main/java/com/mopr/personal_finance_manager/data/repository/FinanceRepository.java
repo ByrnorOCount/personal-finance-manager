@@ -261,6 +261,95 @@ public class FinanceRepository {
         });
     }
 
+    public void clearAllData() {
+        executor.execute(() -> {
+            transactionDao.deleteAll();
+            budgetDao.deleteAll();
+            budgetDao.deleteAllMainBudgets();
+            budgetDao.deleteAllCategoryBudgets();
+            savingsGoalDao.deleteAll();
+            categoryDao.deleteAll();
+        });
+    }
+
+    public void generateRandomBudget() {
+        executor.execute(() -> {
+            java.util.Random random = new java.util.Random();
+
+            // 1. Setup Dates (Current Month)
+            java.util.Calendar start = java.util.Calendar.getInstance();
+            start.set(java.util.Calendar.DAY_OF_MONTH, 1);
+            long startMs = com.mopr.personal_finance_manager.util.DateUtils.getStartOfDay(start);
+
+            java.util.Calendar end = java.util.Calendar.getInstance();
+            end.set(java.util.Calendar.DAY_OF_MONTH, end.getActualMaximum(java.util.Calendar.DAY_OF_MONTH));
+            long endMs = com.mopr.personal_finance_manager.util.DateUtils.getEndOfDay(end);
+
+            // Format name like "July 01-31, 2026"
+            java.text.SimpleDateFormat monthFmt = new java.text.SimpleDateFormat("MMMM", java.util.Locale.getDefault());
+            java.text.SimpleDateFormat dayFmt = new java.text.SimpleDateFormat("dd", java.util.Locale.getDefault());
+            java.text.SimpleDateFormat yearFmt = new java.text.SimpleDateFormat("yyyy", java.util.Locale.getDefault());
+
+            String budgetName = String.format("%s %s-%s, %s",
+                monthFmt.format(start.getTime()),
+                dayFmt.format(start.getTime()),
+                dayFmt.format(end.getTime()),
+                yearFmt.format(start.getTime()));
+
+            // 2. Initial Balance (Random even VND, last 3 zeros)
+            // Range 5M - 20M
+            double initialBalance = (5000 + random.nextInt(15001)) * 1000.0;
+
+            budgetDao.deactivateAllMainBudgets();
+            MainBudget mainBudget = new MainBudget(budgetName, startMs, endMs, initialBalance, true);
+            int mainBudgetId = (int) budgetDao.insertMainBudget(mainBudget);
+
+            // 3. Categories and Budgets
+            String[] incomeCats = {"Salary", "Freelance", "Investment"};
+            String[] expenseCats = {"Food", "Transport", "Bills", "Shopping", "Entertainment"};
+
+            java.util.List<CategoryBudget> catBudgets = new java.util.ArrayList<>();
+
+            // Incomes: ~20M to 50M total
+            for (String catName : incomeCats) {
+                double limit = (10000 + random.nextInt(20001)) * 1000.0;
+                ensureCategoryExists(catName, "INCOME");
+                catBudgets.add(new CategoryBudget(mainBudgetId, catName, limit, "INCOME"));
+            }
+
+            // Expenses: ~1M to 10M per category
+            for (String catName : expenseCats) {
+                double limit = (1000 + random.nextInt(9001)) * 1000.0;
+                ensureCategoryExists(catName, "EXPENSE");
+                catBudgets.add(new CategoryBudget(mainBudgetId, catName, limit, "EXPENSE"));
+            }
+            budgetDao.insertCategoryBudgets(catBudgets);
+
+            // 4. Random Transactions
+            // For each category, add some transactions that don't exceed the limit
+            for (CategoryBudget cb : catBudgets) {
+                Category cat = categoryDao.getByNameAndType(cb.category, cb.type);
+                if (cat == null) continue;
+
+                int numTrans = 2 + random.nextInt(5);
+                double totalUsed = 0;
+                for (int i = 0; i < numTrans; i++) {
+                    double remaining = cb.limitAmount - totalUsed;
+                    if (remaining <= 1000) break;
+
+                    double amount = (1 + random.nextInt((int)(remaining / 2000))) * 1000.0;
+                    if (amount < 1000) amount = 1000;
+
+                    totalUsed += amount;
+
+                    long randomDate = startMs + (long)(random.nextDouble() * (endMs - startMs));
+                    Transaction t = new Transaction(cb.type, amount, cat.id, randomDate, "Random generated " + cat.name, "VND");
+                    transactionDao.insert(t);
+                }
+            }
+        });
+    }
+
     // ── Savings Goals ─────────────────────────────────────────────────
 
     public void insertSavingsGoal(SavingsGoal goal) {

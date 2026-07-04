@@ -179,6 +179,14 @@ public class FinanceViewModel extends AndroidViewModel {
         repo.insertCategoryBudget(cb);
     }
 
+    public void clearAllData() {
+        repo.clearAllData();
+    }
+
+    public void generateRandomBudget() {
+        repo.generateRandomBudget();
+    }
+
     // ── Savings ───────────────────────────────────────────────────────
 
     public void insertSavingsGoal(SavingsGoal g) {

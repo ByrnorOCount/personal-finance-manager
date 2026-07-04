@@ -71,7 +71,7 @@
                 android:gravity="center"
                 android:maxLines="1"
                 android:textColor="?attr/colorOnSurface"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 tools:text="$200,000.00" />
         </LinearLayout>
@@ -102,13 +102,13 @@
             <TextView
                 android:id="@+id/tvIncomeEarnedValue"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="20dp"
                 android:layout_marginTop="1dp"
                 android:ellipsize="end"
                 android:gravity="center"
                 android:maxLines="1"
                 android:textColor="?attr/colorIncome"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 tools:text="$50,000.00" />
         </LinearLayout>

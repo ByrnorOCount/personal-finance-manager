@@ -71,7 +71,7 @@
                 android:gravity="center"
                 android:maxLines="1"
                 android:textColor="?attr/colorOnSurface"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 tools:text="$5,000.00" />
         </LinearLayout>
@@ -108,7 +108,7 @@
                 android:gravity="center"
                 android:maxLines="1"
                 android:textColor="?attr/colorExpense"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 tools:text="$0.00" />
         </LinearLayout>

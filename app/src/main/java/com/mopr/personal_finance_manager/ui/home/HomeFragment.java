@@ -179,6 +179,10 @@ public class HomeFragment extends Fragment {
             // Navigate to budget selection or show a picker
             Navigation.findNavController(v).navigate(R.id.navigation_budget);
         });
+
+        binding.btnSettings.setOnClickListener(v -> {
+            Navigation.findNavController(v).navigate(R.id.navigation_settings);
+        });
     }
 
     private void observeData() {

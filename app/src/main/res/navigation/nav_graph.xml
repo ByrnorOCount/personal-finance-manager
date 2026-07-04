@@ -22,6 +22,12 @@
         android:label="Budget" />
 
     <fragment
+        android:id="@+id/navigation_insights"
+        android:name="com.mopr.personal_finance_manager.ui.insights.InsightsFragment"
+        android:label="Insights"
+        tools:layout="@layout/fragment_insights" />
+
+    <fragment
         android:id="@+id/navigation_settings"
         android:name="com.mopr.personal_finance_manager.ui.settings.SettingsFragment"
         android:label="Settings" />

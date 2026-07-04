@@ -313,14 +313,29 @@ public class FinanceRepository {
             // Incomes: ~20M to 50M total
             for (String catName : incomeCats) {
                 double limit = (10000 + random.nextInt(20001)) * 1000.0;
-                ensureCategoryExists(catName, "INCOME");
+
+                // Synchronous check/insert since we're already in a background thread
+                Category existing = categoryDao.getByNameAndType(catName, "INCOME");
+                if (existing == null) {
+                    categoryDao.insert(new Category(catName, "INCOME",
+                        com.mopr.personal_finance_manager.data.model.Category.getIconRes(catName),
+                        com.mopr.personal_finance_manager.data.model.Category.getColorRes(catName), false));
+                }
+
                 catBudgets.add(new CategoryBudget(mainBudgetId, catName, limit, "INCOME"));
             }
 
             // Expenses: ~1M to 10M per category
             for (String catName : expenseCats) {
                 double limit = (1000 + random.nextInt(9001)) * 1000.0;
-                ensureCategoryExists(catName, "EXPENSE");
+
+                Category existing = categoryDao.getByNameAndType(catName, "EXPENSE");
+                if (existing == null) {
+                    categoryDao.insert(new Category(catName, "EXPENSE",
+                        com.mopr.personal_finance_manager.data.model.Category.getIconRes(catName),
+                        com.mopr.personal_finance_manager.data.model.Category.getColorRes(catName), false));
+                }
+
                 catBudgets.add(new CategoryBudget(mainBudgetId, catName, limit, "EXPENSE"));
             }
             budgetDao.insertCategoryBudgets(catBudgets);

@@ -220,18 +220,6 @@
                     app:tint="?attr/colorOnSurfaceVariant"
                     android:contentDescription="@null" />
             </LinearLayout>
-
-            <!-- App version -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="48dp"
-                android:layout_marginBottom="48dp"
-                android:text="@string/app_version_label"
-                android:textColor="@color/text_tertiary"
-                android:textSize="13sp" />
-
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 

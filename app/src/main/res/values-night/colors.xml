@@ -60,4 +60,8 @@
     <color name="cat_health">#10B981</color>
     <color name="cat_entertainment">#F97316</color>
     <color name="cat_other">#6B7280</color>
+
+    <!-- Planning / Submenu Styles -->
+    <color name="planning_bg">#121212</color>
+    <color name="planning_bar_bg">#1E1E2E</color>
 </resources>

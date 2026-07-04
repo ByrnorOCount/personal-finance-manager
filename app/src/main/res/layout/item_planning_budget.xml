@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="8dp"
-    app:cardBackgroundColor="#2D2D3F"
+    app:cardBackgroundColor="@color/planning_bar_bg"
     app:cardCornerRadius="12dp"
     app:cardElevation="0dp"
     app:strokeWidth="0dp">
@@ -24,7 +24,7 @@
                 android:id="@+id/tvCategoryName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#FFFFFF"
+                android:textColor="?attr/colorOnSurface"
                 android:textSize="16sp"
                 tools:text="Daily Living" />
 
@@ -45,7 +45,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:src="@drawable/ic_edit"
-                app:tint="#66FFFFFF" />
+                app:tint="?attr/colorOnSurfaceVariant" />
 
             <ImageView
                 android:id="@+id/btnRemove"
@@ -55,7 +55,7 @@
                 android:layout_toStartOf="@id/btnEdit"
                 android:layout_centerVertical="true"
                 android:src="@drawable/ic_close"
-                app:tint="#F44336" />
+                app:tint="@color/expense_red" />
 
         </RelativeLayout>
 
@@ -66,9 +66,9 @@
             android:layout_marginTop="12dp"
             android:max="10000000"
             android:progress="0"
-            android:thumbTint="#448AFF"
-            android:progressTint="#448AFF"
-            android:progressBackgroundTint="#3D3D52" />
+            android:thumbTint="@color/brand_primary"
+            android:progressTint="@color/brand_primary"
+            android:progressBackgroundTint="?attr/colorSurfaceVariant" />
 
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

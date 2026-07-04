@@ -166,7 +166,7 @@ public class InitialPlanningFragment extends Fragment {
     }
 
     private void setupClickListeners() {
-        binding.toolbar.setNavigationOnClickListener(v -> Navigation.findNavController(v).navigateUp());
+        binding.btnBack.setOnClickListener(v -> Navigation.findNavController(v).navigateUp());
 
         binding.btnAddIncomeCategoryBtn.setOnClickListener(v -> {
             Bundle args = new Bundle();

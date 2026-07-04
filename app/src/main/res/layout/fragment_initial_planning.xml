@@ -1,46 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#1E1E2C">
+    android:background="?android:attr/colorBackground">
 
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/toolbar"
+    <!-- Header Gradient Background -->
+    <View
+        android:id="@+id/headerBg"
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
+        android:background="@drawable/bg_header_gradient" />
+
+    <!-- Custom Toolbar area -->
+    <RelativeLayout
+        android:id="@+id/toolbarLayout"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="#2D2D3F"
-        app:navigationIcon="@drawable/ic_back"
-        app:title="Initial Planning"
-        app:titleTextColor="@android:color/white"
-        app:navigationIconTint="@android:color/white">
+        android:layout_marginTop="24dp"
+        android:paddingHorizontal="16dp">
+
+        <ImageView
+            android:id="@+id/btnBack"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="8dp"
+            android:src="@drawable/ic_back"
+            app:tint="?attr/colorOnHeader"
+            android:contentDescription="Back" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Initial Planning"
+            android:textColor="?attr/colorOnHeader"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/btnSaveTop"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_marginEnd="16dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:padding="8dp"
             android:text="Save"
-            android:textColor="@android:color/white"
+            android:textColor="?attr/colorOnHeader"
             android:textSize="16sp"
-            android:textStyle="bold"
-            android:clickable="true"
-            android:focusable="true"/>
-    </com.google.android.material.appbar.MaterialToolbar>
+            android:textStyle="bold" />
+    </RelativeLayout>
 
-    <ScrollView
+    <!-- Content Card -->
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbarLayout"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/bg_sheet_top_rounded"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="20dp">
 
             <!-- Incomes Header -->
             <LinearLayout
@@ -55,7 +82,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Total Incomes goal"
-                    android:textColor="#FFFFFF"
+                    android:textColor="?attr/colorOnSurface"
                     android:textSize="16sp" />
 
                 <TextView
@@ -63,7 +90,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="0 ₫"
-                    android:textColor="#4CAF50"
+                    android:textColor="@color/income_green_accent"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -75,11 +102,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="8dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="16dp"
                 android:text="Add Income Category"
-                android:textColor="#4CAF50"
+                android:textColor="@color/income_green_accent"
                 app:icon="@drawable/ic_add_nav"
-                app:iconTint="#4CAF50"
+                app:iconTint="@color/income_green_accent"
                 app:cornerRadius="12dp" />
 
             <androidx.recyclerview.widget.RecyclerView
@@ -103,7 +130,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Total budgeted Expenses"
-                    android:textColor="#FFFFFF"
+                    android:textColor="?attr/colorOnSurface"
                     android:textSize="16sp" />
 
                 <TextView
@@ -111,7 +138,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="0 ₫"
-                    android:textColor="#64B5F6"
+                    android:textColor="@color/provisional_blue"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -123,29 +150,33 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="8dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="16dp"
                 android:text="Add Expense Category"
-                android:textColor="#64B5F6"
+                android:textColor="@color/provisional_blue"
                 app:icon="@drawable/ic_add_nav"
-                app:iconTint="#64B5F6"
+                app:iconTint="@color/provisional_blue"
                 app:cornerRadius="12dp" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvExpenseBudgets"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="100dp"
                 android:nestedScrollingEnabled="false"
                 tools:listitem="@layout/item_planning_budget"/>
 
         </LinearLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
+    <!-- Bottom Actions -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="?attr/colorSurface"
+        android:elevation="8dp"
         android:orientation="horizontal"
-        android:padding="16dp"
-        android:background="#2D2D3F">
+        android:padding="16dp">
 
         <TextView
             android:id="@+id/btnSkip"
@@ -154,10 +185,11 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="Skip for later"
-            android:textColor="#B0B0B0"
+            android:textColor="?attr/colorOnSurfaceVariant"
             android:textSize="16sp"
             android:clickable="true"
-            android:focusable="true"/>
+            android:focusable="true"
+            android:paddingVertical="12dp"/>
 
         <TextView
             android:id="@+id/btnSaveBottom"
@@ -167,10 +199,11 @@
             android:gravity="center"
             android:text="Save"
             android:textColor="#FFA726"
-            android:textSize="16sp"
+            android:textSize="18sp"
             android:textStyle="bold"
             android:clickable="true"
-            android:focusable="true"/>
+            android:focusable="true"
+            android:paddingVertical="12dp"/>
     </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>

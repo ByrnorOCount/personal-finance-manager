@@ -45,7 +45,7 @@ public class CreateBudgetFragment extends Fragment {
 
         updateDateViews();
 
-        binding.toolbar.setNavigationOnClickListener(v -> Navigation.findNavController(v).navigateUp());
+        binding.btnBack.setOnClickListener(v -> Navigation.findNavController(v).navigateUp());
 
         binding.etStartDate.setOnClickListener(v -> showDatePicker(true));
         binding.etEndDate.setOnClickListener(v -> showDatePicker(false));

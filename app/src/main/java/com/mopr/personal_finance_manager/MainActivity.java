@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.View;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -56,10 +55,12 @@ public class MainActivity extends AppCompatActivity {
 
             // Control visibility of Bottom Navigation and FAB
             navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
-                if (destination.getId() == R.id.navigation_add_transaction ||
-                    destination.getId() == R.id.navigation_create_budget ||
-                    destination.getId() == R.id.navigation_initial_planning ||
-                    destination.getId() == R.id.navigation_add_category) {
+                int id = destination.getId();
+                if (id == R.id.navigation_add_transaction ||
+                    id == R.id.navigation_create_budget ||
+                    id == R.id.navigation_initial_planning ||
+                    id == R.id.navigation_add_category ||
+                    id == R.id.navigation_settings) {
                     binding.bottomNavigation.setVisibility(View.GONE);
                     binding.fabAdd.setVisibility(View.GONE);
                 } else {

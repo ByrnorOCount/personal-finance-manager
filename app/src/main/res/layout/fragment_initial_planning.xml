@@ -90,7 +90,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="0 ₫"
-                    android:textColor="@color/income_green_accent"
+                    android:textColor="?attr/colorIncome"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -104,9 +104,9 @@
                 android:layout_marginHorizontal="8dp"
                 android:layout_marginBottom="16dp"
                 android:text="Add Income Category"
-                android:textColor="@color/income_green_accent"
+                android:textColor="?attr/colorIncome"
                 app:icon="@drawable/ic_add_nav"
-                app:iconTint="@color/income_green_accent"
+                app:iconTint="?attr/colorIncome"
                 app:cornerRadius="12dp" />
 
             <androidx.recyclerview.widget.RecyclerView
@@ -138,7 +138,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="0 ₫"
-                    android:textColor="@color/provisional_blue"
+                    android:textColor="?attr/colorExpense"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -152,9 +152,9 @@
                 android:layout_marginHorizontal="8dp"
                 android:layout_marginBottom="16dp"
                 android:text="Add Expense Category"
-                android:textColor="@color/provisional_blue"
+                android:textColor="?attr/colorExpense"
                 app:icon="@drawable/ic_add_nav"
-                app:iconTint="@color/provisional_blue"
+                app:iconTint="?attr/colorExpense"
                 app:cornerRadius="12dp" />
 
             <androidx.recyclerview.widget.RecyclerView

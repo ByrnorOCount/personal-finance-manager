@@ -22,6 +22,8 @@ public class Category implements Serializable {
 
     public boolean isSystem;
 
+    public Integer parentId;
+
     public Category() {}
 
     public Category(String name, String type, int iconRes, int colorRes, boolean isSystem) {
@@ -30,5 +32,15 @@ public class Category implements Serializable {
         this.iconRes = iconRes;
         this.colorRes = colorRes;
         this.isSystem = isSystem;
+        this.parentId = null;
+    }
+
+    public Category(String name, String type, int iconRes, int colorRes, boolean isSystem, Integer parentId) {
+        this.name = name;
+        this.type = type;
+        this.iconRes = iconRes;
+        this.colorRes = colorRes;
+        this.isSystem = isSystem;
+        this.parentId = parentId;
     }
 }

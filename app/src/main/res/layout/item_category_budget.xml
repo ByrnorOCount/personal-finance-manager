@@ -26,11 +26,11 @@
         <!-- Category icon circle -->
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/ivCategoryIcon"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
+            android:layout_width="46dp"
+            android:layout_height="46dp"
             android:background="@drawable/bg_circle"
             android:contentDescription="@null"
-            android:padding="11dp"
+            android:padding="4dp"
             android:scaleType="centerInside"
             android:src="@drawable/ic_cat_food"
             app:layout_constraintStart_toStartOf="parent"
@@ -94,9 +94,9 @@
             android:layout_height="24dp"
             android:background="@drawable/bg_circle"
             android:backgroundTint="?attr/colorSurfaceVariant"
-            android:contentDescription="@null"
+            android:contentDescription="Edit"
             android:padding="5dp"
-            android:src="@drawable/ic_add_nav"
+            android:src="@drawable/ic_wrench"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:tint="?attr/colorOnSurface" />

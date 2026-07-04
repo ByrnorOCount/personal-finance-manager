@@ -21,9 +21,20 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
     private List<TransactionWithCategory> items = new ArrayList<>();
     private OnTransactionClickListener listener;
+    private java.util.Map<Integer, com.mopr.personal_finance_manager.data.local.Category> allCategoriesMap = new java.util.HashMap<>();
 
     public void setListener(OnTransactionClickListener listener) {
         this.listener = listener;
+    }
+
+    public void setAllCategories(List<com.mopr.personal_finance_manager.data.local.Category> categories) {
+        allCategoriesMap.clear();
+        if (categories != null) {
+            for (com.mopr.personal_finance_manager.data.local.Category c : categories) {
+                allCategoriesMap.put(c.id, c);
+            }
+        }
+        notifyDataSetChanged();
     }
 
     /**
@@ -80,9 +91,25 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         com.mopr.personal_finance_manager.data.local.Transaction t = item.transaction;
         com.mopr.personal_finance_manager.data.local.Category cat = item.category;
 
-        String catName = cat != null ? cat.name : "Unknown";
-        int iconRes = (cat != null && cat.iconRes != 0) ? cat.iconRes : R.drawable.ic_cat_other;
-        int colorRes = (cat != null && cat.colorRes != 0) ? cat.colorRes : R.color.cat_other;
+        String catName = "Unknown";
+        int iconRes = R.drawable.ic_cat_other;
+        int colorRes = R.color.cat_other;
+
+        if (cat != null) {
+            catName = cat.name;
+            iconRes = cat.iconRes != 0 ? cat.iconRes : R.drawable.ic_cat_other;
+            colorRes = cat.colorRes != 0 ? cat.colorRes : R.color.cat_other;
+
+            if (cat.parentId != null) {
+                com.mopr.personal_finance_manager.data.local.Category parent = allCategoriesMap.get(cat.parentId);
+                if (parent != null) {
+                    catName = parent.name + " > " + cat.name;
+                    // Optionally use parent's icon/color if subcategory doesn't have one
+                    if (iconRes == R.drawable.ic_cat_other) iconRes = parent.iconRes;
+                    if (colorRes == R.color.cat_other) colorRes = parent.colorRes;
+                }
+            }
+        }
 
         holder.binding.tvCategory.setText(catName);
         holder.binding.ivIcon.setImageResource(iconRes);

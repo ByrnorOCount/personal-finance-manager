@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.mopr.personal_finance_manager.R;
 import com.mopr.personal_finance_manager.data.local.CategoryBudget;
 import com.mopr.personal_finance_manager.data.model.Category;
 import com.mopr.personal_finance_manager.databinding.ItemPlanningBudgetBinding;
@@ -62,6 +63,16 @@ public class PlanningBudgetAdapter extends RecyclerView.Adapter<PlanningBudgetAd
         void bind(CategoryBudget item) {
             b.tvCategoryName.setText(Category.getDisplayName(itemView.getContext(), item.category));
             b.tvCategoryLimit.setText(CurrencyFormatter.formatVND(item.limitAmount));
+
+            int accentColor;
+            if ("INCOME".equals(item.type)) {
+                accentColor = itemView.getContext().getColor(R.color.income_green_accent);
+            } else {
+                accentColor = itemView.getContext().getColor(R.color.provisional_blue);
+            }
+            b.tvCategoryLimit.setTextColor(accentColor);
+            b.seekBarLimit.setThumbTintList(android.content.res.ColorStateList.valueOf(accentColor));
+            b.seekBarLimit.setProgressTintList(android.content.res.ColorStateList.valueOf(accentColor));
 
             b.seekBarLimit.setProgress((int) item.limitAmount);
             b.seekBarLimit.setOnSeekBarChangeListener(new android.widget.SeekBar.OnSeekBarChangeListener() {

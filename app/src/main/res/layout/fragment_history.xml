@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?android:attr/colorBackground"
@@ -11,28 +13,46 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_header_gradient"
-        android:orientation="horizontal"
-        android:gravity="bottom"
+        android:orientation="vertical"
         android:paddingStart="24dp"
-        android:paddingTop="30dp"
+        android:paddingTop="48dp"
         android:paddingEnd="24dp"
         android:paddingBottom="40dp">
 
-        <TextView
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/nav_history"
-            android:textColor="?attr/colorOnHeader"
-            android:textSize="26sp"
-            android:textStyle="bold" />
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/tvTransactionCount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="?attr/colorOnHeader"
-            android:textSize="17sp" />
+            <ImageButton
+                android:id="@+id/btnBack"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="-8dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Back"
+                android:src="@drawable/ic_back"
+                app:tint="?attr/colorOnHeader" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:text="@string/nav_history"
+                android:textColor="?attr/colorOnHeader"
+                android:textSize="26sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvTransactionCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="?attr/colorOnHeader"
+                android:textSize="17sp"
+                tools:text="42 trans" />
+        </LinearLayout>
 
     </LinearLayout>
 
@@ -147,76 +167,19 @@
 
                 <!-- Divider -->
                 <View
+                    android:id="@+id/filterDivider"
                     android:layout_width="1dp"
                     android:layout_height="20dp"
                     android:layout_marginEnd="8dp"
                     android:background="@color/border_default" />
 
-                <!-- Category filters -->
-                <TextView
-                    android:id="@+id/chipFood"
+                <!-- Dynamic Category chips -->
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/cgCategoryFilters"
                     android:layout_width="wrap_content"
-                    android:layout_height="36dp"
-                    android:layout_marginEnd="8dp"
-                    android:background="@drawable/bg_chip_unselected"
-                    android:gravity="center"
-                    android:paddingStart="14dp"
-                    android:paddingEnd="14dp"
-                    android:text="@string/chip_food"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="13sp" />
-
-                <TextView
-                    android:id="@+id/chipTransport"
-                    android:layout_width="wrap_content"
-                    android:layout_height="36dp"
-                    android:layout_marginEnd="8dp"
-                    android:background="@drawable/bg_chip_unselected"
-                    android:gravity="center"
-                    android:paddingStart="14dp"
-                    android:paddingEnd="14dp"
-                    android:text="@string/chip_transport"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="13sp" />
-
-                <TextView
-                    android:id="@+id/chipShopping"
-                    android:layout_width="wrap_content"
-                    android:layout_height="36dp"
-                    android:layout_marginEnd="8dp"
-                    android:background="@drawable/bg_chip_unselected"
-                    android:gravity="center"
-                    android:paddingStart="14dp"
-                    android:paddingEnd="14dp"
-                    android:text="@string/chip_shopping"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="13sp" />
-
-                <TextView
-                    android:id="@+id/chipBills"
-                    android:layout_width="wrap_content"
-                    android:layout_height="36dp"
-                    android:layout_marginEnd="8dp"
-                    android:background="@drawable/bg_chip_unselected"
-                    android:gravity="center"
-                    android:paddingStart="14dp"
-                    android:paddingEnd="14dp"
-                    android:text="@string/chip_bills"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="13sp" />
-
-                <TextView
-                    android:id="@+id/chipHealth"
-                    android:layout_width="wrap_content"
-                    android:layout_height="36dp"
-                    android:layout_marginEnd="8dp"
-                    android:background="@drawable/bg_chip_unselected"
-                    android:gravity="center"
-                    android:paddingStart="14dp"
-                    android:paddingEnd="14dp"
-                    android:text="@string/chip_health"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="13sp" />
+                    android:layout_height="wrap_content"
+                    app:singleLine="true"
+                    app:singleSelection="true" />
 
             </LinearLayout>
 

@@ -112,4 +112,10 @@ public interface BudgetDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertCategoryBudget(CategoryBudget categoryBudget);
+
+    @Query("DELETE FROM main_budgets")
+    void deleteAllMainBudgets();
+
+    @Query("DELETE FROM category_budgets")
+    void deleteAllCategoryBudgets();
 }

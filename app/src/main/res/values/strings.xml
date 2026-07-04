@@ -115,9 +115,10 @@
     <string name="enter_limit_hint">Enter monthly limit (₫)</string>
     <string name="update_limit">Update Limit</string>
     <string name="set_limit">Set Limit</string>
-    <string name="anomaly_alert_header">Careful! Anomaly Detected</string>
+    <string name="anomaly_alert_header">Careful!
+    </string>
     <string name="overbudget_alert_header">Budget Overrun Risk</string>
-    <string name="anomaly_detected_msg">Careful! We detected %d unusual transactions that are significantly higher than your average.</string>
+    <string name="anomaly_detected_msg">Detected %d unusual transactions that are significantly higher than your average.</string>
     <string name="over_budget_projection_msg">At this rate, you will exceed your budget by %s.</string>
     <string name="days_remaining_label">%d days remaining</string>
     <string name="daily_burn_rate_value">%s / day</string>

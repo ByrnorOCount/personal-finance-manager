@@ -62,6 +62,33 @@
                     android:textColor="@color/insight_positive"
                     android:textSize="14sp" />
 
+                <LinearLayout
+                    android:id="@+id/llLimitContainer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/budgeted_label"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/tvBudgetLimitDisplay"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:text="0 ₫"
+                        android:textColor="@color/text_primary"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnSetBudget"
                     style="@style/Widget.Material3.Button.TonalButton"
@@ -70,7 +97,6 @@
                     android:layout_marginTop="12dp"
                     android:text="@string/set_limit"
                     android:textSize="12sp"
-                    android:visibility="gone"
                     app:cornerRadius="8dp" />
 
                 <View

@@ -115,9 +115,10 @@
     <string name="enter_limit_hint">Nhập hạn mức tháng (₫)</string>
     <string name="update_limit">Cập nhật Hạn mức</string>
     <string name="set_limit">Thiết lập</string>
-    <string name="anomaly_alert_header">Chú ý! Phát hiện bất thường</string>
+    <string name="anomaly_alert_header">Chú ý:
+    </string>
     <string name="overbudget_alert_header">Rủi ro vượt ngân sách</string>
-    <string name="anomaly_detected_msg">Chú ý! Chúng tôi phát hiện %d giao dịch bất thường cao hơn nhiều so với mức trung bình của bạn.</string>
+    <string name="anomaly_detected_msg">Phát hiện %d giao dịch bất thường cao hơn nhiều so với mức trung bình của bạn.</string>
     <string name="over_budget_projection_msg">Với tốc độ này, bạn sẽ vượt ngân sách khoảng %s.</string>
     <string name="days_remaining_label">Còn lại %d ngày</string>
     <string name="daily_burn_rate_value">%s / ngày</string>

@@ -40,7 +40,8 @@ import java.util.Locale;
 public class InsightsFragment extends Fragment {
 
     private AnalyticsViewModel viewModel;
-    private TextView tvProjectedSpend, tvProjectionStatus, tvBurnRate, tvDaysLeft, tvRecommendation, tvForecastAmount, tvAnomaliesHeader;
+    private TextView tvProjectedSpend, tvProjectionStatus, tvBurnRate, tvDaysLeft, tvRecommendation, tvForecastAmount, tvAnomaliesHeader, tvBudgetLimitDisplay;
+    private android.view.View llLimitContainer;
     private com.google.android.material.card.MaterialCardView cardRecommendation;
     private com.google.android.material.button.MaterialButton btnSetBudget;
     private PieChart pieChart;
@@ -59,6 +60,8 @@ public class InsightsFragment extends Fragment {
         tvRecommendation = view.findViewById(R.id.tvRecommendation);
         tvForecastAmount = view.findViewById(R.id.tvForecastAmount);
         tvAnomaliesHeader = view.findViewById(R.id.tvAnomaliesHeader);
+        tvBudgetLimitDisplay = view.findViewById(R.id.tvBudgetLimitDisplay);
+        llLimitContainer = view.findViewById(R.id.llLimitContainer);
         cardRecommendation = view.findViewById(R.id.cardRecommendation);
         pieChart = view.findViewById(R.id.pieChart);
         rvAnomalies = view.findViewById(R.id.rvAnomalies);
@@ -243,6 +246,9 @@ public class InsightsFragment extends Fragment {
 
         if (result.budgetLimit <= 0) {
             btnSetBudget.setVisibility(View.VISIBLE);
+            btnSetBudget.setText(R.string.set_limit);
+            llLimitContainer.setVisibility(View.GONE);
+
             statusColor = ContextCompat.getColor(requireContext(), R.color.text_secondary);
             statusText = getString(R.string.no_budget_set);
             tvProjectionStatus.setText(statusText);
@@ -252,7 +258,10 @@ public class InsightsFragment extends Fragment {
             return;
         }
 
-        btnSetBudget.setVisibility(View.GONE);
+        btnSetBudget.setVisibility(View.VISIBLE);
+        btnSetBudget.setText(R.string.update_limit);
+        llLimitContainer.setVisibility(View.VISIBLE);
+        tvBudgetLimitDisplay.setText(CurrencyFormatter.formatVND(result.budgetLimit));
 
         switch (result.risk) {
             case HIGH:

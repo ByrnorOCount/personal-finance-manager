@@ -30,6 +30,9 @@ public interface BudgetDao {
     @Query("SELECT COALESCE(SUM(limitAmount), 0) FROM budgets WHERE type = :type AND NOT (endDate < :start OR startDate > :end)")
     LiveData<Double> getTotalBudgetedInRange(String type, long start, long end);
 
+    @Query("SELECT COALESCE(SUM(limitAmount), 0) FROM budgets WHERE type = :type AND NOT (endDate < :start OR startDate > :end)")
+    double getTotalBudgetedInRangeSync(String type, long start, long end);
+
     @Query("SELECT * FROM budgets WHERE categoryId = :categoryId AND startDate = :start AND endDate = :end LIMIT 1")
     Budget getBudgetForCategoryAndPeriodSync(int categoryId, long start, long end);
 

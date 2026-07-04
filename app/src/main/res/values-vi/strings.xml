@@ -89,4 +89,29 @@
     <string name="new_category_hint">Nhập tên danh mục mới</string>
     <string name="use_existing_category">Dùng danh mục cũ</string>
     <string name="please_enter_category_name">Vui lòng nhập tên danh mục</string>
+
+    <!-- Add Category -->
+    <string name="add_category">Thêm danh mục</string>
+    <string name="title_label">Tiêu đề</string>
+    <string name="estimated_budget_label">Ngân sách dự tính</string>
+    <string name="note_optional_label">Ghi chú (Tuỳ chọn)</string>
+    <string name="category_icon_label">Biểu tượng danh mục</string>
+    <string name="category_color_label">Màu sắc danh mục</string>
+    <string name="save_btn">Lưu</string>
+    <string name="type_here">Nhập tại đây</string>
+
+    <!-- Insights -->
+    <string name="financial_insights">Phân tích Tài chính</string>
+    <string name="month_projection">Dự tính trong tháng</string>
+    <string name="on_track_status">Đang đi đúng lộ trình ngân sách</string>
+    <string name="daily_burn_rate">Mức chi tiêu hàng ngày</string>
+    <string name="days_left">Số ngày còn lại</string>
+    <string name="recommendation_placeholder">Bạn đang làm rất tốt! Bạn còn 40% ngân sách trong khi 60% thời gian của tháng đã trôi qua.</string>
+    <string name="next_month_forecast">Dự báo tháng tới</string>
+    <string name="forecast_description">Dựa trên xu hướng chi tiêu 6 tháng qua của bạn.</string>
+    <string name="spending_breakdown">Phân bổ chi tiêu</string>
+    <string name="potential_anomalies">Giao dịch bất thường</string>
+    <string name="risk_high">Dự kiến sẽ vượt ngân sách</string>
+    <string name="risk_medium">Đang tiến gần hạn mức ngân sách</string>
+    <string name="risk_low">Đang đi đúng lộ trình ngân sách</string>
 </resources>

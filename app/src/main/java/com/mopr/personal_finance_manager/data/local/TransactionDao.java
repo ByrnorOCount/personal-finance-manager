@@ -84,6 +84,19 @@ public interface TransactionDao {
     @Query("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type='INCOME' AND categoryId = :categoryId AND date >= :startMs AND date <= :endMs")
     double getIncomeByCategory(int categoryId, long startMs, long endMs);
 
+    @Query("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type='EXPENSE' AND date >= :startMs AND date <= :endMs")
+    double getTotalExpenseInRangeSync(long startMs, long endMs);
+
+    @Query("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type='INCOME' AND date >= :startMs AND date <= :endMs")
+    double getTotalIncomeInRangeSync(long startMs, long endMs);
+
+    @androidx.room.Transaction
+    @Query("SELECT * FROM transactions WHERE type='EXPENSE' AND date >= :startMs AND date <= :endMs")
+    List<TransactionWithCategory> getExpensesWithCategoryInRangeSync(long startMs, long endMs);
+
+    @Query("SELECT COALESCE(AVG(amount), 0) FROM transactions WHERE type='EXPENSE'")
+    double getAverageExpenseAmountSync();
+
     // ── Settings: delete all data ────────────────────────────────────────────
     @Query("DELETE FROM transactions")
     void deleteAll();

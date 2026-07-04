@@ -175,9 +175,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void setupClickListeners() {
-        binding.btnAddBudget.setOnClickListener(v ->
-            Navigation.findNavController(v).navigate(R.id.navigation_budget));
-
         binding.tvDateRange.setOnClickListener(v -> {
             // Navigate to budget selection or show a picker
             Navigation.findNavController(v).navigate(R.id.navigation_budget);
@@ -188,7 +185,8 @@ public class HomeFragment extends Fragment {
         viewModel.getActiveMainBudget().observe(getViewLifecycleOwner(), budget -> {
             if (budget != null) {
                 activeBudget = budget;
-                binding.tvDateRange.setText(budget.name);
+                String displayName = (budget.name == null || budget.name.trim().isEmpty()) ? "My Budget Plan" : budget.name;
+                binding.tvDateRange.setText(displayName);
                 loadBudgetData(budget);
             } else {
                 binding.tvDateRange.setText("No Active Budget");

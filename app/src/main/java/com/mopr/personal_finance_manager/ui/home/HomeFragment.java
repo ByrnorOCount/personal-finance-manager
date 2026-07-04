@@ -67,21 +67,10 @@ public class HomeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         viewModel = new ViewModelProvider(requireActivity()).get(FinanceViewModel.class);
 
-        binding.homeScrollView.setClipToOutline(true);
-
         setupCharts();
         setupRecyclerView();
         setupClickListeners();
-        setupWindowInsets(view);
         observeData();
-    }
-
-    private void setupWindowInsets(View view) {
-        ViewCompat.setOnApplyWindowInsetsListener(binding.headerLayout, (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(0, systemBars.top, 0, 0);
-            return insets;
-        });
     }
 
     private void setupCharts() {

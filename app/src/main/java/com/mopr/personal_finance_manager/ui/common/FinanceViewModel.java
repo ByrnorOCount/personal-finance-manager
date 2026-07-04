@@ -145,6 +145,10 @@ public class FinanceViewModel extends AndroidViewModel {
         return repo.getTotalBudgetedForMonth(month);
     }
 
+    public LiveData<List<Double>> getHistoricalCategoryMonthlyExpenses(String categoryName, int months, long anchorDateMs) {
+        return repo.getHistoricalCategoryMonthlyExpenses(categoryName, months, anchorDateMs);
+    }
+
     // ── NEW BUDGET SYSTEM ──────────────────────────────────────────
 
     public void insertMainBudget(MainBudget mb, List<CategoryBudget> cbs) {
@@ -191,8 +195,8 @@ public class FinanceViewModel extends AndroidViewModel {
         repo.clearAllData();
     }
 
-    public void generateRandomBudget() {
-        repo.generateRandomBudget();
+    public void generateRandomBudget(long startMs, long endMs) {
+        repo.generateRandomBudget(startMs, endMs);
     }
 
     // ── Savings ───────────────────────────────────────────────────────

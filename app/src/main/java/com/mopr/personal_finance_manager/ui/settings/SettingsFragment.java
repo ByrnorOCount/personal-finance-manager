@@ -1,6 +1,7 @@
 package com.mopr.personal_finance_manager.ui.settings;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,8 +17,11 @@ import androidx.navigation.Navigation;
 import com.mopr.personal_finance_manager.R;
 import com.mopr.personal_finance_manager.databinding.FragmentSettingsBinding;
 import com.mopr.personal_finance_manager.ui.common.FinanceViewModel;
+import com.mopr.personal_finance_manager.util.DateUtils;
 import com.mopr.personal_finance_manager.util.LanguageManager;
 import com.mopr.personal_finance_manager.util.ThemeManager;
+
+import java.util.Calendar;
 
 public class SettingsFragment extends Fragment {
 
@@ -72,10 +76,33 @@ public class SettingsFragment extends Fragment {
         });
 
         binding.btnGenerateRandom.setOnClickListener(v -> {
-            viewModel.generateRandomBudget();
-            Toast.makeText(requireContext(), "Random budget generated!", Toast.LENGTH_LONG).show();
-            Navigation.findNavController(v).navigate(R.id.navigation_home);
+            showRandomBudgetDateRangePicker();
         });
+    }
+
+    private void showRandomBudgetDateRangePicker() {
+        Calendar start = Calendar.getInstance();
+        start.set(Calendar.DAY_OF_MONTH, 1);
+        Calendar end = Calendar.getInstance();
+        end.set(Calendar.DAY_OF_MONTH, end.getActualMaximum(Calendar.DAY_OF_MONTH));
+
+        android.app.DatePickerDialog startPicker = new android.app.DatePickerDialog(requireContext(), (view, year, month, dayOfMonth) -> {
+            start.set(year, month, dayOfMonth);
+
+            android.app.DatePickerDialog endPicker = new android.app.DatePickerDialog(requireContext(), (view2, year2, month2, dayOfMonth2) -> {
+                end.set(year2, month2, dayOfMonth2);
+
+                viewModel.generateRandomBudget(DateUtils.getStartOfDay(start), DateUtils.getEndOfDay(end));
+                Toast.makeText(requireContext(), "Random budget generated!", Toast.LENGTH_LONG).show();
+                Navigation.findNavController(requireView()).navigate(R.id.navigation_home);
+
+            }, end.get(Calendar.YEAR), end.get(Calendar.MONTH), end.get(Calendar.DAY_OF_MONTH));
+            endPicker.setTitle("Select End Date");
+            endPicker.show();
+
+        }, start.get(Calendar.YEAR), start.get(Calendar.MONTH), start.get(Calendar.DAY_OF_MONTH));
+        startPicker.setTitle("Select Start Date");
+        startPicker.show();
     }
 
     private void updateLanguageDisplay() {

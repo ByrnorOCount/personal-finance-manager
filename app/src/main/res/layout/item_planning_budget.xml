@@ -75,5 +75,17 @@
             android:progressTint="@color/brand_primary"
             android:progressBackgroundTint="?attr/colorSurfaceVariant" />
 
+        <TextView
+            android:id="@+id/tvUnderestimateWarning"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/expense_red"
+            android:textSize="12sp"
+            android:textStyle="italic"
+            android:visibility="gone"
+            tools:text="Note: Based on history, you might need 1.3M."
+            tools:visibility="visible" />
+
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

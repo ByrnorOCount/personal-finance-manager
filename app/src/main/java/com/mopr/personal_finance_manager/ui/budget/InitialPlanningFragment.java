@@ -22,6 +22,7 @@ import com.mopr.personal_finance_manager.ui.common.FinanceViewModel;
 import com.mopr.personal_finance_manager.util.CurrencyFormatter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -32,6 +33,7 @@ public class InitialPlanningFragment extends Fragment {
     private MainBudget mainBudget;
     private List<CategoryBudget> incomeBudgets = new ArrayList<>();
     private List<CategoryBudget> expenseBudgets = new ArrayList<>();
+    private Map<String, Double> expensePredictions = new HashMap<>();
     private PlanningBudgetAdapter incomeAdapter;
     private PlanningBudgetAdapter expenseAdapter;
 
@@ -60,7 +62,26 @@ public class InitialPlanningFragment extends Fragment {
         setupClickListeners();
         setupResultListeners();
         setupDefaults();
+        fetchPredictions();
         updateTotals();
+    }
+
+    private void fetchPredictions() {
+        // Collect all category names
+        List<String> allCats = new ArrayList<>();
+        for (CategoryBudget cb : expenseBudgets) allCats.add(cb.category);
+
+        long anchor = mainBudget != null ? mainBudget.startDate : System.currentTimeMillis();
+
+        for (String cat : allCats) {
+            viewModel.getHistoricalCategoryMonthlyExpenses(cat, 6, anchor).observe(getViewLifecycleOwner(), history -> {
+                if (history != null && !history.isEmpty()) {
+                    double predicted = com.mopr.personal_finance_manager.util.BudgetPredictor.predictNextPeriodExpense(history);
+                    expensePredictions.put(cat, predicted);
+                    expenseAdapter.setPredictions(expensePredictions);
+                }
+            });
+        }
     }
 
     private void setupResultListeners() {
@@ -73,6 +94,7 @@ public class InitialPlanningFragment extends Fragment {
                 } else {
                     expenseBudgets.add(cb);
                     expenseAdapter.setItems(new ArrayList<>(expenseBudgets));
+                    fetchPredictions();
                 }
                 updateTotals();
             }
@@ -98,6 +120,7 @@ public class InitialPlanningFragment extends Fragment {
                         }
                     }
                     expenseAdapter.setItems(new ArrayList<>(expenseBudgets));
+                    fetchPredictions();
                 }
                 updateTotals();
             }

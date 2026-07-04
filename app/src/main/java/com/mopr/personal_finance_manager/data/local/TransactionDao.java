@@ -95,6 +95,13 @@ public interface TransactionDao {
     @Query("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type='INCOME' AND categoryId = :categoryId AND date >= :startMs AND date <= :endMs")
     double getIncomeByCategory(int categoryId, long startMs, long endMs);
 
+    @Query("SELECT COALESCE(SUM(t.amount), 0) FROM transactions t " +
+           "INNER JOIN categories c ON t.categoryId = c.id " +
+           "WHERE t.type='EXPENSE' AND (c.name = :categoryName OR " +
+           "(SELECT name FROM categories WHERE id = c.parentId) = :categoryName) " +
+           "AND t.date >= :startMs AND t.date <= :endMs")
+    double getExpenseForCategoryNameGroupSync(String categoryName, long startMs, long endMs);
+
     @Query("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type='EXPENSE' AND date >= :startMs AND date <= :endMs")
     double getTotalExpenseInRangeSync(long startMs, long endMs);
 

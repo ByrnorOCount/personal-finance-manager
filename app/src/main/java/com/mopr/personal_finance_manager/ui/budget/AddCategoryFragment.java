@@ -37,9 +37,11 @@ public class AddCategoryFragment extends Fragment {
     private boolean returnResult = false;
     private SubcategorySmallAdapter subcategoryAdapter;
     private List<Category> currentSubcategories = new ArrayList<>();
+    private final androidx.lifecycle.MutableLiveData<String> nameQuery = new androidx.lifecycle.MutableLiveData<>("");
 
     private int selectedIconRes = R.drawable.ic_cat_other;
     private int selectedColorRes = R.color.cat_other;
+    private double predictedExpense = 0;
 
     @Nullable
     @Override
@@ -61,6 +63,7 @@ public class AddCategoryFragment extends Fragment {
 
         setupUI();
         observeData();
+        setupPredictionObserver();
 
         if (existingItem != null) {
             populateFields();
@@ -124,6 +127,20 @@ public class AddCategoryFragment extends Fragment {
         updateLabels();
     }
 
+    private void setupPredictionObserver() {
+        androidx.lifecycle.Transformations.switchMap(nameQuery, name -> {
+            long anchor = activeBudget != null ? activeBudget.startDate : System.currentTimeMillis();
+            return viewModel.getHistoricalCategoryMonthlyExpenses(name, 6, anchor);
+        }).observe(getViewLifecycleOwner(), history -> {
+            if (history != null && !history.isEmpty()) {
+                predictedExpense = com.mopr.personal_finance_manager.util.BudgetPredictor.predictNextPeriodExpense(history);
+            } else {
+                predictedExpense = 0;
+            }
+            checkUnderestimation(binding.etBudget.getText().toString());
+        });
+    }
+
     private void setupUI() {
         binding.toggleGroup.check(currentType.equals("INCOME") ? R.id.btnTypeIncome : R.id.btnTypeExpense);
         updateLabels();
@@ -133,6 +150,7 @@ public class AddCategoryFragment extends Fragment {
             if (isChecked) {
                 currentType = (checkedId == R.id.btnTypeIncome) ? "INCOME" : "EXPENSE";
                 updateLabels();
+                checkUnderestimation(binding.etBudget.getText().toString());
             }
         });
 
@@ -147,8 +165,8 @@ public class AddCategoryFragment extends Fragment {
             @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
             @Override
             public void afterTextChanged(Editable s) {
+                String name = s.toString().trim();
                 if (existingItem == null) {
-                    String name = s.toString().trim();
                     int icon = com.mopr.personal_finance_manager.data.model.Category.getIconRes(name);
                     int color = com.mopr.personal_finance_manager.data.model.Category.getColorRes(name);
                     if (icon != R.drawable.ic_cat_other) {
@@ -157,8 +175,38 @@ public class AddCategoryFragment extends Fragment {
                         updateIconPreview();
                     }
                 }
+                nameQuery.setValue(name);
             }
         });
+
+        binding.etBudget.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            @Override public void afterTextChanged(Editable s) {
+                checkUnderestimation(s.toString());
+            }
+        });
+    }
+
+    private void checkUnderestimation(String input) {
+        if (predictedExpense <= 0 || input.isEmpty() || currentType.equals("INCOME")) {
+            binding.tvUnderestimateWarning.setVisibility(View.GONE);
+            return;
+        }
+
+        try {
+            double value = Double.parseDouble(input);
+            if (value < predictedExpense * 0.9) { // Warning if 10% below prediction
+                binding.tvUnderestimateWarning.setText(String.format(java.util.Locale.getDefault(),
+                    "Note: Based on your history, you might need %s for this category.",
+                    com.mopr.personal_finance_manager.util.CurrencyFormatter.formatVND(predictedExpense)));
+                binding.tvUnderestimateWarning.setVisibility(View.VISIBLE);
+            } else {
+                binding.tvUnderestimateWarning.setVisibility(View.GONE);
+            }
+        } catch (NumberFormatException e) {
+            binding.tvUnderestimateWarning.setVisibility(View.GONE);
+        }
     }
 
     private void showIconPickerDialog() {

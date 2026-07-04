@@ -268,29 +268,25 @@ public class FinanceRepository {
         });
     }
 
-    public void generateRandomBudget() {
+    public void generateRandomBudget(long startMs, long endMs) {
         executor.execute(() -> {
             java.util.Random random = new java.util.Random();
-
-            // 1. Setup Dates (Current Month)
-            java.util.Calendar start = java.util.Calendar.getInstance();
-            start.set(java.util.Calendar.DAY_OF_MONTH, 1);
-            long startMs = com.mopr.personal_finance_manager.util.DateUtils.getStartOfDay(start);
-
-            java.util.Calendar end = java.util.Calendar.getInstance();
-            end.set(java.util.Calendar.DAY_OF_MONTH, end.getActualMaximum(java.util.Calendar.DAY_OF_MONTH));
-            long endMs = com.mopr.personal_finance_manager.util.DateUtils.getEndOfDay(end);
 
             // Format name like "July 01-31, 2026"
             java.text.SimpleDateFormat monthFmt = new java.text.SimpleDateFormat("MMMM", java.util.Locale.getDefault());
             java.text.SimpleDateFormat dayFmt = new java.text.SimpleDateFormat("dd", java.util.Locale.getDefault());
             java.text.SimpleDateFormat yearFmt = new java.text.SimpleDateFormat("yyyy", java.util.Locale.getDefault());
 
+            java.util.Calendar calStart = java.util.Calendar.getInstance();
+            calStart.setTimeInMillis(startMs);
+            java.util.Calendar calEnd = java.util.Calendar.getInstance();
+            calEnd.setTimeInMillis(endMs);
+
             String budgetName = String.format("%s %s-%s, %s",
-                monthFmt.format(start.getTime()),
-                dayFmt.format(start.getTime()),
-                dayFmt.format(end.getTime()),
-                yearFmt.format(start.getTime()));
+                monthFmt.format(calStart.getTime()),
+                dayFmt.format(calStart.getTime()),
+                dayFmt.format(calEnd.getTime()),
+                yearFmt.format(calStart.getTime()));
 
             // 2. Initial Balance (Random even VND, last 3 zeros)
             // Range 500k - 2M
@@ -424,6 +420,27 @@ public class FinanceRepository {
                 long start = com.mopr.personal_finance_manager.util.DateUtils.getStartOfMonth(cal);
                 long end = com.mopr.personal_finance_manager.util.DateUtils.getEndOfMonth(cal);
                 history.add(0, transactionDao.getTotalExpenseInRangeSync(start, end));
+                cal.add(java.util.Calendar.MONTH, -1);
+            }
+            result.postValue(history);
+        });
+        return result;
+    }
+
+    public LiveData<List<Double>> getHistoricalCategoryMonthlyExpenses(String categoryName, int months, long anchorDateMs) {
+        androidx.lifecycle.MutableLiveData<List<Double>> result = new androidx.lifecycle.MutableLiveData<>();
+        executor.execute(() -> {
+            List<Double> history = new java.util.ArrayList<>();
+            java.util.Calendar cal = java.util.Calendar.getInstance();
+            if (anchorDateMs > 0) cal.setTimeInMillis(anchorDateMs);
+
+            // Go back 1 month from anchor to start collecting history (don't include current partial month)
+            cal.add(java.util.Calendar.MONTH, -1);
+
+            for (int i = 0; i < months; i++) {
+                long start = com.mopr.personal_finance_manager.util.DateUtils.getStartOfMonth(cal);
+                long end = com.mopr.personal_finance_manager.util.DateUtils.getEndOfMonth(cal);
+                history.add(0, transactionDao.getExpenseForCategoryNameGroupSync(categoryName, start, end));
                 cal.add(java.util.Calendar.MONTH, -1);
             }
             result.postValue(history);
